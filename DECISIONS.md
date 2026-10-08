@@ -202,3 +202,161 @@ These graders are unit-tested, including an oracle run that must score 100%.
 Qualities that need judgement (fluency, free-form faithfulness) are reported
 as "not measured", never estimated. An LLM judge may be added later, but only
 in a project that also measures judge-human agreement (`llm-evaluation-lab`).
+
+## ADR-010: Offline evaluation (llm-evaluation-lab) vs live observability (ai-observability-platform); the run report is the contract
+
+Status: Accepted (2026-10-09)
+
+Reason: Both catalog entries mention latency, tokens, cost, eval results, and
+experiment comparison (`portfolio.yaml` projects 03 and 07). Without a firm
+boundary, the two projects would show the same skill twice.
+
+Decision:
+- `llm-evaluation-lab` (03) owns offline, batch evaluation of fixed, versioned
+  datasets. That covers per-run quality metrics, statistically tested
+  comparisons, regression gates, and benchmark-time latency/token/compute-cost
+  measurements. Its artifacts are run directories and a versioned
+  `report.json` schema.
+- `ai-observability-platform` (07) owns instrumentation of running
+  applications: OpenTelemetry spans, structured logs, metrics, dashboards,
+  alerting, and per-request cost tracking of live traffic.
+- 07 may ingest 03's `report.json` to show eval results next to production
+  telemetry. That schema is the only integration point, and neither project
+  imports the other's code.
+- Inference-performance sweeps (TTFT, throughput, quantization, batching,
+  concurrency) belong to `ai-inference-benchmark` (10). 03 reports latency at
+  one documented concurrency setting.
+
+Alternatives considered: merge cost/latency tracking into one shared library
+used by 03, 07, and 10 (premature, and it couples three schedules); let 03
+emit OpenTelemetry (duplicates 07 and adds infrastructure to an offline
+tool).
+
+Consequences: 03 has no OTel, dashboards, or live hooks. 07 has no dataset
+runner or statistical gate. 07's planner should design against the published
+`report.json` schema version. `PROJECT_QUEUE.md`'s overlap check already
+states "03 does offline experiments on datasets; 07 instruments running
+applications". This ADR makes that line binding.
+
+## ADR-011: Cost reporting without paid APIs: measured local compute cost; dollar figures only as labelled estimates
+
+Status: Accepted (2026-10-09)
+
+Reason: `paid_api_budget_usd` is 0, and `never_fabricate_metrics` is set.
+Several projects (03, 07, 10) report cost, and a dollar figure that looks like
+real spend would be a fabricated metric.
+
+Decision: Cost has two parts.
+1. **Measured local compute cost**: wall time, CPU-seconds, peak RSS of the
+   model-server process, tokens, and tokens/sec, each recorded with a hardware
+   fingerprint.
+2. **Optional dollar estimates**: token counts x prices from a versioned,
+   dated price table that cites its source URL and retrieval date. These are
+   always labelled "estimate" (`estimate: true` in JSON) and carry a
+   tokenizer caveat, because local and hosted tokenizers differ.
+
+Dollar estimates are never summed into anything called spend or cost
+incurred. Real spend can only appear after a paid budget is approved under
+ADR-002, and then it comes from provider billing/usage data.
+
+Alternatives considered: omit dollar figures entirely (less useful for
+comparing against hosted options); estimate energy cost from TDP (too
+speculative to report).
+
+Consequences: Reports stay honest and still answer "what would this workload
+cost at published prices?". Each project that reports cost includes a test
+that enforces the labelling. Price tables go stale, which is why they are
+dated files rather than constants.
+
+## ADR-012: llm-evaluation-lab is a standalone library; earlier projects may adopt it only after its release
+
+Status: Accepted (2026-10-09)
+
+Reason: 03 is designed to be reusable, and 01 (answer-generation evals) and
+02 (agent evals) could use its graders, statistics, and gate. But 01 and 02
+are built before 03 exists, and ADR-007 allows reuse only through pinned
+releases of completed projects.
+
+Decision:
+- 03 depends on neither 01 nor 02.
+- 01 and 02 do not depend on 03 during their build.
+- 03 publishes a stable Python API (graders, stats, compare/gate, report
+  schema) and a reusable CI workflow example.
+- After 03's v0.1.0, adopting it in 01 or 02 (for example, gating 02's
+  trajectory metrics with `evallab gate`) is an optional follow-up. Each
+  adoption is recorded as its own ADR in the consuming repo and pinned per
+  ADR-007.
+- 03 duplicates a small OpenAI-compatible client and response cache instead
+  of importing 02's (project ADR-0003). Extracting a shared provider package
+  is reconsidered only if a third project needs the same code.
+
+Alternatives considered: 03 imports 02's provider/replay layer (couples an
+eval framework to an agent package for about 200 lines of client code);
+retrofit 01/02 onto 03 before 03 is released (violates ADR-007 and reorders
+the queue).
+
+Consequences: No schedule coupling. 02's and 03's provider code is
+duplicated, which is acknowledged. 02 keeps its own trajectory graders, and
+03 demonstrates reuse through its plugin API and examples instead.
+
+Owner decision (2026-10-09): Copying about 200 lines of OpenAI-compatible
+client and response-cache code from 02 into 03 is accepted. It is a
+deliberate duplication, consistent with ADR-007, which allows reuse only
+through pinned releases and prefers a small copy over coupling an eval
+framework to an agent package. 02's code does not exist yet (02's repository
+`RabbitHole` has not been created), so the source commit can't be recorded
+now. When the copy is made, the copied module's header and 03's project
+ADR-0003 must cite the `RabbitHole` commit SHA and file path it came from.
+
+## ADR-013: Committing small public benchmark subsets when the license permits redistribution
+
+Status: Accepted (2026-10-09)
+
+Reason: 01 and 02 download their evaluation data with checksums and never
+commit it. 03's CI gate must replay and re-grade committed runs offline and
+deterministically, so it needs the exact examples. Its subsets are small (a
+few hundred examples per dataset), and their licenses allow redistribution
+with attribution (verified below).
+
+Decision:
+- A project may commit a small benchmark subset when the license explicitly
+  permits redistribution.
+- Each committed dataset lives in its own directory with the upstream
+  `LICENSE`/attribution, the source revision, and the sampling script and
+  seed. The README lists dataset licenses separately from the code license.
+- Share-alike terms (CC BY-SA) apply to those files only.
+- Data whose license does not clearly permit redistribution is downloaded by
+  script with a checksum, as before.
+- Full datasets are never committed.
+
+Alternatives considered: always download in CI with a cache (network
+dependence in the gate, and cache eviction breaks reproducibility); commit
+only example IDs (CI would still need the data).
+
+Consequences: 03's CI is fully offline. Licensing is visible per directory,
+and the review gate's licensing checks apply. 01's and 02's existing choices
+are unchanged.
+
+Owner decision (2026-10-09): Accepted for 03's GSM8K (MIT) and SQuAD 2.0
+(CC BY-SA 4.0, share-alike) subsets, on these conditions:
+
+- Each subset lives in its own data folder (for example `data/gsm8k/` and
+  `data/squad_v2/`) with its own `LICENSE` file and attribution, separate
+  from the repository's code license.
+- The share-alike terms apply only to the SQuAD 2.0 folder.
+- Each subset stays small (a few hundred examples, never the full dataset).
+
+Licenses verified on 2026-10-09:
+
+- **GSM8K**: MIT License, Copyright (c) 2021 OpenAI (`LICENSE` in
+  github.com/openai/grade-school-math; the Hugging Face card `openai/gsm8k`
+  also says MIT). MIT permits redistribution as long as the copyright and
+  permission notice are included, so the subset directory carries that
+  `LICENSE` text.
+- **SQuAD 2.0**: CC BY-SA 4.0 (stated on rajpurkar.github.io/SQuAD-explorer;
+  the Hugging Face card `rajpurkar/squad_v2` also says cc-by-sa-4.0; the
+  passages come from Wikipedia, which is also CC BY-SA). Redistribution is
+  permitted with attribution, a license link, an indication of changes (the
+  subset was sampled), and the same license for the redistributed subset. The
+  subset directory carries the attribution, a CC BY-SA 4.0 notice, and the
+  sampling script and seed.

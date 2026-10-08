@@ -85,10 +85,21 @@ def test_register_refuses_second_active_project(
 def test_project_without_milestones_gets_defaults(
     empty_state: dict[str, Any], portfolio_path: Path
 ) -> None:
+    portfolio = load_portfolio(portfolio_path)
+    project = register_project(
+        empty_state, portfolio, "multimodal-document-intelligence", "2026-10-09"
+    )
+    assert [m["id"] for m in project["milestones"]] == ["M1", "M2", "M3", "M4", "M5"]
+
+
+def test_project_03_uses_the_planners_eight_milestones(
+    empty_state: dict[str, Any], portfolio_path: Path
+) -> None:
     project = register_project(
         empty_state, load_portfolio(portfolio_path), "llm-evaluation-lab", "2026-10-09"
     )
-    assert [m["id"] for m in project["milestones"]] == ["M1", "M2", "M3", "M4", "M5"]
+    assert [m["id"] for m in project["milestones"]] == [f"M{i}" for i in range(1, 9)]
+    assert project["milestones"][-1]["title"].startswith("Container, CI gate workflow")
 
 
 def test_milestone_status_and_completion_date(

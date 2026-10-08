@@ -63,7 +63,8 @@ projects:
       - {id: M7, title: "Container, CI image smoke eval, docs, v0.1.0 release"}
 
   # Projects 03-10: ids, order, objectives, and capabilities come from the brief
-  # (section 5). The planner turns them into milestones before each start.
+  # (section 5). The planner turns them into milestones before each start
+  # (done for 03).
   - id: llm-evaluation-lab
     order: 3
     title: LLM Evaluation Lab
@@ -74,6 +75,16 @@ projects:
       latency, token, and cost measurement, experiment comparison, regression
       detection, and HTML/Markdown reports.
     skills: [llm-evaluation, prompt-engineering, structured-outputs, hallucination-detection, cost-estimation, regression-testing, reporting]
+    staged_docs: /workspace/p03-llm-evaluation-lab  # repo created only when 03 starts
+    milestones:
+      - {id: M1, title: "Scaffold, data model, dataset/prompt/experiment versioning"}
+      - {id: M2, title: "Providers (scripted, replay, OpenAI-compatible streaming), response cache, matrix runner"}
+      - {id: M3, title: "Grader plugin API and built-in graders, grader self-test"}
+      - {id: M4, title: "Benchmark subsets (GSM8K, SQuAD 2.0) and hand-authored suites, oracle reports"}
+      - {id: M5, title: "Statistics, compare, regression gate with injection tests, Markdown/HTML reports"}
+      - {id: M6, title: "Live local-model matrix, latency and compute-cost measurement, price-table estimates, structured-output case study"}
+      - {id: M7, title: "Optional LLM judge with measured human agreement"}
+      - {id: M8, title: "Container, CI gate workflow for consumers, docs, v0.1.0 release"}
 
   - id: multimodal-document-intelligence
     order: 4

@@ -8,7 +8,7 @@ planner refines each project's scope before it starts.
 | --- | --- | --- | --- |
 | 01 | [production-rag-engine](https://github.com/miguelzzzzzzzz/production-rag-engine) | in progress | RAG, chunking, embeddings, hybrid BM25 + vector search, reranking, retrieval evals, FastAPI, Docker |
 | 02 | agentic-research-platform | queued (docs staged) | agents, planning, typed tool registry and routing, multi-step tool use, budgets/retries/timeouts, guardrails, cited answers, tracing, trajectory evals with fault injection |
-| 03 | llm-evaluation-lab | queued | reusable LLM eval framework: JSONL datasets, multiple models/prompts, deterministic and model-based evaluators, structured-output validation, hallucination checks, latency/token/cost measurement, experiment comparison, regression detection, HTML/Markdown reports |
+| 03 | llm-evaluation-lab | queued (docs staged) | reusable LLM eval framework: JSONL datasets, multiple models/prompts, deterministic and model-based evaluators, structured-output validation, hallucination checks, latency/token/cost measurement, experiment comparison, regression detection, HTML/Markdown reports |
 | 04 | multimodal-document-intelligence | queued | structured extraction from invoices, receipts, contracts, forms, and financial statements: classification, OCR/vision, validation, confidence scoring, JSON output, pydantic schemas, malformed-document handling, extraction-accuracy evals, API |
 | 05 | mlops-fraud-detection | queued | feature engineering, baseline vs XGBoost/LightGBM, experiment tracking, model versioning, inference API, Docker, CI, monitoring and drift detection; precision/recall/F1/PR-AUC/ROC-AUC and latency |
 | 06 | llm-finetuning-lab | queued | base vs prompt engineering vs RAG vs LoRA/QLoRA vs RAG plus fine-tuning; documented data, training config, hardware, and memory; only executed runs reported |
@@ -17,9 +17,10 @@ planner refines each project's scope before it starts.
 | 09 | voice-ai-agent | queued | audio to STT to agent/tool calling to TTS; streaming, interruption handling, session state, error recovery, end-to-end latency |
 | 10 | ai-inference-benchmark | queued | local/hosted inference benchmarks across quantization, batching, model size, and concurrency; TTFT, tokens/sec, memory, throughput, latency; only executed results |
 
-Project 02's PROJECT_SPEC, PLAN, ADRs, TODO, and CHANGELOG are staged on the
-box in `/workspace/p02-agentic-research-platform/`. Its repository is created
-only after 01 completes.
+Planner docs (PROJECT_SPEC, PLAN, ADRs, TODO, CHANGELOG) are staged on the box
+for 02 in `/workspace/p02-agentic-research-platform/` and for 03 in
+`/workspace/p03-llm-evaluation-lab/`. Each repository is created only when its
+project starts.
 
 ## Overlap check
 
@@ -43,7 +44,8 @@ only after 01 completes.
   tokens/sec, throughput, memory) across quantization, batching, and
   concurrency.
 - 03 and 07 both record latency, tokens, and cost. 03 does offline experiments
-  on datasets. 07 instruments running applications.
+  on datasets. 07 instruments running applications. Binding per ADR-010:
+  03's `report.json` is the only integration point.
 - 06 and 01 both involve RAG. 06 uses RAG only as one adaptation strategy to
   compare against fine-tuning.
 - 05 and 06 both train models. 05 is classical ML (gradient boosting) with
