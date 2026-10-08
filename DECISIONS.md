@@ -102,8 +102,9 @@ Project 01 keeps its milestones and status. Project 02's milestones come from
 the planner's PLAN.md (staged in `/workspace/p02-agentic-research-platform/`).
 The scope of the old `agent-tool-runtime` entry (typed tool registry,
 JSON-schema tool calls, malformed-call repair, retries and budgets, traces) is
-absorbed into project 02. Projects 03-10 have working summaries that the
-planner aligns with the brief before each start.
+absorbed into project 02. Projects 03-10 carry the objectives and
+capabilities from brief section 5. The planner turns them into milestones
+before each project starts.
 
 Scope boundaries:
 

@@ -62,72 +62,92 @@ projects:
       - {id: M6, title: "Fault injection, failure taxonomy, baselines and ablations"}
       - {id: M7, title: "Container, CI image smoke eval, docs, v0.1.0 release"}
 
-  # Projects 03-10: ids and order are fixed by the brief. Summaries are working
-  # descriptions; the planner aligns scope with brief section 5 before each start.
+  # Projects 03-10: ids, order, objectives, and capabilities come from the brief
+  # (section 5). The planner turns them into milestones before each start.
   - id: llm-evaluation-lab
     order: 3
     title: LLM Evaluation Lab
     summary: >-
-      Evaluation and regression framework for LLM applications: versioned prompts,
-      golden datasets, programmatic graders, LLM-judge agreement measurement,
-      structured-output validity checks, and CI regression gates.
-    skills: [llm-evaluation, prompt-engineering, structured-outputs, benchmarking, ci]
+      Reusable evaluation framework for LLM applications: JSONL datasets, multiple
+      models and prompts, deterministic evaluators plus model-based evaluators
+      where appropriate, structured-output validation, hallucination checks,
+      latency, token, and cost measurement, experiment comparison, regression
+      detection, and HTML/Markdown reports.
+    skills: [llm-evaluation, prompt-engineering, structured-outputs, hallucination-detection, cost-estimation, regression-testing, reporting]
 
   - id: multimodal-document-intelligence
     order: 4
     title: Multimodal Document Intelligence
     summary: >-
-      Extraction from PDFs, scans, and images using OCR, layout analysis, and
-      vision-language models into validated schemas, with field-level accuracy
-      evaluation.
-    skills: [multimodal-ai, document-intelligence, ocr, structured-outputs, evaluation]
+      Extracts structured information from complex documents (invoices, receipts,
+      contracts, forms, financial statements, reports) through classification,
+      OCR/vision extraction, structured extraction, validation, and confidence
+      scoring into JSON. Pydantic schemas, malformed-document handling,
+      validation rules, an evaluation dataset, extraction-accuracy metrics, and
+      an API.
+    skills: [document-intelligence, multimodal-ai, ocr, structured-outputs, pydantic, evaluation, fastapi]
 
   - id: mlops-fraud-detection
     order: 5
     title: MLOps Fraud Detection
     summary: >-
-      End-to-end fraud-detection ML system on imbalanced transaction data: feature
-      pipeline, experiment tracking, model registry, served model API, and drift
-      and performance monitoring.
-    skills: [machine-learning, mlops, experiment-tracking, model-serving, monitoring, docker]
+      Conventional ML engineering and MLOps for fraud detection: dataset
+      preparation, feature engineering, train/validation/test split, a baseline
+      and an advanced model (XGBoost/LightGBM), experiment tracking, model
+      versioning, API inference, Docker, CI, monitoring, and drift detection.
+      Reports precision, recall, F1, PR-AUC, ROC-AUC, and inference latency,
+      with the dataset and methodology documented honestly.
+    skills: [machine-learning, feature-engineering, xgboost, lightgbm, experiment-tracking, model-versioning, drift-detection, mlops, docker, ci]
 
   - id: llm-finetuning-lab
     order: 6
     title: LLM Fine-Tuning Lab
     summary: >-
-      Parameter-efficient fine-tuning (e.g. LoRA) of small open models with
-      reproducible data preparation and training configs, evaluated against the
-      base model.
-    skills: [fine-tuning, deep-learning, peft, evaluation]
+      Compares adaptation strategies: base model, prompt engineering, RAG,
+      LoRA/QLoRA fine-tuning, and RAG plus fine-tuning. Documents the dataset,
+      training procedure, hardware assumptions, model size, memory, training
+      config, evaluation metrics, and limitations. Only fine-tuning that actually
+      ran is reported; a smaller, executable experiment is used when hardware is
+      constrained.
+    skills: [fine-tuning, lora, qlora, rag, prompt-engineering, evaluation, deep-learning]
 
   - id: ai-observability-platform
     order: 7
     title: AI Observability Platform
     summary: >-
-      Tracing, token/cost accounting, latency metrics, and quality signals for LLM
-      applications, with dashboards and alerting.
-    skills: [ai-observability, opentelemetry, cost-optimization, latency-optimization]
+      Reusable observability components for LLM and agent applications. Tracks
+      traces, model name, prompt version, tokens, latency, errors, retries, tool
+      calls, estimated cost, eval results, and request metadata through
+      OpenTelemetry, structured logging, metrics, dashboards, and experiment
+      comparison.
+    skills: [ai-observability, opentelemetry, structured-logging, tracing, metrics, dashboards, cost-tracking]
 
   - id: semantic-search-engine
     order: 8
     title: Semantic Search Engine
     summary: >-
-      Semantic search service on a vector database: embedding pipeline, ANN
-      indexing, filtering, reranking, and relevance/latency benchmarks.
-    skills: [embeddings, vector-databases, semantic-search, reranking, benchmarking]
+      Production-style semantic search, built and benchmarked: embeddings, ANN
+      search (HNSW), lexical and vector baselines, hybrid search, query
+      expansion, reranking, and metadata filtering. Evaluates retrieval quality,
+      indexing time, query latency, and memory usage.
+    skills: [embeddings, ann-search, hnsw, hybrid-search, query-expansion, reranking, benchmarking]
 
   - id: voice-ai-agent
     order: 9
     title: Voice AI Agent
     summary: >-
-      Speech-in/speech-out agent: speech recognition, LLM tool calling, and speech
-      synthesis, with end-to-end latency measurement.
-    skills: [multimodal-ai, speech, agents, tool-calling, latency-optimization]
+      Interactive voice agent: audio, then STT, agent reasoning and tool
+      calling, a response, and TTS. Focuses on streaming, interruption handling,
+      response latency, session state, tool execution, and error recovery, and
+      measures end-to-end latency.
+    skills: [speech-to-text, text-to-speech, streaming, agents, tool-calling, latency-optimization]
 
   - id: ai-inference-benchmark
     order: 10
     title: AI Inference Benchmark
     summary: >-
-      Reproducible benchmarking of models, runtimes, and APIs on latency,
-      throughput, quality, and cost.
-    skills: [benchmarking, model-evaluation, latency-optimization, cost-optimization]
+      Framework for benchmarking local or hosted inference across quantization,
+      batching, model size, and concurrency. Measures time to first token,
+      tokens/sec, memory, throughput, and total latency. Publishes only
+      benchmarks that were actually executed; no fabricated GPU results.
+    skills: [inference-optimization, quantization, batching, concurrency, benchmarking, latency, throughput]
