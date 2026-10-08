@@ -85,7 +85,7 @@ def test_review_lifecycle_to_completion(
     assert active_state["projects"][PID]["status"] == "complete"
 
     action = decide_next_action(active_state, portfolio)
-    assert (action.action, action.project) == ("start_next_project", "llm-eval-harness")
+    assert (action.action, action.project) == ("start_next_project", "agentic-research-platform")
 
 
 def test_finalize_refuses_without_passing_review(

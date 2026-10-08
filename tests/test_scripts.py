@@ -34,7 +34,7 @@ def test_full_cli_flow(
     assert (scaffold / "PROJECT_SPEC.md").read_text().startswith(f"# PROJECT_SPEC: {PID}")
 
     # a second start is refused while the first is active
-    assert create_project.main([*common, "llm-eval-harness"]) == 1
+    assert create_project.main([*common, "agentic-research-platform"]) == 1
     assert "still active" in capsys.readouterr().err
 
     log_file = tmp_path / "LOG.md"

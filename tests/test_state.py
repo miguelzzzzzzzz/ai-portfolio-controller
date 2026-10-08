@@ -28,6 +28,40 @@ def test_repository_state_and_portfolio_are_valid() -> None:
     assert 8 <= len(portfolio["projects"]) <= 10
 
 
+BRIEF_QUEUE = [
+    "production-rag-engine",
+    "agentic-research-platform",
+    "llm-evaluation-lab",
+    "multimodal-document-intelligence",
+    "mlops-fraud-detection",
+    "llm-finetuning-lab",
+    "ai-observability-platform",
+    "semantic-search-engine",
+    "voice-ai-agent",
+    "ai-inference-benchmark",
+]
+
+
+def test_catalog_matches_the_briefs_ordered_queue() -> None:
+    """Guards ADR-006: ids and order come from the owner's brief, section 5."""
+    projects = load_portfolio(ROOT / "portfolio.yaml")["projects"]
+    ordered = sorted(projects, key=lambda p: p["order"])
+    assert [p["id"] for p in ordered] == BRIEF_QUEUE
+    assert [p["order"] for p in ordered] == list(range(1, 11))
+
+
+def test_project_02_uses_the_planners_milestones(
+    empty_state: dict[str, Any], portfolio_path: Path
+) -> None:
+    project = register_project(
+        empty_state, load_portfolio(portfolio_path), "agentic-research-platform", "2026-10-09"
+    )
+    titles = [m["title"] for m in project["milestones"]]
+    assert len(titles) == 7
+    assert titles[0] == "Scaffold, tool contracts, registry, calculator, trace schema"
+    assert titles[-1] == "Container, CI image smoke eval, docs, v0.1.0 release"
+
+
 def test_register_project_uses_portfolio_milestones(
     empty_state: dict[str, Any], portfolio_path: Path
 ) -> None:
@@ -45,16 +79,16 @@ def test_register_refuses_second_active_project(
     portfolio = load_portfolio(portfolio_path)
     register_project(empty_state, portfolio, "production-rag-engine", "2026-10-09")
     with pytest.raises(StateError, match="still active"):
-        register_project(empty_state, portfolio, "llm-eval-harness", "2026-10-09")
+        register_project(empty_state, portfolio, "agentic-research-platform", "2026-10-09")
 
 
 def test_project_without_milestones_gets_defaults(
     empty_state: dict[str, Any], portfolio_path: Path
 ) -> None:
     project = register_project(
-        empty_state, load_portfolio(portfolio_path), "llm-eval-harness", "2026-10-09"
+        empty_state, load_portfolio(portfolio_path), "llm-evaluation-lab", "2026-10-09"
     )
-    assert len(project["milestones"]) == 5
+    assert [m["id"] for m in project["milestones"]] == ["M1", "M2", "M3", "M4", "M5"]
 
 
 def test_milestone_status_and_completion_date(

@@ -24,6 +24,6 @@ Commits:
 - f415a97 feat(cli): add ingest command and chunking strategy comparison
 - fb38d06 feat(retrieval): add embedder protocol and exact in-memory vector index
 
-Remaining blockers: Daily scheduler not yet configured (needs the orchestrator's automation; cron on the box cannot drive the agent)
+Remaining blockers: none
 
 Next recommended task: M2: fastembed adapter (bge-small-en-v1.5, slow tests), BM25 index with hand-computed score tests, Retriever, index/search CLI

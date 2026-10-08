@@ -1,9 +1,13 @@
 # Portfolio configuration: policies and the ordered project catalog.
-# Project order and scope are revisited by the planner role before each start;
+# The catalog (ids and order) follows the owner's brief, section 5 (ADR-006).
+# The planner refines each project's scope and milestones before it starts;
 # changes are recorded in DECISIONS.md.
 
 owner: miguelzzzzzzzz
 workdir: /workspace/portfolio   # local checkouts live next to this repo
+
+schedule:
+  daily_cycle: "08:55 Asia/Manila"  # a Grok Bot routine runs the daily cycle every day
 
 policies:
   max_active_projects: 1
@@ -39,74 +43,91 @@ projects:
       - {id: M6, title: "FastAPI service, Dockerfile, image build in CI"}
       - {id: M7, title: "Hardening, documentation, v0.1.0 release"}
 
-  - id: llm-eval-harness
+  - id: agentic-research-platform
     order: 2
-    title: LLM Evaluation and Regression Harness
+    title: Agentic Research Platform
     summary: >-
-      Versioned prompts, golden datasets, deterministic and LLM-judge metrics with
-      judge-agreement checks, and CI regression gates for LLM features.
-    skills: [llm-evaluation, prompt-engineering, prompt-versioning, ci, statistics]
+      Hand-rolled tool-using research agent: planning, typed tool registry and
+      routing, multi-step evidence gathering over the production-rag-engine
+      retriever, budgets/timeouts/retries, guardrails, verified span citations,
+      JSONL tracing, and programmatic trajectory evals with fault injection.
+    skills: [agents, tool-calling, orchestration, guardrails, observability, evaluation, testing]
+    staged_docs: /workspace/p02-agentic-research-platform  # repo created only after 01 completes
+    milestones:
+      - {id: M1, title: "Scaffold, tool contracts, registry, calculator, trace schema"}
+      - {id: M2, title: "Agent loop, run state, budgets, timeouts/retries, scripted provider"}
+      - {id: M3, title: "Research tools on the project-01 retriever, citations, guardrails"}
+      - {id: M4, title: "Task suites, graders, eval runner, oracle and heuristic baselines"}
+      - {id: M5, title: "OpenAI-compatible local-model provider, call parsing/repair, record/replay"}
+      - {id: M6, title: "Fault injection, failure taxonomy, baselines and ablations"}
+      - {id: M7, title: "Container, CI image smoke eval, docs, v0.1.0 release"}
 
-  - id: agent-tool-runtime
+  # Projects 03-10: ids and order are fixed by the brief. Summaries are working
+  # descriptions; the planner aligns scope with brief section 5 before each start.
+  - id: llm-evaluation-lab
     order: 3
-    title: Tool-Calling Agent Runtime
+    title: LLM Evaluation Lab
     summary: >-
-      Agent loop with a typed tool registry, JSON-schema tool calls, validation and
-      repair of malformed calls, sandboxed execution, retries/budgets, and traces.
-    skills: [agents, tool-calling, structured-outputs, observability, testing]
+      Evaluation and regression framework for LLM applications: versioned prompts,
+      golden datasets, programmatic graders, LLM-judge agreement measurement,
+      structured-output validity checks, and CI regression gates.
+    skills: [llm-evaluation, prompt-engineering, structured-outputs, benchmarking, ci]
 
-  - id: document-intelligence
+  - id: multimodal-document-intelligence
     order: 4
-    title: Document Intelligence Pipeline
+    title: Multimodal Document Intelligence
     summary: >-
-      Layout-aware extraction from PDFs/scans (OCR + vision model) into validated
-      pydantic schemas, with field-level accuracy evaluation.
-    skills: [document-ai, multimodal, ocr, structured-outputs, evaluation]
+      Extraction from PDFs, scans, and images using OCR, layout analysis, and
+      vision-language models into validated schemas, with field-level accuracy
+      evaluation.
+    skills: [multimodal-ai, document-intelligence, ocr, structured-outputs, evaluation]
 
-  - id: embedding-finetuning-lab
+  - id: mlops-fraud-detection
     order: 5
-    title: Embedding and Reranker Fine-Tuning Lab
+    title: MLOps Fraud Detection
     summary: >-
-      Fine-tune a small embedding model / cross-encoder on a domain dataset with
-      hard-negative mining; measured against the off-the-shelf baseline.
-    skills: [fine-tuning, embeddings, deep-learning, retrieval-evaluation]
+      End-to-end fraud-detection ML system on imbalanced transaction data: feature
+      pipeline, experiment tracking, model registry, served model API, and drift
+      and performance monitoring.
+    skills: [machine-learning, mlops, experiment-tracking, model-serving, monitoring, docker]
 
-  - id: llm-gateway
+  - id: llm-finetuning-lab
     order: 6
-    title: LLM Gateway with Observability
+    title: LLM Fine-Tuning Lab
     summary: >-
-      OpenAI-compatible proxy with semantic caching, rate limiting, fallbacks,
-      token/cost accounting, and OpenTelemetry traces; load-tested.
-    skills: [ai-observability, latency-optimization, cost-optimization, fastapi, docker]
+      Parameter-efficient fine-tuning (e.g. LoRA) of small open models with
+      reproducible data preparation and training configs, evaluated against the
+      base model.
+    skills: [fine-tuning, deep-learning, peft, evaluation]
 
-  - id: multimodal-search
+  - id: ai-observability-platform
     order: 7
-    title: Multimodal Image-Text Search
+    title: AI Observability Platform
     summary: >-
-      CLIP-style image/text retrieval with an ANN index, text-to-image and
-      image-to-image search, and recall/latency benchmarks vs exact search.
-    skills: [multimodal, embeddings, ann-indexing, benchmarking]
+      Tracing, token/cost accounting, latency metrics, and quality signals for LLM
+      applications, with dashboards and alerting.
+    skills: [ai-observability, opentelemetry, cost-optimization, latency-optimization]
 
-  - id: ml-training-pipeline
+  - id: semantic-search-engine
     order: 8
-    title: Reproducible ML Training and Serving Pipeline
+    title: Semantic Search Engine
     summary: >-
-      End-to-end classical/deep model pipeline: data validation, experiment
-      tracking, model registry, batch + online serving, drift monitoring.
-    skills: [machine-learning, mlops, experiment-tracking, deployment]
+      Semantic search service on a vector database: embedding pipeline, ANN
+      indexing, filtering, reranking, and relevance/latency benchmarks.
+    skills: [embeddings, vector-databases, semantic-search, reranking, benchmarking]
 
-  - id: llm-distillation
+  - id: voice-ai-agent
     order: 9
-    title: LLM-to-Small-Model Distillation
+    title: Voice AI Agent
     summary: >-
-      Distill LLM labels into a small classifier; quality vs cost/latency
-      trade-off measured against the teacher.
-    skills: [model-distillation, fine-tuning, cost-optimization, evaluation]
+      Speech-in/speech-out agent: speech recognition, LLM tool calling, and speech
+      synthesis, with end-to-end latency measurement.
+    skills: [multimodal-ai, speech, agents, tool-calling, latency-optimization]
 
-  - id: structured-output-benchmark
+  - id: ai-inference-benchmark
     order: 10
-    title: Structured Output Reliability Benchmark
+    title: AI Inference Benchmark
     summary: >-
-      Compare JSON mode, function calling, and grammar-constrained decoding on
-      schema validity, accuracy, latency, and repair strategies.
-    skills: [structured-outputs, benchmarking, llm-evaluation]
+      Reproducible benchmarking of models, runtimes, and APIs on latency,
+      throughput, quality, and cost.
+    skills: [benchmarking, model-evaluation, latency-optimization, cost-optimization]

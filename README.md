@@ -16,7 +16,7 @@ published metric must come from an executed, committed evaluation.
 
 | Path | Purpose |
 | --- | --- |
-| `portfolio.yaml` | Owner, policies (budget, commit style, scope), quality commands, ordered project catalog |
+| `portfolio.yaml` | Owner, schedule, policies (budget, commit style, scope), quality commands, ordered project catalog (the brief's queue, ADR-006) |
 | `state.json` | Facts: active project, milestone status, last CI result, review findings, daily log |
 | `LOG.md` | Daily summaries rendered from `state.json` |
 | `PROJECT_QUEUE.md` | Human-readable queue and overlap check between projects |
@@ -47,10 +47,11 @@ or first open one; all done -> review; CRITICAL/MAJOR findings -> fix;
 passing review -> finalize; then the next project). It is a pure function
 of `state.json` and `portfolio.yaml` and is unit-tested for each branch.
 
-The cycle is triggered once a day by the orchestrator agent's scheduler,
-which runs on the same box as the checkouts (see `DECISIONS.md` ADR-001).
-The scripts never perform engineering work themselves; they keep state
-honest and tell the orchestrator which role prompts to use.
+A Grok Bot routine runs the cycle every day at 08:55 Asia/Manila
+(`schedule.daily_cycle` in `portfolio.yaml`), on the same box as the
+checkouts (see `DECISIONS.md` ADR-001). The scripts never perform
+engineering work themselves; they keep state honest and tell the
+orchestrator which role prompts to use.
 
 ## Review gate
 

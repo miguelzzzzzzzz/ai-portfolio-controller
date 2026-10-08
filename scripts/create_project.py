@@ -7,7 +7,7 @@ public GitHub repository (token read from PORTFOLIO_GITHUB_TOKEN; never printed)
 
 Examples:
   python scripts/create_project.py --dry-run
-  python scripts/create_project.py llm-eval-harness --scaffold ../llm-eval-harness
+  python scripts/create_project.py agentic-research-platform --scaffold ../agentic-research-platform
   python scripts/create_project.py --scaffold ../next --create-repo
 """
 
