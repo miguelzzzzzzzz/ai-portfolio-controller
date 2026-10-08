@@ -10,6 +10,7 @@
 - Project catalog now matches the ordered queue in the owner's brief (ADR-006). It replaces the catalog drafted at bootstrap. Project 02 milestones come from the planner's PLAN.md.
 
 ### Changed
+- Narrowed projects 06, 08, and 10 to hardware-honest scopes (ADR-015): CPU LoRA on a ~0.5B model, an HNSW index built from scratch and benchmarked against hnswlib and FAISS, and CPU llama.cpp inference benchmarks.
 - Recorded the daily schedule (a Grok Bot routine at 08:55 Asia/Manila) and cleared the scheduler blocker.
 - Added portfolio ADRs 006-009: catalog alignment, cross-project reuse through pinned releases, local LLMs through OpenAI-compatible servers, and programmatic graders by default.
 

@@ -397,3 +397,45 @@ witty ones).
 Consequences: `create_project.py --create-repo` creates repositories under
 their slugs. Links in the controller use the slugs. Historical log entries
 keep the id they were written with.
+
+## ADR-015: Hardware-honest scope for projects 06, 08, and 10
+
+Status: Accepted (2026-10-09)
+
+Reason: The box is CPU-only (8 cores, 15 GB RAM), no GPU or paid API is
+available (ADR-002), and `never_fabricate_metrics` is set. As written, the
+brief's entries for 06, 08, and 10 either assume GPU-scale work or overlap
+with project 01. Each scope below keeps the brief's objective while making
+every published number something the box (or an approved free resource) can
+actually produce.
+
+Decision:
+- **06 llm-finetuning-lab (LoRA & Order):** LoRA fine-tuning of a tiny open
+  model (about 0.5B parameters) on one narrow, well-defined task, trained on
+  the box's CPU. It is compared against the base model, prompt engineering,
+  RAG, and RAG plus LoRA on the same evaluation set. QLoRA (which needs a
+  CUDA GPU for bitsandbytes 4-bit) runs only on free Colab or Kaggle GPU
+  sessions, and only if the owner approves. Those runs are labelled with the
+  platform, GPU type, and date, and are reported separately from CPU results.
+  Without approval, QLoRA is documented as "not run".
+- **08 semantic-search-engine (HNSW From Scratch):** the project centres on an
+  HNSW index implemented from scratch. It is benchmarked against exact search
+  and the established libraries hnswlib and FAISS on recall@k, query latency,
+  index build time, and memory, with sweeps over M, efConstruction, and
+  efSearch, on real embeddings. Hybrid search and query expansion are removed
+  because project 01 already covers hybrid lexical/dense retrieval.
+- **10 ai-inference-benchmark (Quant Leap):** benchmarks llama.cpp on CPU
+  across quantization levels, batching, and concurrency, on hardware
+  documented in every report (CPU model, cores, RAM, OS, build flags). It
+  measures time to first token, tokens/sec, memory, throughput, and total
+  latency. It publishes no GPU results, and hosted APIs are benchmarked only
+  if a budget is approved.
+
+Alternatives considered: keep the GPU-oriented scope and mark most results
+"not run" (a hollow project); rent GPUs (spend not approved); keep hybrid
+search in 08 (duplicates 01's strongest feature).
+
+Consequences: `portfolio.yaml` and `PROJECT_QUEUE.md` entries for 06, 08, and
+10 reflect these scopes. Each planner writes its milestones within them.
+Results are smaller in scale but fully reproducible on documented hardware,
+and each README states its hardware limits explicitly.

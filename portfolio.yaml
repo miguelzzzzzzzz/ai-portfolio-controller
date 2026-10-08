@@ -123,13 +123,14 @@ projects:
     repo: LoraAndOrder
     title: "LoRA & Order"
     summary: >-
-      Compares adaptation strategies: base model, prompt engineering, RAG,
-      LoRA/QLoRA fine-tuning, and RAG plus fine-tuning. Documents the dataset,
-      training procedure, hardware assumptions, model size, memory, training
-      config, evaluation metrics, and limitations. Only fine-tuning that actually
-      ran is reported; a smaller, executable experiment is used when hardware is
-      constrained.
-    skills: [fine-tuning, lora, qlora, rag, prompt-engineering, evaluation, deep-learning]
+      Compares adaptation strategies on one narrow task with a tiny open model
+      (~0.5B parameters): base model, prompt engineering, RAG, LoRA fine-tuning,
+      and RAG plus LoRA. LoRA training runs on CPU on documented hardware. QLoRA
+      runs only on free Colab/Kaggle GPUs if the owner approves, clearly
+      labelled as such. Documents the dataset, training procedure, model size,
+      memory, training config, evaluation metrics, and limitations. Only runs
+      that actually executed are reported (ADR-015).
+    skills: [fine-tuning, lora, peft, rag, prompt-engineering, evaluation, deep-learning]
 
   - id: ai-observability-platform
     order: 7
@@ -148,11 +149,13 @@ projects:
     repo: HNSWFromScratch
     title: HNSW From Scratch
     summary: >-
-      Production-style semantic search, built and benchmarked: embeddings, ANN
-      search (HNSW), lexical and vector baselines, hybrid search, query
-      expansion, reranking, and metadata filtering. Evaluates retrieval quality,
-      indexing time, query latency, and memory usage.
-    skills: [embeddings, ann-search, hnsw, hybrid-search, query-expansion, reranking, benchmarking]
+      HNSW approximate nearest-neighbour index implemented from scratch,
+      benchmarked against exact search, hnswlib, and FAISS on recall@k, query
+      latency, index build time, and memory across HNSW parameters (M,
+      efConstruction, efSearch), over real embeddings with metadata filtering.
+      Hybrid search and query expansion are out of scope because project 01
+      covers them (ADR-015).
+    skills: [embeddings, ann-search, hnsw, data-structures, benchmarking, latency, memory-profiling]
 
   - id: voice-ai-agent
     order: 9
@@ -170,8 +173,9 @@ projects:
     repo: QuantLeap
     title: Quant Leap
     summary: >-
-      Framework for benchmarking local or hosted inference across quantization,
-      batching, model size, and concurrency. Measures time to first token,
-      tokens/sec, memory, throughput, and total latency. Publishes only
-      benchmarks that were actually executed; no fabricated GPU results.
-    skills: [inference-optimization, quantization, batching, concurrency, benchmarking, latency, throughput]
+      Benchmarking framework for local inference, scoped honestly to CPU:
+      llama.cpp across quantization levels, batching, and concurrency on
+      documented hardware. Measures time to first token, tokens/sec, memory,
+      throughput, and total latency. Publishes only executed runs, with no GPU
+      results; hosted APIs only if a budget is approved (ADR-002, ADR-015).
+    skills: [inference-optimization, llama-cpp, quantization, batching, concurrency, benchmarking, latency, throughput]
