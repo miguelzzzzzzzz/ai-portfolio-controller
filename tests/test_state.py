@@ -1,0 +1,132 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any
+
+import pytest
+
+from controller.projects import register_project
+from controller.state import (
+    DailySummary,
+    StateError,
+    append_daily_summary,
+    load_portfolio,
+    load_state,
+    render_log_markdown,
+    save_state,
+    set_milestone_status,
+    validate_state,
+)
+
+ROOT = Path(__file__).resolve().parent.parent
+
+
+def test_repository_state_and_portfolio_are_valid() -> None:
+    validate_state(json.loads((ROOT / "state.json").read_text()))
+    portfolio = load_portfolio(ROOT / "portfolio.yaml")
+    assert 8 <= len(portfolio["projects"]) <= 10
+
+
+def test_register_project_uses_portfolio_milestones(
+    empty_state: dict[str, Any], portfolio_path: Path
+) -> None:
+    portfolio = load_portfolio(portfolio_path)
+    project = register_project(empty_state, portfolio, "production-rag-engine", "2026-10-09")
+    assert empty_state["active_project"] == "production-rag-engine"
+    assert project["repo"] == "https://github.com/miguelzzzzzzzz/production-rag-engine"
+    assert [m["id"] for m in project["milestones"]] == [f"M{i}" for i in range(1, 8)]
+    validate_state(empty_state)
+
+
+def test_register_refuses_second_active_project(
+    empty_state: dict[str, Any], portfolio_path: Path
+) -> None:
+    portfolio = load_portfolio(portfolio_path)
+    register_project(empty_state, portfolio, "production-rag-engine", "2026-10-09")
+    with pytest.raises(StateError, match="still active"):
+        register_project(empty_state, portfolio, "llm-eval-harness", "2026-10-09")
+
+
+def test_project_without_milestones_gets_defaults(
+    empty_state: dict[str, Any], portfolio_path: Path
+) -> None:
+    project = register_project(
+        empty_state, load_portfolio(portfolio_path), "llm-eval-harness", "2026-10-09"
+    )
+    assert len(project["milestones"]) == 5
+
+
+def test_milestone_status_and_completion_date(
+    empty_state: dict[str, Any], portfolio_path: Path
+) -> None:
+    register_project(
+        empty_state, load_portfolio(portfolio_path), "production-rag-engine", "2026-10-09"
+    )
+    set_milestone_status(empty_state, "production-rag-engine", "M1", "done", "2026-10-09")
+    m1 = empty_state["projects"]["production-rag-engine"]["milestones"][0]
+    assert (m1["status"], m1["completed"]) == ("done", "2026-10-09")
+    with pytest.raises(StateError, match="unknown milestone"):
+        set_milestone_status(empty_state, "production-rag-engine", "M99", "done")
+    with pytest.raises(StateError, match="invalid milestone status"):
+        set_milestone_status(empty_state, "production-rag-engine", "M1", "finished")
+
+
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (lambda s: s.update(schema_version=2), "schema_version"),
+        (lambda s: s.update(active_project="ghost"), "not in projects"),
+        (lambda s: s["projects"]["p"].update(status="weird"), "invalid status"),
+        (lambda s: s["projects"].update(q={"status": "in_progress"}), "more than one active"),
+        (lambda s: s.update(daily_log={}), "daily_log"),
+    ],
+)
+def test_invalid_states_are_rejected(
+    empty_state: dict[str, Any], mutate: Any, message: str
+) -> None:
+    empty_state["projects"]["p"] = {"status": "in_progress", "milestones": []}
+    empty_state["active_project"] = "p"
+    validate_state(empty_state)
+    mutate(empty_state)
+    with pytest.raises(StateError, match=message):
+        validate_state(empty_state)
+
+
+def test_save_is_validated_and_atomic(tmp_path: Path, empty_state: dict[str, Any]) -> None:
+    path = tmp_path / "state.json"
+    save_state(empty_state, path)
+    assert load_state(path)["updated_at"] is not None
+    empty_state["active_project"] = "ghost"
+    with pytest.raises(StateError):
+        save_state(empty_state, path)
+    assert load_state(path)["active_project"] is None  # previous file untouched
+    assert not list(tmp_path.glob(".state-*"))
+
+
+def test_daily_summary_round_trip_and_rendering(
+    empty_state: dict[str, Any], portfolio_path: Path
+) -> None:
+    register_project(
+        empty_state, load_portfolio(portfolio_path), "production-rag-engine", "2026-10-09"
+    )
+    summary = DailySummary(
+        date="2026-10-09",
+        project="production-rag-engine",
+        milestone="M1",
+        work_completed=["implemented loaders"],
+        tests="10 passed",
+        evaluation="not run",
+        commits=["abc1234 feat: x"],
+        blockers=[],
+        next_task="M2",
+    )
+    append_daily_summary(empty_state, summary)
+    rendered = render_log_markdown(empty_state)
+    assert "## 2026-10-09 - production-rag-engine - M1" in rendered
+    assert "Remaining blockers: none" in rendered
+    with pytest.raises(StateError, match="at least one"):
+        append_daily_summary(
+            empty_state,
+            DailySummary("2026-10-09", "production-rag-engine", "M1", [], "", "", [], [], ""),
+        )

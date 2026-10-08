@@ -1,0 +1,31 @@
+[project]
+name = "ai-portfolio-controller"
+version = "0.1.0"
+description = "Control plane for an AI engineering portfolio: state, scheduling decisions, and review gates."
+requires-python = ">=3.11"
+dependencies = ["pyyaml>=6.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6", "mypy>=1.11", "types-PyYAML>=6.0"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["controller"]
+known-local-folder = ["_bootstrap"]
+# _bootstrap (puts the repo root on sys.path) must be imported before controller.
+section-order = ["future", "standard-library", "third-party", "local-folder", "first-party"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["controller"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

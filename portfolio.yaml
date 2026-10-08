@@ -1,0 +1,112 @@
+# Portfolio configuration: policies and the ordered project catalog.
+# Project order and scope are revisited by the planner role before each start;
+# changes are recorded in DECISIONS.md.
+
+owner: miguelzzzzzzzz
+workdir: /workspace/portfolio   # local checkouts live next to this repo
+
+policies:
+  max_active_projects: 1
+  paid_api_budget_usd: 0          # no paid LLM/API spend without explicit user approval
+  commit_style: conventional      # feat|fix|docs|test|eval|perf|refactor|ci|chore|build
+  never_fabricate_metrics: true   # numbers only from executed, committed eval reports
+  require_ci_green_before_next_milestone: true
+  touch_only_portfolio_repos: true  # never modify pre-existing, unrelated repositories
+
+quality:
+  # Run by scripts/review_project.py --run-checks inside a project checkout.
+  commands:
+    - ruff check .
+    - ruff format --check .
+    - mypy
+    - pytest -q -m "not slow"
+
+projects:
+  - id: production-rag-engine
+    order: 1
+    title: Production RAG Engine
+    summary: >-
+      Production-style RAG engine: structure-aware chunking, hybrid BM25 + vector
+      retrieval, cross-encoder reranking, cited structured answers, FastAPI, and
+      reproducible retrieval evals on SciFact.
+    skills: [rag, embeddings, vector-search, bm25, reranking, evaluation, fastapi, docker, ci]
+    milestones:
+      - {id: M1, title: "Infrastructure, ingestion, configurable chunking"}
+      - {id: M2, title: "Embeddings, vector store, BM25 index, retrieval interface"}
+      - {id: M3, title: "Hybrid fusion, metadata filters, cross-encoder reranking"}
+      - {id: M4, title: "Evaluation harness and benchmark reports"}
+      - {id: M5, title: "Answer generation with citations and structured output"}
+      - {id: M6, title: "FastAPI service, Dockerfile, image build in CI"}
+      - {id: M7, title: "Hardening, documentation, v0.1.0 release"}
+
+  - id: llm-eval-harness
+    order: 2
+    title: LLM Evaluation and Regression Harness
+    summary: >-
+      Versioned prompts, golden datasets, deterministic and LLM-judge metrics with
+      judge-agreement checks, and CI regression gates for LLM features.
+    skills: [llm-evaluation, prompt-engineering, prompt-versioning, ci, statistics]
+
+  - id: agent-tool-runtime
+    order: 3
+    title: Tool-Calling Agent Runtime
+    summary: >-
+      Agent loop with a typed tool registry, JSON-schema tool calls, validation and
+      repair of malformed calls, sandboxed execution, retries/budgets, and traces.
+    skills: [agents, tool-calling, structured-outputs, observability, testing]
+
+  - id: document-intelligence
+    order: 4
+    title: Document Intelligence Pipeline
+    summary: >-
+      Layout-aware extraction from PDFs/scans (OCR + vision model) into validated
+      pydantic schemas, with field-level accuracy evaluation.
+    skills: [document-ai, multimodal, ocr, structured-outputs, evaluation]
+
+  - id: embedding-finetuning-lab
+    order: 5
+    title: Embedding and Reranker Fine-Tuning Lab
+    summary: >-
+      Fine-tune a small embedding model / cross-encoder on a domain dataset with
+      hard-negative mining; measured against the off-the-shelf baseline.
+    skills: [fine-tuning, embeddings, deep-learning, retrieval-evaluation]
+
+  - id: llm-gateway
+    order: 6
+    title: LLM Gateway with Observability
+    summary: >-
+      OpenAI-compatible proxy with semantic caching, rate limiting, fallbacks,
+      token/cost accounting, and OpenTelemetry traces; load-tested.
+    skills: [ai-observability, latency-optimization, cost-optimization, fastapi, docker]
+
+  - id: multimodal-search
+    order: 7
+    title: Multimodal Image-Text Search
+    summary: >-
+      CLIP-style image/text retrieval with an ANN index, text-to-image and
+      image-to-image search, and recall/latency benchmarks vs exact search.
+    skills: [multimodal, embeddings, ann-indexing, benchmarking]
+
+  - id: ml-training-pipeline
+    order: 8
+    title: Reproducible ML Training and Serving Pipeline
+    summary: >-
+      End-to-end classical/deep model pipeline: data validation, experiment
+      tracking, model registry, batch + online serving, drift monitoring.
+    skills: [machine-learning, mlops, experiment-tracking, deployment]
+
+  - id: llm-distillation
+    order: 9
+    title: LLM-to-Small-Model Distillation
+    summary: >-
+      Distill LLM labels into a small classifier; quality vs cost/latency
+      trade-off measured against the teacher.
+    skills: [model-distillation, fine-tuning, cost-optimization, evaluation]
+
+  - id: structured-output-benchmark
+    order: 10
+    title: Structured Output Reliability Benchmark
+    summary: >-
+      Compare JSON mode, function calling, and grammar-constrained decoding on
+      schema validity, accuracy, latency, and repair strategies.
+    skills: [structured-outputs, benchmarking, llm-evaluation]
