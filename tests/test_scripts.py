@@ -31,6 +31,7 @@ def test_full_cli_flow(
     assert create_project.main([*common, "--date", "2026-10-09", "--scaffold", str(scaffold)]) == 0
     out = json.loads(capsys.readouterr().out)
     assert out["started"] == PID
+    assert out["repo"] == "https://github.com/miguelzzzzzzzz/CitationNeeded"
     assert (scaffold / "PROJECT_SPEC.md").read_text().startswith(f"# PROJECT_SPEC: {PID}")
 
     # a second start is refused while the first is active

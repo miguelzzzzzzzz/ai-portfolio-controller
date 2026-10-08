@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+import yaml
 
 from controller.projects import register_project
 from controller.state import (
@@ -50,6 +51,42 @@ def test_catalog_matches_the_briefs_ordered_queue() -> None:
     assert [p["order"] for p in ordered] == list(range(1, 11))
 
 
+EXPECTED_REPOS = {
+    "production-rag-engine": ("CitationNeeded", "Citation Needed"),
+    "agentic-research-platform": ("RabbitHole", "Rabbit Hole"),
+    "llm-evaluation-lab": ("TrustIssues", "Trust Issues"),
+    "multimodal-document-intelligence": ("PaperTrail", "Paper Trail"),
+    "mlops-fraud-detection": ("SusTransactions", "Sus Transactions"),
+    "llm-finetuning-lab": ("LoraAndOrder", "LoRA & Order"),
+    "ai-observability-platform": ("WhoSpentMyTokens", "Who Spent My Tokens"),
+    "semantic-search-engine": ("HNSWFromScratch", "HNSW From Scratch"),
+    "voice-ai-agent": ("InterruptMe", "Interrupt Me"),
+    "ai-inference-benchmark": ("QuantLeap", "Quant Leap"),
+}
+
+
+def test_catalog_repo_slugs_and_titles() -> None:
+    """Guards ADR-014: owner-chosen repository names and display titles."""
+    projects = load_portfolio(ROOT / "portfolio.yaml")["projects"]
+    assert {p["id"]: (p["repo"], p["title"]) for p in projects} == EXPECTED_REPOS
+
+
+@pytest.mark.parametrize(
+    ("repos", "message"),
+    [
+        (["Same", "same"], "unique"),
+        (["Lora & Order", "Ok"], "invalid GitHub repository names"),
+        (["has space", "Ok"], "invalid GitHub repository names"),
+    ],
+)
+def test_invalid_repo_slugs_are_rejected(tmp_path: Path, repos: list[str], message: str) -> None:
+    catalog = {"projects": [{"id": f"p{i}", "repo": r} for i, r in enumerate(repos)]}
+    path = tmp_path / "portfolio.yaml"
+    path.write_text(yaml.safe_dump(catalog))
+    with pytest.raises(StateError, match=message):
+        load_portfolio(path)
+
+
 def test_project_02_uses_the_planners_milestones(
     empty_state: dict[str, Any], portfolio_path: Path
 ) -> None:
@@ -68,7 +105,8 @@ def test_register_project_uses_portfolio_milestones(
     portfolio = load_portfolio(portfolio_path)
     project = register_project(empty_state, portfolio, "production-rag-engine", "2026-10-09")
     assert empty_state["active_project"] == "production-rag-engine"
-    assert project["repo"] == "https://github.com/miguelzzzzzzzz/production-rag-engine"
+    assert project["repo"] == "https://github.com/miguelzzzzzzzz/CitationNeeded"
+    assert project["title"] == "Citation Needed"
     assert [m["id"] for m in project["milestones"]] == [f"M{i}" for i in range(1, 8)]
     validate_state(empty_state)
 

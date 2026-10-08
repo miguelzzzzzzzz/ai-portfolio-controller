@@ -29,6 +29,11 @@ def portfolio_entry(portfolio: dict[str, Any], project_id: str) -> dict[str, Any
     raise StateError(f"{project_id!r} is not in portfolio.yaml")
 
 
+def repo_slug(entry: dict[str, Any]) -> str:
+    """GitHub repository name for a catalog entry (falls back to the id)."""
+    return str(entry.get("repo") or entry["id"])
+
+
 def register_project(
     state: dict[str, Any],
     portfolio: dict[str, Any],
@@ -49,9 +54,11 @@ def register_project(
         {"id": mid, "title": title} for mid, title in DEFAULT_MILESTONES
     ]
     owner = portfolio.get("owner", "")
+    slug = repo_slug(entry)
     project: dict[str, Any] = {
         "status": "in_progress",
-        "repo": f"https://github.com/{owner}/{project_id}" if owner else None,
+        "title": entry.get("title", project_id),
+        "repo": f"https://github.com/{owner}/{slug}" if owner else None,
         "started": date,
         "completed": None,
         "milestones": [

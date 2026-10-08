@@ -2,20 +2,22 @@
 
 The queue follows the owner's brief (section 5); see `DECISIONS.md` ADR-006.
 Ordering is encoded in `portfolio.yaml`; status comes from `state.json`. The
-planner refines each project's scope before it starts.
+planner refines each project's scope before it starts. Repository names are
+witty display names. The catalog id stays the stable key used by the scripts
+(ADR-014).
 
-| # | Project | Status | Demonstrates |
-| --- | --- | --- | --- |
-| 01 | [production-rag-engine](https://github.com/miguelzzzzzzzz/production-rag-engine) | in progress | RAG, chunking, embeddings, hybrid BM25 + vector search, reranking, retrieval evals, FastAPI, Docker |
-| 02 | agentic-research-platform | queued (docs staged) | agents, planning, typed tool registry and routing, multi-step tool use, budgets/retries/timeouts, guardrails, cited answers, tracing, trajectory evals with fault injection |
-| 03 | llm-evaluation-lab | queued (docs staged) | reusable LLM eval framework: JSONL datasets, multiple models/prompts, deterministic and model-based evaluators, structured-output validation, hallucination checks, latency/token/cost measurement, experiment comparison, regression detection, HTML/Markdown reports |
-| 04 | multimodal-document-intelligence | queued | structured extraction from invoices, receipts, contracts, forms, and financial statements: classification, OCR/vision, validation, confidence scoring, JSON output, pydantic schemas, malformed-document handling, extraction-accuracy evals, API |
-| 05 | mlops-fraud-detection | queued | feature engineering, baseline vs XGBoost/LightGBM, experiment tracking, model versioning, inference API, Docker, CI, monitoring and drift detection; precision/recall/F1/PR-AUC/ROC-AUC and latency |
-| 06 | llm-finetuning-lab | queued | base vs prompt engineering vs RAG vs LoRA/QLoRA vs RAG plus fine-tuning; documented data, training config, hardware, and memory; only executed runs reported |
-| 07 | ai-observability-platform | queued | reusable tracing for LLM/agent apps (model, prompt version, tokens, latency, errors, retries, tool calls, cost, eval results), OpenTelemetry, structured logs, metrics, dashboards, experiment comparison |
-| 08 | semantic-search-engine | queued | embeddings, HNSW/ANN, lexical/vector/hybrid baselines, query expansion, reranking, filtering; benchmarks of retrieval quality, indexing time, query latency, and memory |
-| 09 | voice-ai-agent | queued | audio to STT to agent/tool calling to TTS; streaming, interruption handling, session state, error recovery, end-to-end latency |
-| 10 | ai-inference-benchmark | queued | local/hosted inference benchmarks across quantization, batching, model size, and concurrency; TTFT, tokens/sec, memory, throughput, latency; only executed results |
+| # | Title | Repo | Catalog id | Status | Demonstrates |
+| --- | --- | --- | --- | --- | --- |
+| 01 | Citation Needed | [CitationNeeded](https://github.com/miguelzzzzzzzz/CitationNeeded) | `production-rag-engine` | in progress | RAG, chunking, embeddings, hybrid BM25 + vector search, reranking, retrieval evals, FastAPI, Docker |
+| 02 | Rabbit Hole | `RabbitHole` (not created) | `agentic-research-platform` | queued (docs staged) | agents, planning, typed tool registry and routing, multi-step tool use, budgets/retries/timeouts, guardrails, cited answers, tracing, trajectory evals with fault injection |
+| 03 | Trust Issues | `TrustIssues` (not created) | `llm-evaluation-lab` | queued (docs staged) | reusable LLM eval framework: JSONL datasets, multiple models/prompts, deterministic and model-based evaluators, structured-output validation, hallucination checks, latency/token/cost measurement, experiment comparison, regression detection, HTML/Markdown reports |
+| 04 | Paper Trail | `PaperTrail` (not created) | `multimodal-document-intelligence` | queued | structured extraction from invoices, receipts, contracts, forms, and financial statements: classification, OCR/vision, validation, confidence scoring, JSON output, pydantic schemas, malformed-document handling, extraction-accuracy evals, API |
+| 05 | Sus Transactions | `SusTransactions` (not created) | `mlops-fraud-detection` | queued | feature engineering, baseline vs XGBoost/LightGBM, experiment tracking, model versioning, inference API, Docker, CI, monitoring and drift detection; precision/recall/F1/PR-AUC/ROC-AUC and latency |
+| 06 | LoRA & Order | `LoraAndOrder` (not created) | `llm-finetuning-lab` | queued | base vs prompt engineering vs RAG vs LoRA/QLoRA vs RAG plus fine-tuning; documented data, training config, hardware, and memory; only executed runs reported |
+| 07 | Who Spent My Tokens | `WhoSpentMyTokens` (not created) | `ai-observability-platform` | queued | reusable tracing for LLM/agent apps (model, prompt version, tokens, latency, errors, retries, tool calls, cost, eval results), OpenTelemetry, structured logs, metrics, dashboards, experiment comparison |
+| 08 | HNSW From Scratch | `HNSWFromScratch` (not created) | `semantic-search-engine` | queued | embeddings, HNSW/ANN, lexical/vector/hybrid baselines, query expansion, reranking, filtering; benchmarks of retrieval quality, indexing time, query latency, and memory |
+| 09 | Interrupt Me | `InterruptMe` (not created) | `voice-ai-agent` | queued | audio to STT to agent/tool calling to TTS; streaming, interruption handling, session state, error recovery, end-to-end latency |
+| 10 | Quant Leap | `QuantLeap` (not created) | `ai-inference-benchmark` | queued | local/hosted inference benchmarks across quantization, batching, model size, and concurrency; TTFT, tokens/sec, memory, throughput, latency; only executed results |
 
 Planner docs (PROJECT_SPEC, PLAN, ADRs, TODO, CHANGELOG) are staged on the box
 for 02 in `/workspace/p02-agentic-research-platform/` and for 03 in

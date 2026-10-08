@@ -360,3 +360,40 @@ Licenses verified on 2026-10-09:
   subset was sampled), and the same license for the redistributed subset. The
   subset directory carries the attribution, a CC BY-SA 4.0 notice, and the
   sampling script and seed.
+
+## ADR-014: Witty repository names, plain descriptions, stable catalog ids
+
+Status: Accepted (2026-10-09)
+
+Reason: The owner chose memorable PascalCase repository names (for example
+`CitationNeeded`, `RabbitHole`, `HNSWFromScratch`) to make the portfolio
+stand out. A clever name alone doesn't tell a reviewer what a repository
+does, so every scannable surface also has to say it plainly.
+
+Decision:
+- Each catalog entry in `portfolio.yaml` has three names:
+  - `id`: stable and descriptive (for example `production-rag-engine`). It is
+    the key in `state.json`, in script arguments, and in the tests.
+  - `repo`: the GitHub repository name.
+  - `title`: the display title, which may contain characters GitHub
+    repository names can't (`LoRA & Order` -> `LoraAndOrder`).
+- Repository names are validated when the catalog is loaded (unique,
+  case-insensitively, and GitHub-legal).
+- Each repository's GitHub description and README subtitle state plainly what
+  the project is (for example "A production-style hybrid RAG service that
+  answers with citations to exact source spans").
+- Python distribution, import, and CLI names stay descriptive and are not
+  renamed to match the repository. Renaming a package is risky and adds
+  nothing.
+- `production-rag-engine` was renamed to `CitationNeeded` on 2026-10-09.
+  GitHub redirects the old URL. The local checkout stays at
+  `/workspace/portfolio/production-rag-engine`.
+
+Alternatives considered: switch catalog ids to the slugs (churns
+`state.json`, the logs, and the tests, and ties internal keys to branding
+that may change again); descriptive repository names (the owner preferred the
+witty ones).
+
+Consequences: `create_project.py --create-repo` creates repositories under
+their slugs. Links in the controller use the slugs. Historical log entries
+keep the id they were written with.

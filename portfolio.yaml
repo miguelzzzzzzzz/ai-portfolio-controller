@@ -25,10 +25,14 @@ quality:
     - mypy
     - pytest -q -m "not slow"
 
+# Each project has a stable `id` (the key in state.json and in script
+# arguments), a GitHub `repo` slug, and a display `title` (ADR-014). Slugs are
+# witty; repository descriptions and summaries stay plain.
 projects:
   - id: production-rag-engine
     order: 1
-    title: Production RAG Engine
+    repo: CitationNeeded
+    title: Citation Needed
     summary: >-
       Production-style RAG engine: structure-aware chunking, hybrid BM25 + vector
       retrieval, cross-encoder reranking, cited structured answers, FastAPI, and
@@ -45,7 +49,8 @@ projects:
 
   - id: agentic-research-platform
     order: 2
-    title: Agentic Research Platform
+    repo: RabbitHole
+    title: Rabbit Hole
     summary: >-
       Hand-rolled tool-using research agent: planning, typed tool registry and
       routing, multi-step evidence gathering over the production-rag-engine
@@ -67,7 +72,8 @@ projects:
   # (done for 03).
   - id: llm-evaluation-lab
     order: 3
-    title: LLM Evaluation Lab
+    repo: TrustIssues
+    title: Trust Issues
     summary: >-
       Reusable evaluation framework for LLM applications: JSONL datasets, multiple
       models and prompts, deterministic evaluators plus model-based evaluators
@@ -88,7 +94,8 @@ projects:
 
   - id: multimodal-document-intelligence
     order: 4
-    title: Multimodal Document Intelligence
+    repo: PaperTrail
+    title: Paper Trail
     summary: >-
       Extracts structured information from complex documents (invoices, receipts,
       contracts, forms, financial statements, reports) through classification,
@@ -100,7 +107,8 @@ projects:
 
   - id: mlops-fraud-detection
     order: 5
-    title: MLOps Fraud Detection
+    repo: SusTransactions
+    title: Sus Transactions
     summary: >-
       Conventional ML engineering and MLOps for fraud detection: dataset
       preparation, feature engineering, train/validation/test split, a baseline
@@ -112,7 +120,8 @@ projects:
 
   - id: llm-finetuning-lab
     order: 6
-    title: LLM Fine-Tuning Lab
+    repo: LoraAndOrder
+    title: "LoRA & Order"
     summary: >-
       Compares adaptation strategies: base model, prompt engineering, RAG,
       LoRA/QLoRA fine-tuning, and RAG plus fine-tuning. Documents the dataset,
@@ -124,7 +133,8 @@ projects:
 
   - id: ai-observability-platform
     order: 7
-    title: AI Observability Platform
+    repo: WhoSpentMyTokens
+    title: Who Spent My Tokens
     summary: >-
       Reusable observability components for LLM and agent applications. Tracks
       traces, model name, prompt version, tokens, latency, errors, retries, tool
@@ -135,7 +145,8 @@ projects:
 
   - id: semantic-search-engine
     order: 8
-    title: Semantic Search Engine
+    repo: HNSWFromScratch
+    title: HNSW From Scratch
     summary: >-
       Production-style semantic search, built and benchmarked: embeddings, ANN
       search (HNSW), lexical and vector baselines, hybrid search, query
@@ -145,7 +156,8 @@ projects:
 
   - id: voice-ai-agent
     order: 9
-    title: Voice AI Agent
+    repo: InterruptMe
+    title: Interrupt Me
     summary: >-
       Interactive voice agent: audio, then STT, agent reasoning and tool
       calling, a response, and TTS. Focuses on streaming, interruption handling,
@@ -155,7 +167,8 @@ projects:
 
   - id: ai-inference-benchmark
     order: 10
-    title: AI Inference Benchmark
+    repo: QuantLeap
+    title: Quant Leap
     summary: >-
       Framework for benchmarking local or hosted inference across quantization,
       batching, model size, and concurrency. Measures time to first token,

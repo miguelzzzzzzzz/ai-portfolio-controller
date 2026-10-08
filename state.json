@@ -5,7 +5,8 @@
   "projects": {
     "production-rag-engine": {
       "status": "in_progress",
-      "repo": "https://github.com/miguelzzzzzzzz/production-rag-engine",
+      "title": "Citation Needed",
+      "repo": "https://github.com/miguelzzzzzzzz/CitationNeeded",
       "started": "2026-10-09",
       "completed": null,
       "milestones": [

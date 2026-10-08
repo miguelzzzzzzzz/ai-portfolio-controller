@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+- Per-project `repo` slug and display `title` in `portfolio.yaml`, validated on load and used for repository URLs and creation (ADR-014).
+- Project 03 milestones and portfolio ADRs 010-013.
+
 ### Fixed
 - Project catalog now matches the ordered queue in the owner's brief (ADR-006). It replaces the catalog drafted at bootstrap. Project 02 milestones come from the planner's PLAN.md.
 

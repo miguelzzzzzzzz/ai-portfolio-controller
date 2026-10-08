@@ -26,6 +26,7 @@ from controller.projects import (
     create_github_repo,
     portfolio_entry,
     register_project,
+    repo_slug,
     scaffold_project,
 )
 from controller.state import (
@@ -61,11 +62,20 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         entry = portfolio_entry(portfolio, project_id)
         if args.dry_run:
-            print(json.dumps({"would_start": project_id, "title": entry.get("title")}, indent=2))
+            print(
+                json.dumps(
+                    {
+                        "would_start": project_id,
+                        "title": entry.get("title"),
+                        "repo": repo_slug(entry),
+                    },
+                    indent=2,
+                )
+            )
             return 0
         register_project(state, portfolio, project_id, args.date, force=args.force)
         if args.create_repo:
-            url = create_github_repo(project_id, entry.get("summary", "")[:350])
+            url = create_github_repo(repo_slug(entry), entry.get("summary", "")[:350])
             state["projects"][project_id]["repo"] = url
         written = scaffold_project(args.scaffold, entry) if args.scaffold else []
         save_state(state, args.state)

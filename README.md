@@ -16,7 +16,7 @@ published metric must come from an executed, committed evaluation.
 
 | Path | Purpose |
 | --- | --- |
-| `portfolio.yaml` | Owner, schedule, policies (budget, commit style, scope), quality commands, ordered project catalog (the brief's queue, ADR-006) |
+| `portfolio.yaml` | Owner, schedule, policies (budget, commit style, scope), quality commands, ordered project catalog (the brief's queue, ADR-006) with a stable id, GitHub repo slug, and display title per project (ADR-014) |
 | `state.json` | Facts: active project, milestone status, last CI result, review findings, daily log |
 | `LOG.md` | Daily summaries rendered from `state.json` |
 | `PROJECT_QUEUE.md` | Human-readable queue and overlap check between projects |
@@ -25,6 +25,13 @@ published metric must come from an executed, committed evaluation.
 | `templates/` | Document skeletons copied into new projects |
 | `controller/` | Library: state validation and atomic writes, cycle decisions, review gate |
 | `scripts/` | CLIs over the library (below) |
+
+## Projects
+
+| # | Project | What it is |
+| --- | --- | --- |
+| 01 | [Citation Needed](https://github.com/miguelzzzzzzzz/CitationNeeded) | Production-style hybrid RAG service with span-level citations (in progress) |
+| 02-10 | see [PROJECT_QUEUE.md](PROJECT_QUEUE.md) | Queued; each repository is created when its project starts |
 
 ## Daily cycle
 

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import tempfile
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -25,6 +26,8 @@ PROJECT_STATUSES = ("queued", "in_progress", "in_review", "blocked", "complete")
 MILESTONE_STATUSES = ("planned", "in_progress", "done", "blocked")
 SEVERITIES = ("CRITICAL", "MAJOR", "MINOR")
 SCHEMA_VERSION = 1
+# GitHub repository names: letters, digits, '-', '_', '.'; no spaces or '&'.
+_REPO_SLUG = re.compile(r"[A-Za-z0-9._-]{1,100}")
 
 
 class StateError(ValueError):
@@ -42,6 +45,12 @@ def load_portfolio(path: Path = PORTFOLIO_PATH) -> dict[str, Any]:
     ids = [p.get("id") for p in data["projects"]]
     if len(ids) != len(set(ids)) or not all(isinstance(i, str) and i for i in ids):
         raise StateError("portfolio.yaml project ids must be unique non-empty strings")
+    slugs = [str(p.get("repo") or p["id"]) for p in data["projects"]]
+    if len({s.lower() for s in slugs}) != len(slugs):
+        raise StateError("portfolio.yaml repo slugs must be unique (GitHub is case-insensitive)")
+    invalid = [s for s in slugs if not _REPO_SLUG.fullmatch(s)]
+    if invalid:
+        raise StateError(f"invalid GitHub repository names: {invalid}")
     return data
 
 
