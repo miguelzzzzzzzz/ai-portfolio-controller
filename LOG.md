@@ -2,6 +2,27 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-10-09 - production-rag-engine - M2 retrieval primitives (in progress): fastembed adapter and BM25 index
+
+Work completed:
+- Added FastEmbedEmbedder for BAAI/bge-small-en-v1.5 (optional extra, bounded batches, zero rows for empty texts, L2 normalization, output validation) with real-model tests marked slow
+- Added BM25Index (inverted index, document-level upsert/delete, filters before top-k, save/load) with scores checked against hand-computed values
+- Added ADR-016: Cline DeepSeek v4.1 is the default LLM, local models <=1.7B the fallback, recorded replies in CI, per-call cost logged to a shared box-only spend log, runaway guard, no spend cap (owner, 2026-10-09)
+- Cline usage today: 3 calls (1 ok, 1 HTTP 500, 1 interrupted); reported cost USD 0.0000444; second-opinion review of the embedder not obtained
+
+Tests: CitationNeeded: 139 passed + 3 slow deselected, branch coverage 95%, CI green (py3.11, py3.13); 3 slow real-model tests passed locally; ai-portfolio-controller: 37 passed
+
+Evaluation: Not run. Retrieval benchmark is planned for M4 on SciFact.
+
+Commits:
+- 107db3b feat(retrieval): add fastembed adapter for bge-small-en-v1.5 with batching
+- a5a37ec feat(retrieval): add BM25 index with hand-computed score tests
+- 2dde1ba docs(adr): make Cline DeepSeek v4.1 the default LLM (ADR-016)
+
+Remaining blockers: none
+
+Next recommended task: M2: Retriever returning scored chunks with provenance; rag-engine index/search CLI
+
 ## 2026-10-09 - production-rag-engine - M1 ingestion and chunking (done); M2 retrieval primitives (started)
 
 Work completed:
