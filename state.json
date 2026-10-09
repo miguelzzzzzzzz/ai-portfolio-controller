@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-09T01:12:24+00:00",
+  "updated_at": "2026-10-09T01:47:53+00:00",
   "active_project": "production-rag-engine",
   "projects": {
     "production-rag-engine": {
@@ -19,13 +19,13 @@
         {
           "id": "M2",
           "title": "Embeddings, vector store, BM25 index, retrieval interface",
-          "status": "in_progress",
-          "completed": null
+          "status": "done",
+          "completed": "2026-10-09"
         },
         {
           "id": "M3",
           "title": "Hybrid fusion, metadata filters, cross-encoder reranking",
-          "status": "planned",
+          "status": "in_progress",
           "completed": null
         },
         {
@@ -60,9 +60,9 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/37868556954",
-        "sha": "a5a37ec",
-        "recorded_at": "2026-10-09T01:12:24+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/37871410345",
+        "sha": "838f3a4",
+        "recorded_at": "2026-10-09T01:47:53+00:00"
       },
       "blockers": []
     }
@@ -112,6 +112,28 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "M2: Retriever returning scored chunks with provenance; rag-engine index/search CLI"
+    },
+    {
+      "date": "2026-10-09",
+      "project": "production-rag-engine",
+      "milestone": "M2 retrieval primitives (done) - extra on-request cycle, Cline as primary coder",
+      "work_completed": [
+        "Extra cycle on request (Oct 9) to validate Cline DeepSeek as primary coder and reviewer; box-only helper /workspace/portfolio/cline.py with retries, runaway guard, per-call cost log",
+        "Cline wrote retriever.py (Retriever protocol, Dense/Lexical retrievers, RetrievedChunk with provenance), index_store.py (embedder specs, save/load index directory), cli.py index/search commands, and their unit tests (test_retriever.py, test_index_store.py)",
+        "Grok Bot wrote package exports, CLI end-to-end tests (Cline credits ran out), two fixes (zero-vector dense queries; CLI chunk overrides dropped RAG_EMBEDDING_*), and docs",
+        "Cline usage: 9 calls (5 ok, 2 truncated at max_tokens by hidden reasoning, 1 connection dropped after ~270 s, 1 HTTP 402 insufficient credits); reported cost USD 0.1338; Cline review of the full diff not done"
+      ],
+      "tests": "CitationNeeded: 193 passed + 6 slow deselected, branch coverage 95%, CI green (py3.11, py3.13); 6 slow real-model tests passed locally; ai-portfolio-controller: 37 passed",
+      "evaluation": "Not run. Retrieval benchmark is planned for M4 on SciFact.",
+      "commits": [
+        "d3b4138 feat(retrieval): add dense and lexical retrievers with index persistence",
+        "3e42e6b fix(retrieval): return no hits for zero-vector dense queries",
+        "838f3a4 feat(cli): add index and search commands"
+      ],
+      "remaining_blockers": [
+        "Cline credits exhausted (HTTP 402, balance about USD 0.007); Cline coding and review paused until the owner tops up"
+      ],
+      "next_recommended_task": "Top up Cline credits; have Cline review the M2 diff (a5a37ec..838f3a4); then M3 hybrid fusion (RRF/weighted) and cross-encoder reranking"
     }
   ]
 }

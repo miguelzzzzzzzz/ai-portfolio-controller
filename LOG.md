@@ -2,6 +2,27 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-10-09 - production-rag-engine - M2 retrieval primitives (done) - extra on-request cycle, Cline as primary coder
+
+Work completed:
+- Extra cycle on request (Oct 9) to validate Cline DeepSeek as primary coder and reviewer; box-only helper /workspace/portfolio/cline.py with retries, runaway guard, per-call cost log
+- Cline wrote retriever.py (Retriever protocol, Dense/Lexical retrievers, RetrievedChunk with provenance), index_store.py (embedder specs, save/load index directory), cli.py index/search commands, and their unit tests (test_retriever.py, test_index_store.py)
+- Grok Bot wrote package exports, CLI end-to-end tests (Cline credits ran out), two fixes (zero-vector dense queries; CLI chunk overrides dropped RAG_EMBEDDING_*), and docs
+- Cline usage: 9 calls (5 ok, 2 truncated at max_tokens by hidden reasoning, 1 connection dropped after ~270 s, 1 HTTP 402 insufficient credits); reported cost USD 0.1338; Cline review of the full diff not done
+
+Tests: CitationNeeded: 193 passed + 6 slow deselected, branch coverage 95%, CI green (py3.11, py3.13); 6 slow real-model tests passed locally; ai-portfolio-controller: 37 passed
+
+Evaluation: Not run. Retrieval benchmark is planned for M4 on SciFact.
+
+Commits:
+- d3b4138 feat(retrieval): add dense and lexical retrievers with index persistence
+- 3e42e6b fix(retrieval): return no hits for zero-vector dense queries
+- 838f3a4 feat(cli): add index and search commands
+
+Remaining blockers: Cline credits exhausted (HTTP 402, balance about USD 0.007); Cline coding and review paused until the owner tops up
+
+Next recommended task: Top up Cline credits; have Cline review the M2 diff (a5a37ec..838f3a4); then M3 hybrid fusion (RRF/weighted) and cross-encoder reranking
+
 ## 2026-10-09 - production-rag-engine - M2 retrieval primitives (in progress): fastembed adapter and BM25 index
 
 Work completed:
