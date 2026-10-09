@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-09T01:47:53+00:00",
+  "updated_at": "2026-10-09T01:47:59+00:00",
   "active_project": "production-rag-engine",
   "projects": {
     "production-rag-engine": {
@@ -25,7 +25,7 @@
         {
           "id": "M3",
           "title": "Hybrid fusion, metadata filters, cross-encoder reranking",
-          "status": "in_progress",
+          "status": "planned",
           "completed": null
         },
         {
