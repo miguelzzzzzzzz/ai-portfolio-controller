@@ -2,6 +2,35 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-10-09 - production-rag-engine - M2 review fixes and M3 hybrid fusion + reranking (done) - extra on-request cycle, Cline Pass as primary coder and reviewer
+
+Work completed:
+- Extra on-request cycle (Oct 9). Cline (cline-pass/deepseek-v4.1-flash) reviewed the M2 diff: 13 findings; 10 accepted and fixed by Cline (index manifest validation, chunk-id alignment, embedder spec check on save, no-fastembed lexical search, CLI ImportError handling, ignored-option warning), 3 rejected with reasons
+- M3 written by Cline: RRF and weighted min-max score fusion with hand-computed tests, HybridRetriever with filter pass-through, cross-encoder reranker (Xenova/ms-marco-MiniLM-L-6-v2 via fastembed, slow real-model tests), search --mode hybrid/--fusion/--weight/--rrf-k/--candidates/--rerank
+- Cline reviewed the M3 diff (fusion and rerank reviews truncated by hidden reasoning; cli review complete); 7 findings accepted and fixed by Cline, 4 rejected
+- CI was red on 05090b0 and 167a6e5: a test exposed an unguarded ImportError when fastembed is absent (local env has it); fixed in 84bce05 and reproduced locally by blocking the fastembed import
+- Amended ADR-016: Pass model id, HTTP 402 meaning, Pass limits checked per cycle, Pass cost is a reference price; portfolio.yaml llm section and test updated
+- Cline usage: 25 calls / 35 attempts (20 ok, 2 truncated, 3 failed after 3 attempts with HTTP 500 empty response content); reference cost USD 0.1915 (Cline Pass, not money spent); Pass usage before -> after: five-hour 0% -> 2%, weekly 0% -> 1%, monthly 73% -> 74%
+
+Tests: CitationNeeded: 287 passed + 9 slow deselected, branch coverage 96%, CI green at 84bce05 (py3.11, py3.13); 9 slow real-model tests passed locally; ai-portfolio-controller: 37 passed
+
+Evaluation: Not run. Retrieval quality of dense vs lexical vs hybrid vs reranked is measured in M4 on SciFact; no quality numbers claimed.
+
+Commits:
+- 75ed832 fix(retrieval): validate index manifests and chunk alignment on save and load
+- 05090b0 fix(cli): report missing fastembed cleanly and warn on ignored chunking options
+- 5512fb0 feat(retrieval): add RRF and weighted score fusion with a hybrid retriever
+- b88991f feat(retrieval): add cross-encoder reranking stage
+- 0237813 feat(cli): add hybrid fusion and reranking options to search
+- c486564 fix(retrieval): validate fusion inputs and hybrid configuration up front
+- 167a6e5 fix(cli): reject inert or degenerate fusion and candidate options
+- 84bce05 fix(cli): guard embedder setup when fastembed is not installed
+- cd02101 docs(adr): bill Cline calls to the Pass and label Pass costs as reference prices
+
+Remaining blockers: none
+
+Next recommended task: Chad's interface review (due after M3); then M4 evaluation harness on SciFact (download + checksum, Recall@K/MRR/nDCG, JSON reports)
+
 ## 2026-10-09 - production-rag-engine - M2 retrieval primitives (done) - extra on-request cycle, Cline as primary coder
 
 Work completed:
