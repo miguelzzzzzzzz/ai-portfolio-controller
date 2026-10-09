@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-09T06:12:55+00:00",
+  "updated_at": "2026-10-09T10:09:11+00:00",
   "active_project": "production-rag-engine",
   "projects": {
     "production-rag-engine": {
@@ -56,7 +56,7 @@
       "review": {
         "last_run": "2026-10-09",
         "passed": false,
-        "reviewer": "Chad (interim review at 84bce05; final review gate still pending after M7)",
+        "reviewer": "Chad (interface review at 84bce05, re-checked and passed at cdd892e; final review gate still pending after M7)",
         "findings": [
           {
             "severity": "MAJOR",
@@ -114,15 +114,34 @@
             "resolved": true,
             "resolved_in": "b36d286"
           }
-        ]
+        ],
+        "interface_review": {
+          "passed": true,
+          "date": "2026-10-09",
+          "reviewed_sha": "84bce05",
+          "rechecked_sha": "cdd892e",
+          "scope": "v0.1.0 interface release (M1-M3)",
+          "advice": [
+            "Always pass --corpus-id; the default falls back to the folder name (documented in README)"
+          ]
+        }
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/37892262529",
-        "sha": "cdd892e",
-        "recorded_at": "2026-10-09T06:12:48+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/37915651843",
+        "sha": "bf0c83b",
+        "recorded_at": "2026-10-09T10:09:11+00:00"
       },
-      "blockers": []
+      "blockers": [],
+      "releases": [
+        {
+          "tag": "v0.1.0",
+          "date": "2026-10-09",
+          "commit": "bf0c83b",
+          "kind": "pre-1.0 interface release (M1-M3, no eval numbers)",
+          "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/releases/tag/v0.1.0"
+        }
+      ]
     }
   },
   "daily_log": [
@@ -245,6 +264,24 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "M4 evaluation harness on SciFact (download + checksum, Recall@K/MRR/nDCG, JSON reports); v0.1.0 not tagged (held per owner)"
+    },
+    {
+      "date": "2026-10-09",
+      "project": "production-rag-engine",
+      "milestone": "v0.1.0 released (M1-M3 interface release); interface review passed",
+      "work_completed": [
+        "Chad re-checked CitationNeeded at cdd892e and signed off for the v0.1.0 interface: both MAJORs and all MINORs closed; citation hash verification, stable corpus-scoped ids and per-stage rerank ranks confirmed. Final review gate remains after M7",
+        "Release commit bf0c83b: CHANGELOG Unreleased moved to [0.1.0] - 2026-10-09 (pre-1.0 interface release, breaking changes listed, no eval numbers), sign-off appended to REVIEW.md, README recommends always passing --corpus-id (Chad's non-blocking advice) and uses it in examples, PLAN M7 reworded; pyproject and __version__ were already 0.1.0",
+        "Annotated tag v0.1.0 on bf0c83b pushed; GitHub release v0.1.0 created with the CHANGELOG section as notes: https://github.com/miguelzzzzzzzz/CitationNeeded/releases/tag/v0.1.0",
+        "No Cline calls this step (release bookkeeping only)"
+      ],
+      "tests": "CitationNeeded: 380 passed + 9 slow deselected, branch coverage 96.49%, 380 passed with fastembed blocked, 9 slow passed locally; CI green at bf0c83b (runs/37915651843); ai-portfolio-controller: 37 passed",
+      "evaluation": "Not run. Retrieval quality is measured in M4 on SciFact; no quality numbers claimed.",
+      "commits": [
+        "bf0c83b chore(release): v0.1.0"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "M4 evaluation harness on SciFact (download + checksum, Recall@K/MRR/nDCG, JSON reports)"
     }
   ]
 }

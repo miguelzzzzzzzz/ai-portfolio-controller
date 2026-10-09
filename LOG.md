@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-10-09 - production-rag-engine - v0.1.0 released (M1-M3 interface release); interface review passed
+
+Work completed:
+- Chad re-checked CitationNeeded at cdd892e and signed off for the v0.1.0 interface: both MAJORs and all MINORs closed; citation hash verification, stable corpus-scoped ids and per-stage rerank ranks confirmed. Final review gate remains after M7
+- Release commit bf0c83b: CHANGELOG Unreleased moved to [0.1.0] - 2026-10-09 (pre-1.0 interface release, breaking changes listed, no eval numbers), sign-off appended to REVIEW.md, README recommends always passing --corpus-id (Chad's non-blocking advice) and uses it in examples, PLAN M7 reworded; pyproject and __version__ were already 0.1.0
+- Annotated tag v0.1.0 on bf0c83b pushed; GitHub release v0.1.0 created with the CHANGELOG section as notes: https://github.com/miguelzzzzzzzz/CitationNeeded/releases/tag/v0.1.0
+- No Cline calls this step (release bookkeeping only)
+
+Tests: CitationNeeded: 380 passed + 9 slow deselected, branch coverage 96.49%, 380 passed with fastembed blocked, 9 slow passed locally; CI green at bf0c83b (runs/37915651843); ai-portfolio-controller: 37 passed
+
+Evaluation: Not run. Retrieval quality is measured in M4 on SciFact; no quality numbers claimed.
+
+Commits:
+- bf0c83b chore(release): v0.1.0
+
+Remaining blockers: none
+
+Next recommended task: M4 evaluation harness on SciFact (download + checksum, Recall@K/MRR/nDCG, JSON reports)
+
 ## 2026-10-09 - production-rag-engine - Chad's review of 84bce05 resolved (0 CRITICAL, 2 MAJOR, MINOR + OPTIONAL items) - extra on-request cycle, Cline Pass as primary coder and reviewer
 
 Work completed:
