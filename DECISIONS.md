@@ -24,7 +24,7 @@ the account's unrelated pre-existing repositories are out of scope.
 
 ## ADR-002: Zero paid API spend by default; local CPU models; LLMs behind provider interfaces
 
-Status: Accepted (2026-10-09)
+Status: Accepted (2026-10-09). Zero-spend part superseded for Cline DeepSeek only by ADR-016.
 
 Reason: No paid LLM key is available and the user has not authorized spending
 (`policies.paid_api_budget_usd: 0`). Projects use small open models on CPU
@@ -149,7 +149,7 @@ consuming project demonstrates.
 
 ## ADR-008: Local LLM inference through OpenAI-compatible servers; CI never calls a model
 
-Status: Accepted (2026-10-09)
+Status: Accepted (2026-10-09). Amended by ADR-016: Cline DeepSeek v4.1 is the default LLM and local models are the fallback.
 
 Reason: ADR-002 covers local ONNX embedding and reranking models but not
 generative LLM serving, and several queued projects need an LLM. The box is
@@ -240,7 +240,7 @@ applications". This ADR makes that line binding.
 
 ## ADR-011: Cost reporting without paid APIs: measured local compute cost; dollar figures only as labelled estimates
 
-Status: Accepted (2026-10-09)
+Status: Accepted (2026-10-09). Zero-spend part superseded for Cline DeepSeek only by ADR-016; costs reported by Cline are real spend, not estimates.
 
 Reason: `paid_api_budget_usd` is 0, and `never_fabricate_metrics` is set.
 Several projects (03, 07, 10) report cost, and a dollar figure that looks like
@@ -439,3 +439,66 @@ Consequences: `portfolio.yaml` and `PROJECT_QUEUE.md` entries for 06, 08, and
 10 reflect these scopes. Each planner writes its milestones within them.
 Results are smaller in scale but fully reproducible on documented hardware,
 and each README states its hardware limits explicitly.
+
+## ADR-016: Cline DeepSeek v4.1 is the default LLM; local models are the free fallback
+
+Status: Accepted (2026-10-09). Amends ADR-008; supersedes the zero-spend parts of ADR-002 and ADR-011 for Cline DeepSeek only.
+
+Reason: On 2026-10-09 the owner authorized Cline DeepSeek v4.1, on a free or
+paid Cline Pass, as the default LLM for every project, with unlimited usage
+(no spend cap). The CPU-only box can serve only small local models, which are
+too weak for the agent, answer-generation, and evaluation work that projects
+01, 02, 03, and 07 need. A hosted model that is cheap per call removes that
+ceiling while the provider interface from ADR-002 and ADR-008 keeps projects
+portable.
+
+Decision:
+- **Default provider:** model `deepseek/deepseek-v4.1-flash` via
+  `https://api.cline.bot/api/v1/chat/completions` (OpenAI-style chat
+  completions). The key is read from the `CLINE_API_KEY` environment variable
+  and is never logged, printed, or committed.
+- **Fallback:** small local models (about 1.7B parameters or smaller) behind
+  an OpenAI-compatible server, as in ADR-008, for offline work or when Cline is
+  unavailable. Reports name the provider that produced each result.
+- **CI:** recorded (cassette) replies only. CI never calls Cline or any other
+  model, so it stays free and deterministic.
+- **Spend:** no budget limit. The owner authorized unlimited Cline usage on
+  2026-10-09. Every other paid API stays at zero (`paid_api_budget_usd: 0`).
+- **Cost logging:** every call, from every project, appends one record (time
+  in Asia/Manila, project, model, prompt/completion/reasoning tokens, the
+  reported `usage.cost`, latency, outcome) to a single shared spend log on the
+  box, `/workspace/portfolio/.cline/calls.jsonl`. It sits outside every
+  repository and is never committed. Daily totals are summed per calendar day
+  in Asia/Manila (midnight to midnight). When a response does not report its
+  cost, the record stores `cost: null` and a warning is logged for that call;
+  the call is still counted.
+- **Runaway guard (not a budget):** before each call, the client checks the
+  shared log and stops if the most recent calls are consecutive failures
+  (default: 3). Each call retries at most twice with backoff, and a loop that
+  keeps retrying the same failing request is stopped rather than continued.
+- **API quirks observed on 2026-10-09:** the OpenAI-style payload is wrapped as
+  `{"data": {...}}`, so clients unwrap `data` before reading `choices` and
+  `usage`. The model spends hidden reasoning tokens before answering, so
+  requests set `max_tokens` to 1000 or more; a two-word reply used 26
+  reasoning tokens out of 28 completion tokens. Responses report `usage.cost`
+  in US dollars. One review request (about 6 KB prompt, `max_tokens` 4000)
+  failed with HTTP 500 `empty response content`, so clients treat that error
+  as retryable and log it.
+- **Unverified through Cline:** tool calls, streaming, `response_format`
+  (JSON mode or schemas), and reasoning-effort controls. They are checked in
+  project 01's M5 (structured answers) and M6 (service) with recorded tests
+  before any project relies on them; until then, clients use plain chat
+  completions and parse and validate output themselves.
+
+Alternatives considered: stay local-only (ADR-008 as written; quality ceiling
+too low for agent and generation work); other hosted APIs (not authorized);
+hard daily or per-run spend caps (proposed, then dropped by the owner in
+favour of visible per-call cost logging).
+
+Consequences: `portfolio.yaml` records the default and fallback providers,
+the spend log location, and the runaway guard. Evaluation reports that use
+Cline state the model id, date, and the summed reported cost from the spend
+log; those dollar figures are real spend, unlike the labelled estimates of
+ADR-011. Results stay reproducible in CI through recorded replies, and live
+results are labelled as such. If Cline changes pricing, model ids, or its
+response format, the provider adapter and this ADR are updated together.

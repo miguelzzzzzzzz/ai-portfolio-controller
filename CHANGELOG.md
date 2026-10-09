@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- ADR-016: Cline DeepSeek v4.1 (`deepseek/deepseek-v4.1-flash`) is the default LLM for all projects, with small local models as the free fallback, recorded replies in CI, per-call cost logging to a shared box-only spend log, a runaway-loop guard, and no spend cap (owner authorization, 2026-10-09). `portfolio.yaml` gains an `llm` section; ADR-002, ADR-008, and ADR-011 point to it.
 - Per-project `repo` slug and display `title` in `portfolio.yaml`, validated on load and used for repository URLs and creation (ADR-014).
 - Project 03 milestones and portfolio ADRs 010-013.
 

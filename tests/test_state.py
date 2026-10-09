@@ -71,6 +71,20 @@ def test_catalog_repo_slugs_and_titles() -> None:
     assert {p["id"]: (p["repo"], p["title"]) for p in projects} == EXPECTED_REPOS
 
 
+def test_llm_policy_follows_adr_016() -> None:
+    """Cline DeepSeek is the default, CI never calls a model, no spend cap, key only by env."""
+    portfolio = load_portfolio(ROOT / "portfolio.yaml")
+    llm = portfolio["llm"]
+    assert llm["default"]["model"] == "deepseek/deepseek-v4.1-flash"
+    assert llm["default"]["api_key_env"] == "CLINE_API_KEY"
+    assert llm["default"]["min_max_tokens"] >= 1000
+    assert llm["default"]["spend_cap_usd"] is None
+    assert llm["ci"] == "recorded_replies_only"
+    assert portfolio["policies"]["paid_api_budget_usd"] == 0
+    spend_log = Path(llm["cost_logging"]["spend_log"])
+    assert ROOT not in spend_log.parents  # the shared spend log is never inside a repo
+
+
 @pytest.mark.parametrize(
     ("repos", "message"),
     [
