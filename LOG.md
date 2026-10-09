@@ -2,6 +2,32 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-10-09 - production-rag-engine - Chad's review of 84bce05 resolved (0 CRITICAL, 2 MAJOR, MINOR + OPTIONAL items) - extra on-request cycle, Cline Pass as primary coder and reviewer
+
+Work completed:
+- MAJOR 2 (a18aca9): doc_id = sha256('<corpus_id>:<relative posix path>')[:16]; corpus_id validated (no ':'), configurable via --corpus-id / RAG_CORPUS_ID / IngestionConfig, default = slugified root dir name; sources must be normalized relative paths; tests pin make_doc_id('handbook','guide/intro.md') = 120aa960849299ee, stability across roots, no cross-corpus collision; Chunk validates end_char > start_char
+- MAJOR 1 (1cf8b71): normalized documents persisted (ingest writes <stem>.documents.jsonl, index dirs hold documents.jsonl); verify_chunks checks doc exists, source/content_hash match, chunk.text == doc.text[start:end] on ingest, index build and load; index format 2, format 1 rejected with rebuild message; provenance adds content_hash and page_end; README offset wording fixed; ADR-0006
+- MINOR/OPTIONAL: RetrievedChunk.ranks keyed by stage name, rerank no longer overwrites inner stage (raises on key clash), NaN/inf fusion weights rejected (b36d286); search --json versioned with schema_version 1 (8bf4367, breaking); end-to-end offset-invariant tests across md/html/txt, CRLF, front matter, ligatures, control chars, all chunkers, save/load, RRF, weighted, rerank, nested rerank (eeca981); REVIEW.md, CHANGELOG, TODO, README (cdd892e). Also closes the nested-rerank key-collision finding left open in the previous cycle
+- Cline per-fix reviews found and fixed: front-matter shadowing of provenance metadata, unnormalized source paths, destructive failed save_index on duplicate documents, ingest writing chunks before verifying, lexical half unverified on save, non-strict JSON (allow_nan=False)
+- New gate applied before every push: fast tests with fastembed imports blocked (338, 368, 380 passed at the three code pushes; same counts as the unblocked run); CI waited green between pushes
+- Cline usage: 26 calls / 44 attempts (18 ok, 2 truncated, 6 failed after retries with HTTP 500 empty response content on larger test/review prompts; split prompts succeeded); reference cost USD 0.1406 (Cline Pass reference price, not money spent); Pass usage start -> end: five-hour 2% -> 4%, weekly 1% -> 2%, monthly 74% -> 74%
+
+Tests: CitationNeeded: 380 passed + 9 slow deselected, branch coverage 96.49% (bar 96%), same 380 pass with fastembed blocked, 9 slow real-model tests pass locally; CI green at a18aca9, 1cf8b71, eeca981, cdd892e (py3.11, py3.13)
+
+Evaluation: Not run. Retrieval quality is measured in M4 on SciFact; no quality numbers claimed.
+
+Commits:
+- a18aca9 fix(ingestion): scope document ids by corpus id
+- 1cf8b71 fix(index): persist normalized documents and verify citations
+- b36d286 fix(retrieval): record per-stage ranks apart from scores
+- 8bf4367 feat(cli): version the search --json payload
+- eeca981 test: check citation offsets end to end across loaders and stages
+- cdd892e docs: record Chad's review at 84bce05 and its resolutions
+
+Remaining blockers: none
+
+Next recommended task: M4 evaluation harness on SciFact (download + checksum, Recall@K/MRR/nDCG, JSON reports); v0.1.0 not tagged (held per owner)
+
 ## 2026-10-09 - production-rag-engine - M2 review fixes and M3 hybrid fusion + reranking (done) - extra on-request cycle, Cline Pass as primary coder and reviewer
 
 Work completed:
