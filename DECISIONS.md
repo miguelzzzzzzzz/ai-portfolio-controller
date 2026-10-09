@@ -442,7 +442,7 @@ and each README states its hardware limits explicitly.
 
 ## ADR-016: Cline DeepSeek v4.1 is the default LLM; local models are the free fallback
 
-Status: Accepted (2026-10-09). Amends ADR-008; supersedes the zero-spend parts of ADR-002 and ADR-011 for Cline DeepSeek only.
+Status: Accepted (2026-10-09). Amends ADR-008; supersedes the zero-spend parts of ADR-002 and ADR-011 for Cline DeepSeek only. Amended 2026-10-09 (see "Amendment: Cline Pass billing" below): the model id is `cline-pass/deepseek-v4.1-flash`.
 
 Reason: On 2026-10-09 the owner authorized Cline DeepSeek v4.1, on a free or
 paid Cline Pass, as the default LLM for every project, with unlimited usage
@@ -502,3 +502,34 @@ log; those dollar figures are real spend, unlike the labelled estimates of
 ADR-011. Results stay reproducible in CI through recorded replies, and live
 results are labelled as such. If Cline changes pricing, model ids, or its
 response format, the provider adapter and this ADR are updated together.
+
+### Amendment (2026-10-09): Cline Pass billing
+
+Reason: the first calls used the model id `deepseek/deepseek-v4.1-flash`.
+Cline bills that id against prepaid credits, not against the owner's Cline
+Pass. The credit balance ran out (HTTP 402 `insufficient_credits`, balance
+about $0.007) during the second cycle on 2026-10-09.
+
+Decision:
+- **Model id:** every project uses `cline-pass/deepseek-v4.1-flash`, which is
+  billed to the owner's Cline Pass. The plain `deepseek/deepseek-v4.1-flash`
+  id must not be used, and credits are never bought by the agents.
+- **HTTP 402** from Cline means a request was billed in credits mode (wrong
+  model id) or the credit balance is empty. It is a configuration error: the
+  client stops and reports it instead of retrying.
+- **Pass limits:** the Pass has rolling five-hour, weekly, and monthly usage
+  limits. `GET https://api.cline.bot/api/v1/users/me/plan/usage-limits`
+  (same bearer key) returns `percentUsed` and `resetsAt` for each. Every cycle
+  that uses Cline records the readings at its start and end. If a limit is
+  reached, coding with Cline stops and the cycle reports the blocker; the
+  agent does not replace Cline by writing large amounts of code itself.
+- **Cost labelling:** on Pass-billed calls, the `usage.cost` field is a
+  reference price, not money spent. The spend log stores it in `cost` next to
+  `billing: cline-pass` and `cost_kind: reference`, and reports label it
+  "reference cost". Real spend is only reported for credit-billed calls.
+- **Observed behaviour (2026-10-09):** long hidden reasoning can consume the
+  whole `max_tokens` budget. The API then returns `finish_reason: length`
+  with little or no content, or HTTP 500 `empty response content`. Clients
+  use `max_tokens` of 16,000-24,000 for code and keep prompts to one file or
+  one focused task. Prompts that asked for large, many-part outputs failed
+  this way and succeeded once split.

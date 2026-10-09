@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Changed
+- ADR-016 amendment: Cline model id is `cline-pass/deepseek-v4.1-flash` (billed to the Cline Pass, not credits); Pass usage limits are checked at the start and end of each cycle; Pass `usage.cost` is labelled a reference price; HTTP 402 means credits mode. `portfolio.yaml` `llm` section and its test updated.
+
 ### Added
 - ADR-016: Cline DeepSeek v4.1 (`deepseek/deepseek-v4.1-flash`) is the default LLM for all projects, with small local models as the free fallback, recorded replies in CI, per-call cost logging to a shared box-only spend log, a runaway-loop guard, and no spend cap (owner authorization, 2026-10-09). `portfolio.yaml` gains an `llm` section; ADR-002, ADR-008, and ADR-011 point to it.
 - Per-project `repo` slug and display `title` in `portfolio.yaml`, validated on load and used for repository URLs and creation (ADR-014).

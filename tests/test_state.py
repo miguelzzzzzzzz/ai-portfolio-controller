@@ -72,10 +72,13 @@ def test_catalog_repo_slugs_and_titles() -> None:
 
 
 def test_llm_policy_follows_adr_016() -> None:
-    """Cline DeepSeek is the default, CI never calls a model, no spend cap, key only by env."""
+    """Cline Pass DeepSeek is the default, CI never calls a model, no spend cap, key only by env."""
     portfolio = load_portfolio(ROOT / "portfolio.yaml")
     llm = portfolio["llm"]
-    assert llm["default"]["model"] == "deepseek/deepseek-v4.1-flash"
+    assert llm["default"]["model"] == "cline-pass/deepseek-v4.1-flash"
+    assert llm["default"]["billing"] == "cline-pass"
+    assert llm["default"]["cost_field_meaning"] == "reference_price"
+    assert llm["runaway_guard"]["stop_on_pass_limit"] is True
     assert llm["default"]["api_key_env"] == "CLINE_API_KEY"
     assert llm["default"]["min_max_tokens"] >= 1000
     assert llm["default"]["spend_cap_usd"] is None
