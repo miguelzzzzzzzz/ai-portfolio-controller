@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-10T01:19:33+00:00",
+  "updated_at": "2026-10-10T02:12:57+00:00",
   "active_project": "production-rag-engine",
   "projects": {
     "production-rag-engine": {
@@ -56,7 +56,7 @@
       "review": {
         "last_run": "2026-10-09",
         "passed": false,
-        "reviewer": "Chad (interface review at 84bce05, re-checked and passed at cdd892e; final review gate still pending after M7)",
+        "reviewer": "Chad (interface review at 84bce05, re-checked and passed at cdd892e; final review gate still pending after M7); M4 review at 96b3c33 (1 MAJOR, 4 MINOR) resolved in 9f236ba/e718f74/34dd3e5",
         "findings": [
           {
             "severity": "MAJOR",
@@ -113,6 +113,41 @@
             "message": "nested rerank overwrites base_rank and base score",
             "resolved": true,
             "resolved_in": "b36d286"
+          },
+          {
+            "severity": "MAJOR",
+            "check": "eval-depth",
+            "message": "modes not compared at equal depth (runner.py:301); baselines scored on <10 docs [Chad, M4 review at 96b3c33]",
+            "resolved": true,
+            "resolved_in": "9f236ba"
+          },
+          {
+            "severity": "MINOR",
+            "check": "eval-latency",
+            "message": "no untimed warm-up query per mode before latency timing [Chad, M4 review at 96b3c33]",
+            "resolved": true,
+            "resolved_in": "9f236ba"
+          },
+          {
+            "severity": "MINOR",
+            "check": "eval-provenance",
+            "message": "report records git SHA but not a dirty working tree [Chad, M4 review at 96b3c33]",
+            "resolved": true,
+            "resolved_in": "9f236ba"
+          },
+          {
+            "severity": "MINOR",
+            "check": "eval-qrels",
+            "message": "queries whose qrels are all non-relevant scored 0 instead of skipped and counted [Chad, M4 review at 96b3c33]",
+            "resolved": true,
+            "resolved_in": "9f236ba"
+          },
+          {
+            "severity": "MINOR",
+            "check": "eval-structured",
+            "message": "structured set (3 docs/8 queries) not labeled smoke-only [Chad, M4 review at 96b3c33]",
+            "resolved": true,
+            "resolved_in": "9f236ba"
           }
         ],
         "interface_review": {
@@ -127,10 +162,10 @@
         }
       },
       "last_ci": {
-        "status": "success",
-        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38012671154",
-        "sha": "96b3c33",
-        "at": "2026-10-10T09:19:33+08:00"
+        "conclusion": "success",
+        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38016069545",
+        "sha": "34dd3e5",
+        "recorded_at": "2026-10-10T02:12:45+00:00"
       },
       "blockers": [],
       "releases": [
@@ -287,11 +322,43 @@
     {
       "date": "2026-10-10",
       "project": "production-rag-engine",
-      "summary": "M4 evaluation harness: metrics, SciFact loader, structured-doc set, runner, evaluate CLI, hashing smoke reports committed; CI green at 96b3c33.",
       "commits": [
-        "96b3c33"
+        "96b3c33 feat(eval): add M4 evaluation harness for SciFact and structured docs"
       ],
-      "ci": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38012671154"
+      "milestone": "M4 evaluation harness (done)",
+      "work_completed": [
+        "M4 evaluation harness: metrics, SciFact loader, structured-doc set, runner, evaluate CLI, hashing smoke reports committed; CI green at 96b3c33.",
+        "rag_engine.eval: metrics, SciFact BEIR loader with MD5/zip-slip checks, structured-doc set, runner; rag-engine evaluate; scripts/eval_table.py",
+        "Hashing smoke reports under evals/results/ are harness checks, not quality claims; SciFact data stays gitignored",
+        "Cline (cline-pass/deepseek-v4.1-flash) primary coder/reviewer; API fixes applied after review findings"
+      ],
+      "tests": "462 passed + 9 slow deselected; coverage ~95% (below the 96% bar; restored in e718f74). CI green at 96b3c33: https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38012671154",
+      "evaluation": "Hashing smoke reports only; no quality claims.",
+      "remaining_blockers": [],
+      "next_recommended_task": "M5 answer generation"
+    },
+    {
+      "date": "2026-10-10",
+      "project": "production-rag-engine",
+      "milestone": "Chad's M4 review of 96b3c33 resolved (1 MAJOR, 4 MINOR) - extra on-request work, Cline Pass as primary coder and reviewer",
+      "work_completed": [
+        "MAJOR (9f236ba): every eval mode starts at the same chunk depth (EvalConfig.depth, default 50, >= top_k) and doubles until top_k unique documents or exhaustion/max_depth; per-mode initial/max/used depth and queries_short_of_k recorded; evaluate --depth/--max-depth; test with one document owning all top chunks",
+        "MINORs (all in 9f236ba): untimed warm-up per mode with a fixed non-evaluated query; git_dirty recorded beside git_sha; queries with no relevant grade skipped and counted (n_queries_skipped_no_relevant, n_queries_unlabelled); structured set flagged smoke_only (chosen over section-level scoring); report schema_version 2",
+        "Coverage had fallen to 95.55% at 96b3c33; e718f74 adds error-path tests (structured qrels validation, reranker/import mapping, git_dirty, evaluate scifact branch) -> 96.39%",
+        "34dd3e5: REVIEW.md M4 section, CHANGELOG/TODO/README/evals README; hashing smoke reports regenerated at e718f74 (schema 2, git_dirty false), replacing schema-1 reports",
+        "A real fastembed SciFact run was started, then stopped per owner instruction before finishing; no quality numbers produced or committed",
+        "Controller: normalized the hand-written M4 daily_log entry to the standard schema (render-log failed on it)",
+        "Cline usage: 10 calls / 17 attempts (7 ok, 3 failed with HTTP 500 empty response content on larger test prompts; split prompts succeeded); reference cost USD 0.0570 (Cline Pass reference price, not money spent); Pass usage start -> end: five-hour 0% -> 1%, weekly 0% -> 0%, monthly 74% -> 74%"
+      ],
+      "tests": "CitationNeeded: 484 passed + 9 slow deselected, branch coverage 96.39%, 484 passed with fastembed blocked, 9 slow passed locally; CI green at e718f74 (runs/38014468789, covers 9f236ba pushed with it) and 34dd3e5 (runs/38016069545)",
+      "evaluation": "Hashing smoke reports only (harness checks, not quality claims). No fastembed SciFact numbers.",
+      "commits": [
+        "9f236ba fix(eval): compare modes at equal retrieval depth",
+        "e718f74 test(eval): cover loader, runner and CLI error paths",
+        "34dd3e5 docs(eval): record Chad's M4 review and regenerate smoke reports"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "Real fastembed SciFact run (dense, lexical, hybrid, hybrid+rerank) for review before any README claim; then M5 answer generation"
     }
   ]
 }

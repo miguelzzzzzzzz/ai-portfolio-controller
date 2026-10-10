@@ -1,16 +1,49 @@
 # Daily log
 
-
-## 2026-10-10 — CitationNeeded M4 evaluation harness
-
-- Milestone M4 done: `rag_engine.eval` (metrics, SciFact BEIR loader + MD5/zip-slip checks, structured-doc set, runner), `rag-engine evaluate`, `scripts/eval_table.py`.
-- Committed hashing smoke reports under `evals/results/` (structured + SciFact); notes mark them as harness checks, not quality claims. SciFact data stays gitignored.
-- Tests: 462 passed + 9 slow deselected; coverage ~95% (soft bar was ~96%; new eval modules). CI green: https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38012671154 (sha 96b3c33).
-- Cline DeepSeek (`cline-pass/deepseek-v4.1-flash`) primary coder/reviewer; Kim applied API fixes (runner imports, Document.create, HybridRetriever.method, qrels remap) after review findings.
-- Next: M5 answer generation.
-
-
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
+
+## 2026-10-10 - production-rag-engine - Chad's M4 review of 96b3c33 resolved (1 MAJOR, 4 MINOR) - extra on-request work, Cline Pass as primary coder and reviewer
+
+Work completed:
+- MAJOR (9f236ba): every eval mode starts at the same chunk depth (EvalConfig.depth, default 50, >= top_k) and doubles until top_k unique documents or exhaustion/max_depth; per-mode initial/max/used depth and queries_short_of_k recorded; evaluate --depth/--max-depth; test with one document owning all top chunks
+- MINORs (all in 9f236ba): untimed warm-up per mode with a fixed non-evaluated query; git_dirty recorded beside git_sha; queries with no relevant grade skipped and counted (n_queries_skipped_no_relevant, n_queries_unlabelled); structured set flagged smoke_only (chosen over section-level scoring); report schema_version 2
+- Coverage had fallen to 95.55% at 96b3c33; e718f74 adds error-path tests (structured qrels validation, reranker/import mapping, git_dirty, evaluate scifact branch) -> 96.39%
+- 34dd3e5: REVIEW.md M4 section, CHANGELOG/TODO/README/evals README; hashing smoke reports regenerated at e718f74 (schema 2, git_dirty false), replacing schema-1 reports
+- A real fastembed SciFact run was started, then stopped per owner instruction before finishing; no quality numbers produced or committed
+- Controller: normalized the hand-written M4 daily_log entry to the standard schema (render-log failed on it)
+- Cline usage: 10 calls / 17 attempts (7 ok, 3 failed with HTTP 500 empty response content on larger test prompts; split prompts succeeded); reference cost USD 0.0570 (Cline Pass reference price, not money spent); Pass usage start -> end: five-hour 0% -> 1%, weekly 0% -> 0%, monthly 74% -> 74%
+
+Tests: CitationNeeded: 484 passed + 9 slow deselected, branch coverage 96.39%, 484 passed with fastembed blocked, 9 slow passed locally; CI green at e718f74 (runs/38014468789, covers 9f236ba pushed with it) and 34dd3e5 (runs/38016069545)
+
+Evaluation: Hashing smoke reports only (harness checks, not quality claims). No fastembed SciFact numbers.
+
+Commits:
+- 9f236ba fix(eval): compare modes at equal retrieval depth
+- e718f74 test(eval): cover loader, runner and CLI error paths
+- 34dd3e5 docs(eval): record Chad's M4 review and regenerate smoke reports
+
+Remaining blockers: none
+
+Next recommended task: Real fastembed SciFact run (dense, lexical, hybrid, hybrid+rerank) for review before any README claim; then M5 answer generation
+
+## 2026-10-10 - production-rag-engine - M4 evaluation harness (done)
+
+Work completed:
+- M4 evaluation harness: metrics, SciFact loader, structured-doc set, runner, evaluate CLI, hashing smoke reports committed; CI green at 96b3c33.
+- rag_engine.eval: metrics, SciFact BEIR loader with MD5/zip-slip checks, structured-doc set, runner; rag-engine evaluate; scripts/eval_table.py
+- Hashing smoke reports under evals/results/ are harness checks, not quality claims; SciFact data stays gitignored
+- Cline (cline-pass/deepseek-v4.1-flash) primary coder/reviewer; API fixes applied after review findings
+
+Tests: 462 passed + 9 slow deselected; coverage ~95% (below the 96% bar; restored in e718f74). CI green at 96b3c33: https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38012671154
+
+Evaluation: Hashing smoke reports only; no quality claims.
+
+Commits:
+- 96b3c33 feat(eval): add M4 evaluation harness for SciFact and structured docs
+
+Remaining blockers: none
+
+Next recommended task: M5 answer generation
 
 ## 2026-10-09 - production-rag-engine - v0.1.0 released (M1-M3 interface release); interface review passed
 
