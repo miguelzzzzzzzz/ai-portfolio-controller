@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-09T10:09:11+00:00",
+  "updated_at": "2026-10-10T01:19:33+00:00",
   "active_project": "production-rag-engine",
   "projects": {
     "production-rag-engine": {
@@ -31,8 +31,8 @@
         {
           "id": "M4",
           "title": "Evaluation harness and benchmark reports",
-          "status": "planned",
-          "completed": null
+          "status": "done",
+          "completed": "2026-10-10"
         },
         {
           "id": "M5",
@@ -127,10 +127,10 @@
         }
       },
       "last_ci": {
-        "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/37915651843",
-        "sha": "bf0c83b",
-        "recorded_at": "2026-10-09T10:09:11+00:00"
+        "status": "success",
+        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38012671154",
+        "sha": "96b3c33",
+        "at": "2026-10-10T09:19:33+08:00"
       },
       "blockers": [],
       "releases": [
@@ -141,7 +141,8 @@
           "kind": "pre-1.0 interface release (M1-M3, no eval numbers)",
           "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/releases/tag/v0.1.0"
         }
-      ]
+      ],
+      "next_recommended_task": "M5 answer generation: AnswerGenerator protocol, extractive fallback, citations, structured output"
     }
   },
   "daily_log": [
@@ -282,6 +283,15 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "M4 evaluation harness on SciFact (download + checksum, Recall@K/MRR/nDCG, JSON reports)"
+    },
+    {
+      "date": "2026-10-10",
+      "project": "production-rag-engine",
+      "summary": "M4 evaluation harness: metrics, SciFact loader, structured-doc set, runner, evaluate CLI, hashing smoke reports committed; CI green at 96b3c33.",
+      "commits": [
+        "96b3c33"
+      ],
+      "ci": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38012671154"
     }
   ]
 }

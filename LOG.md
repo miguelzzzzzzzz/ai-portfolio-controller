@@ -1,5 +1,15 @@
 # Daily log
 
+
+## 2026-10-10 — CitationNeeded M4 evaluation harness
+
+- Milestone M4 done: `rag_engine.eval` (metrics, SciFact BEIR loader + MD5/zip-slip checks, structured-doc set, runner), `rag-engine evaluate`, `scripts/eval_table.py`.
+- Committed hashing smoke reports under `evals/results/` (structured + SciFact); notes mark them as harness checks, not quality claims. SciFact data stays gitignored.
+- Tests: 462 passed + 9 slow deselected; coverage ~95% (soft bar was ~96%; new eval modules). CI green: https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38012671154 (sha 96b3c33).
+- Cline DeepSeek (`cline-pass/deepseek-v4.1-flash`) primary coder/reviewer; Kim applied API fixes (runner imports, Document.create, HybridRetriever.method, qrels remap) after review findings.
+- Next: M5 answer generation.
+
+
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
 ## 2026-10-09 - production-rag-engine - v0.1.0 released (M1-M3 interface release); interface review passed
