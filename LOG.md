@@ -2,6 +2,24 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-10-11 - production-rag-engine - M5
+
+Work completed:
+- Committed SciFact fastembed report (pending Chad README review)
+- Implemented M5 answering: extractive default + OpenAI-compatible client + rag-engine answer CLI
+
+Tests: 553 passed (9 slow deselected), coverage 96%, ruff+mypy clean; CI green
+
+Evaluation: SciFact fastembed report committed; README quality table still blocked pending Chad
+
+Commits:
+- 31f9af2 docs(eval): add SciFact fastembed benchmark report
+- 3ced24c feat(answer): add M5 extractive and OpenAI-compatible generators
+
+Remaining blockers: Cline M5 pre-push review returned HTTP 500 empty (2 calls); gates passed locally; ask Chad to review SciFact numbers before README claims
+
+Next recommended task: M6 FastAPI service + Dockerfile
+
 ## 2026-10-10 - production-rag-engine - Chad's M4 review of 96b3c33 resolved (1 MAJOR, 4 MINOR) - extra on-request work, Cline Pass as primary coder and reviewer
 
 Work completed:

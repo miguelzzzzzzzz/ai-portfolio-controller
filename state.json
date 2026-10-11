@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-10T02:12:57+00:00",
+  "updated_at": "2026-10-11T01:22:56+00:00",
   "active_project": "production-rag-engine",
   "projects": {
     "production-rag-engine": {
@@ -37,8 +37,8 @@
         {
           "id": "M5",
           "title": "Answer generation with citations and structured output",
-          "status": "planned",
-          "completed": null
+          "status": "done",
+          "completed": "2026-10-11"
         },
         {
           "id": "M6",
@@ -163,9 +163,9 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38016069545",
-        "sha": "34dd3e5",
-        "recorded_at": "2026-10-10T02:12:45+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38101549394",
+        "sha": "3ced24c73fc2074eef7188a1a43a6bac17419588",
+        "recorded_at": "2026-10-11T01:22:56+00:00"
       },
       "blockers": [],
       "releases": [
@@ -359,6 +359,26 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "Real fastembed SciFact run (dense, lexical, hybrid, hybrid+rerank) for review before any README claim; then M5 answer generation"
+    },
+    {
+      "date": "2026-10-11",
+      "project": "production-rag-engine",
+      "milestone": "M5",
+      "work_completed": [
+        "Committed SciFact fastembed report (pending Chad README review)",
+        "Implemented M5 answering: extractive default + OpenAI-compatible client + rag-engine answer CLI"
+      ],
+      "tests": "553 passed (9 slow deselected), coverage 96%, ruff+mypy clean; CI green",
+      "evaluation": "SciFact fastembed report committed; README quality table still blocked pending Chad",
+      "commits": [
+        "31f9af2 docs(eval): add SciFact fastembed benchmark report",
+        "3ced24c feat(answer): add M5 extractive and OpenAI-compatible generators"
+      ],
+      "remaining_blockers": [
+        "Cline M5 pre-push review returned HTTP 500 empty (2 calls); gates passed locally; ask Chad to review SciFact numbers before README claims"
+      ],
+      "next_recommended_task": "M6 FastAPI service + Dockerfile"
     }
-  ]
+  ],
+  "next_recommended_task": "M6 FastAPI service, Dockerfile, image build in CI"
 }
