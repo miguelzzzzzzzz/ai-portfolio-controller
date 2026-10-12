@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-11T01:22:56+00:00",
+  "updated_at": "2026-10-12T01:15:33+00:00",
   "active_project": "production-rag-engine",
   "projects": {
     "production-rag-engine": {
@@ -163,9 +163,9 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38101549394",
-        "sha": "3ced24c73fc2074eef7188a1a43a6bac17419588",
-        "recorded_at": "2026-10-11T01:22:56+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38191116650",
+        "sha": "99f28f6352e8a93ee180197d0ece6d49e34bf421",
+        "recorded_at": "2026-10-12T01:15:33+00:00"
       },
       "blockers": [],
       "releases": [
@@ -177,7 +177,7 @@
           "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/releases/tag/v0.1.0"
         }
       ],
-      "next_recommended_task": "M5 answer generation: AnswerGenerator protocol, extractive fallback, citations, structured output"
+      "next_recommended_task": "M6 FastAPI service, Dockerfile, image build in CI"
     }
   },
   "daily_log": [
@@ -378,6 +378,27 @@
         "Cline M5 pre-push review returned HTTP 500 empty (2 calls); gates passed locally; ask Chad to review SciFact numbers before README claims"
       ],
       "next_recommended_task": "M6 FastAPI service + Dockerfile"
+    },
+    {
+      "date": "2026-10-12",
+      "project": "production-rag-engine",
+      "milestone": "Pre-M6 eval honesty pack (README table + per-query sidecar + bootstrap CI)",
+      "work_completed": [
+        "README SciFact quality table from committed report scifact_test_fastembed_20261010T184148Z.json (Chad-matched aggregates); hybrid vs dense described as about the same on nDCG@10",
+        "Eval runner now returns per-query scores; write_report emits sibling *.per_query.json (schema 1)",
+        "rag_engine.eval.bootstrap.paired_bootstrap_ci + scripts/bootstrap_ci.py with unit tests (no network)",
+        "Did not start M6; did not re-run SciFact (committed report predates sidecar \u2014 bootstrap CI not claimed in README yet)"
+      ],
+      "tests": "CitationNeeded: 571 passed + 9 slow deselected, branch coverage 96%, 571 passed with fastembed blocked; CI green at 99f28f6",
+      "evaluation": "README table cites existing fastembed report only. Sidecar-bearing SciFact re-run deferred; paired bootstrap CI ready for next clean eval.",
+      "commits": [
+        "ea2a3bc feat(eval): emit per-query sidecar and paired bootstrap CI",
+        "99f28f6 docs(eval): add SciFact fastembed quality table to README"
+      ],
+      "remaining_blockers": [
+        "Cline pre-push review returned HTTP 500 empty (2 calls); gates passed locally and CI green"
+      ],
+      "next_recommended_task": "M6 FastAPI service, Dockerfile, image build in CI"
     }
   ],
   "next_recommended_task": "M6 FastAPI service, Dockerfile, image build in CI"

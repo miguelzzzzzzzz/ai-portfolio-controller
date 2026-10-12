@@ -204,3 +204,11 @@ Commits:
 Remaining blockers: none
 
 Next recommended task: M2: fastembed adapter (bge-small-en-v1.5, slow tests), BM25 index with hand-computed score tests, Retriever, index/search CLI
+
+## 2026-10-12 — CitationNeeded pre-M6 eval honesty pack
+
+- Commits: `ea2a3bc` (sidecar + bootstrap), `99f28f6` (README SciFact table); CI green https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38191116650
+- Tests: 571 passed (9 slow deselected), coverage 96%, nofastembed gate green
+- Cline: primary for bootstrap module/tests and runner sidecar (truncated once on large emit; applied complete files); executor restored truncated `__init__.py`, lint fixes, README/TODO/CHANGELOG; pre-push review blocked by HTTP 500×2
+- Next: M6 FastAPI + Dockerfile
+- Logged 2026-10-12 09:15 UTC+08:00
