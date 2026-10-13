@@ -2,6 +2,47 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-10-13 - production-rag-engine - Eval honesty pack close-out + M5 answer eval (pre-M6)
+
+Work completed:
+- Committed sidecar-bearing SciFact fastembed re-run at 99f28f6 (git_dirty false, aggregates identical to 2026-10-10 report, sidecar means = aggregates) plus paired bootstrap CI summary (B=10000, seed 0); README keeps hybrid vs dense 'about the same' (nDCG@10 diff -0.0015, 95% CI [-0.0273, +0.0239]); dense and hybrid beat lexical (CIs exclude 0); rerank vs hybrid spans 0
+- M5 answer eval slice: rag_engine.eval.answers (seeded subset, raw-reply parsing, code-only grades), answer_cache (request-keyed JSONL cache, record/replay generator), answer_runner (gold-removal no_relevant items, exactly k contexts), scripts/answer_eval.py; OpenAI client unwraps Cline {data:...} envelope
+- Recorded 30-claim SciFact answer eval with cline-pass/deepseek-v4.1-flash at c55a2bb; cache committed; offline replay matched every record
+- Cline helper: guard now per-day; max_tokens logged; cline_review.py switched to the Pass model id; review HTTP 500s traced to reasoning exhausting max_tokens (reviews now use 24-32k)
+
+Tests: CitationNeeded: 654 passed + 9 slow deselected, branch coverage 96%, 654 passed with fastembed blocked; CI green at 3c9435a, c55a2bb, 67eecad
+
+Evaluation: SciFact bootstrap CIs (seed 0, B=10000): hybrid-dense nDCG@10 -0.0015 [-0.0273, +0.0239]; hybrid+rerank-hybrid -0.0233 [-0.0531, +0.0057]; dense-lexical +0.0458 [+0.0085, +0.0829]; hybrid-lexical +0.0442 [+0.0201, +0.0686]. Answer eval (30 claims, cline-pass/deepseek-v4.1-flash, 2026-10-13, code-graded): span validity 29/30, citation recall 0.71 (17 eligible), precision 18/29, false abstention 4/17, correct abstention 8/10
+
+Commits:
+- 3c9435a docs(eval): commit SciFact sidecar re-run and paired bootstrap CIs
+- c55a2bb feat(eval): add code-graded M5 answer eval with replayable reply cache
+- 67eecad docs(eval): record first M5 answer eval on SciFact with cached replies
+
+Remaining blockers: none
+
+Next recommended task: M6 FastAPI service (POST /search, /answer, GET /health), Dockerfile, docker build in CI; ask Chad to review answer-eval design and numbers
+
+## 2026-10-12 - production-rag-engine - Pre-M6 eval honesty pack (README table + per-query sidecar + bootstrap CI)
+
+Work completed:
+- README SciFact quality table from committed report scifact_test_fastembed_20261010T184148Z.json (Chad-matched aggregates); hybrid vs dense described as about the same on nDCG@10
+- Eval runner now returns per-query scores; write_report emits sibling *.per_query.json (schema 1)
+- rag_engine.eval.bootstrap.paired_bootstrap_ci + scripts/bootstrap_ci.py with unit tests (no network)
+- Did not start M6; did not re-run SciFact (committed report predates sidecar — bootstrap CI not claimed in README yet)
+
+Tests: CitationNeeded: 571 passed + 9 slow deselected, branch coverage 96%, 571 passed with fastembed blocked; CI green at 99f28f6
+
+Evaluation: README table cites existing fastembed report only. Sidecar-bearing SciFact re-run deferred; paired bootstrap CI ready for next clean eval.
+
+Commits:
+- ea2a3bc feat(eval): emit per-query sidecar and paired bootstrap CI
+- 99f28f6 docs(eval): add SciFact fastembed quality table to README
+
+Remaining blockers: Cline pre-push review returned HTTP 500 empty (2 calls); gates passed locally and CI green
+
+Next recommended task: M6 FastAPI service, Dockerfile, image build in CI
+
 ## 2026-10-11 - production-rag-engine - M5
 
 Work completed:
@@ -204,11 +245,3 @@ Commits:
 Remaining blockers: none
 
 Next recommended task: M2: fastembed adapter (bge-small-en-v1.5, slow tests), BM25 index with hand-computed score tests, Retriever, index/search CLI
-
-## 2026-10-12 — CitationNeeded pre-M6 eval honesty pack
-
-- Commits: `ea2a3bc` (sidecar + bootstrap), `99f28f6` (README SciFact table); CI green https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38191116650
-- Tests: 571 passed (9 slow deselected), coverage 96%, nofastembed gate green
-- Cline: primary for bootstrap module/tests and runner sidecar (truncated once on large emit; applied complete files); executor restored truncated `__init__.py`, lint fixes, README/TODO/CHANGELOG; pre-push review blocked by HTTP 500×2
-- Next: M6 FastAPI + Dockerfile
-- Logged 2026-10-12 09:15 UTC+08:00

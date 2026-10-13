@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-12T01:15:33+00:00",
+  "updated_at": "2026-10-13T01:41:24+00:00",
   "active_project": "production-rag-engine",
   "projects": {
     "production-rag-engine": {
@@ -163,9 +163,9 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38191116650",
-        "sha": "99f28f6352e8a93ee180197d0ece6d49e34bf421",
-        "recorded_at": "2026-10-12T01:15:33+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38333256578",
+        "sha": "67eecade660d96f095ca54c742b6253914fde4fb",
+        "recorded_at": "2026-10-13T01:41:24+00:00"
       },
       "blockers": [],
       "releases": [
@@ -399,6 +399,26 @@
         "Cline pre-push review returned HTTP 500 empty (2 calls); gates passed locally and CI green"
       ],
       "next_recommended_task": "M6 FastAPI service, Dockerfile, image build in CI"
+    },
+    {
+      "date": "2026-10-13",
+      "project": "production-rag-engine",
+      "milestone": "Eval honesty pack close-out + M5 answer eval (pre-M6)",
+      "work_completed": [
+        "Committed sidecar-bearing SciFact fastembed re-run at 99f28f6 (git_dirty false, aggregates identical to 2026-10-10 report, sidecar means = aggregates) plus paired bootstrap CI summary (B=10000, seed 0); README keeps hybrid vs dense 'about the same' (nDCG@10 diff -0.0015, 95% CI [-0.0273, +0.0239]); dense and hybrid beat lexical (CIs exclude 0); rerank vs hybrid spans 0",
+        "M5 answer eval slice: rag_engine.eval.answers (seeded subset, raw-reply parsing, code-only grades), answer_cache (request-keyed JSONL cache, record/replay generator), answer_runner (gold-removal no_relevant items, exactly k contexts), scripts/answer_eval.py; OpenAI client unwraps Cline {data:...} envelope",
+        "Recorded 30-claim SciFact answer eval with cline-pass/deepseek-v4.1-flash at c55a2bb; cache committed; offline replay matched every record",
+        "Cline helper: guard now per-day; max_tokens logged; cline_review.py switched to the Pass model id; review HTTP 500s traced to reasoning exhausting max_tokens (reviews now use 24-32k)"
+      ],
+      "tests": "CitationNeeded: 654 passed + 9 slow deselected, branch coverage 96%, 654 passed with fastembed blocked; CI green at 3c9435a, c55a2bb, 67eecad",
+      "evaluation": "SciFact bootstrap CIs (seed 0, B=10000): hybrid-dense nDCG@10 -0.0015 [-0.0273, +0.0239]; hybrid+rerank-hybrid -0.0233 [-0.0531, +0.0057]; dense-lexical +0.0458 [+0.0085, +0.0829]; hybrid-lexical +0.0442 [+0.0201, +0.0686]. Answer eval (30 claims, cline-pass/deepseek-v4.1-flash, 2026-10-13, code-graded): span validity 29/30, citation recall 0.71 (17 eligible), precision 18/29, false abstention 4/17, correct abstention 8/10",
+      "commits": [
+        "3c9435a docs(eval): commit SciFact sidecar re-run and paired bootstrap CIs",
+        "c55a2bb feat(eval): add code-graded M5 answer eval with replayable reply cache",
+        "67eecad docs(eval): record first M5 answer eval on SciFact with cached replies"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "M6 FastAPI service (POST /search, /answer, GET /health), Dockerfile, docker build in CI; ask Chad to review answer-eval design and numbers"
     }
   ],
   "next_recommended_task": "M6 FastAPI service, Dockerfile, image build in CI"
