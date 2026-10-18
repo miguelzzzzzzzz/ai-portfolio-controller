@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-10-18 - production-rag-engine - M5 answer-eval review MINORs (pre-M6)
+
+Work completed:
+- Reviewed and finished the uncommitted Oct 14 Cline drafts for Chad's four M5 MINORs: MIN_QUOTE_CHARS=20 (trimmed) in the span grader with boundary tests; rag_engine.eval.intervals.wilson_interval + scripts/answer_eval_table.py (rates recomputed from per-item grades, checked against report metrics); README calls correct abstention 8/10 a lower bound and says recall counts only the 17 eligible claims; every rate shows raw count + 95% Wilson CI
+- Applied the Oct 14 Cline-written tests/test_intervals.py (41 tests); own glue: ruff format, README/grading-string wording, CHANGELOG, TODO
+- Offline replay of the committed answer cache under the 20-char rule (30 cache hits, 0 API calls): every per-item grade and metric identical to the 2026-10-13 report; shortest quote 75 chars
+- M6 drafts from Oct 14 (api schemas/service, Dockerfile, compose, CI job) trial-applied in a scratch worktree: incomplete (no app.py routes, no fastapi dependency, no tests, mypy errors); kept out of git
+
+Tests: CitationNeeded at b3160e0 (local): 699 passed + 9 slow deselected, branch coverage 96.36%, 699 passed with fastembed blocked; ruff lint/format and strict mypy clean; CI not run (not pushed)
+
+Evaluation: Answer eval replay 2026-10-18 (unchanged vs 2026-10-13): parsed 30/30 [0.89,1.00]; span validity 29/30 [0.83,0.99]; citation recall 12/17 [0.47,0.87]; precision 18/29 [0.44,0.77]; false abstention 4/17 [0.10,0.47]; correct abstention 8/10 [0.49,0.94] (95% Wilson)
+
+Commits:
+- b3160e0 fix(eval): enforce 20-char quote minimum and add Wilson intervals to answer eval (local, unpushed)
+
+Remaining blockers: Cline Pass inactive (HTTP 402 subscription has not been paid / 403 ENTITLEMENT_ERROR) since the 2026-10-17 reset; no Cline review of b3160e0; M6 not started
+
+Next recommended task: Restore the Cline Pass (owner), Cline-review and push b3160e0, then M6 FastAPI service (POST /search, /answer, GET /health), Dockerfile, docker build in CI; Chad re-check of the MINOR fixes
+
 ## 2026-10-13 - production-rag-engine - Eval honesty pack close-out + M5 answer eval (pre-M6)
 
 Work completed:
