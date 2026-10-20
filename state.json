@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-18T01:10:49+00:00",
+  "updated_at": "2026-10-20T01:19:22+00:00",
   "active_project": "production-rag-engine",
   "projects": {
     "production-rag-engine": {
@@ -43,12 +43,12 @@
         {
           "id": "M6",
           "title": "FastAPI service, Dockerfile, image build in CI",
-          "status": "planned",
-          "completed": null
+          "status": "done",
+          "completed": "2026-10-20"
         },
         {
           "id": "M7",
-          "title": "Hardening, documentation, v0.1.0 release",
+          "title": "Hardening, documentation, v1.0.0 release",
           "status": "planned",
           "completed": null
         }
@@ -163,9 +163,9 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/38333256578",
-        "sha": "67eecade660d96f095ca54c742b6253914fde4fb",
-        "recorded_at": "2026-10-13T01:41:24+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/39352567974",
+        "sha": "9c76f7e",
+        "recorded_at": "2026-10-20T01:19:22+00:00"
       },
       "blockers": [],
       "releases": [
@@ -177,7 +177,7 @@
           "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/releases/tag/v0.1.0"
         }
       ],
-      "next_recommended_task": "M6 FastAPI service, Dockerfile, image build in CI"
+      "next_recommended_task": "Chad reviews M6 (b3160e0..9c76f7e); then M7 hardening (startup warm-up, request logging, extractive heading strip), v1.0.0 release and Chad's final REVIEW.md"
     }
   },
   "daily_log": [
@@ -439,7 +439,31 @@
         "Cline Pass inactive (HTTP 402 subscription has not been paid / 403 ENTITLEMENT_ERROR) since the 2026-10-17 reset; no Cline review of b3160e0; M6 not started"
       ],
       "next_recommended_task": "Restore the Cline Pass (owner), Cline-review and push b3160e0, then M6 FastAPI service (POST /search, /answer, GET /health), Dockerfile, docker build in CI; Chad re-check of the MINOR fixes"
+    },
+    {
+      "date": "2026-10-20",
+      "project": "production-rag-engine",
+      "milestone": "M6 FastAPI service, Dockerfile, docker build in CI (done)",
+      "work_completed": [
+        "rag_engine.api: GET /health, POST /search, POST /answer over one prebuilt index served read-only from RAG_INDEX_DIR (ADR-0007); /health 200 only while an index is served, 503 with the reason otherwise; a corrupt index aborts startup",
+        "Request schemas reject unknown fields and enforce the CLI's option rules; error contract 422 (schema) / 400 (unservable, e.g. openai generator without RAG_LLM_*) / 503 (no index, missing fastembed) / 502 (generator failed); ValueError during retrieval stays 500; validation errors do not echo input (NaN/Infinity made the default error body invalid JSON)",
+        "RagService is framework-free with injectable reranker/generator factories; rerank uses only RAG_RERANK_MODEL; tests run real hashing-index retrieval with fake rerankers/generators (no model, no network); /search hits checked against rag-engine search --json per mode",
+        "Shared compose_retriever and select_generator now back both the CLI and the service (removed duplicated wiring in cli.py)",
+        "Dockerfile (multi-stage python:3.13-slim, uid 10001, HEALTHCHECK), .dockerignore, compose.yaml (index tool service + read-only api), CI docker job: image build, compose config check, scripts/docker_smoke.sh (hashing index built in the container, served read-only, every endpoint, 503 + failing HEALTHCHECK without an index)",
+        "Local box checks: docker smoke passed; a fastembed index built and served in the container with a read-only root fs (model cache volume) answered dense and hybrid+rerank searches; uvicorn exits (code 3) on a corrupt index. compose.yaml not run end to end (no compose plugin on the box; CI validates config only)",
+        "POST /ingest dropped from M6 (ADR-0007): indexing stays a batch job. No Cline calls (Pass lapsed); code written and self-reviewed by Grok Bot"
+      ],
+      "tests": "CitationNeeded: 759 passed + 9 slow deselected, branch coverage 96.74%, 759 passed with fastembed blocked, also passed on py3.11 locally; ruff lint/format and strict mypy clean; CI green at 9c76f7e (runs/39352567974: py3.11, py3.13, docker build + smoke)",
+      "evaluation": "No new eval runs; no published numbers changed",
+      "commits": [
+        "a5ff323 refactor(cli): share retriever composition and generator selection",
+        "5ed7b5b feat(api): add FastAPI service with /health, /search and /answer",
+        "c434742 build(docker): add service image, compose file and CI smoke test",
+        "9c76f7e docs(api): document the HTTP service and Docker image; mark M6 done"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "Chad reviews M6 (b3160e0..9c76f7e); then M7 hardening (startup warm-up, request logging, extractive heading strip), v1.0.0 and Chad's final REVIEW.md"
     }
   ],
-  "next_recommended_task": "M6 FastAPI service, Dockerfile, image build in CI"
+  "next_recommended_task": "Chad reviews M6 (b3160e0..9c76f7e); then M7 hardening (startup warm-up, request logging, extractive heading strip), v1.0.0 release and Chad's final REVIEW.md"
 }
