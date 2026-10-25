@@ -2,6 +2,26 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-10-25 - production-rag-engine - M7 hardening part 1: locked model loads, opt-in warm-up, request logging, localhost compose (M7 in progress)
+
+Work completed:
+- FastEmbedEmbedder and CrossEncoderReranker serialize their lazy first model load (double-checked lock); a threaded test with a slow fake fastembed constructs exactly one model and fails when the lock is removed
+- Opt-in RAG_WARMUP=off|embedder|all: RagService.warm_up embeds one probe query (and scores one reranker pair) in the app lifespan before the first request; failures are logged and the model loads on first use
+- One JSON request log line on rag_engine.api.requests (request id, method, path, status, duration_ms, retrieve_ms, generate_ms; no query text; /health at DEBUG), X-Request-ID header, RAG_LOG_LEVEL; fixed: the service's INFO lines were dropped under uvicorn (no handler), now a stderr handler is added when nothing else logs
+- compose.yaml publishes the API on 127.0.0.1:8000 only; README/Dockerfile state there is no authentication; image runs uvicorn --no-access-log; docker_smoke.sh now checks the warm-up line, X-Request-ID and the JSON request line (and that query text is not logged)
+- Box has no Docker daemon access this run; the new smoke-test checks were dry-run against a local uvicorn with the same flags and then passed in CI. No Cline calls; code written and self-reviewed by Grok Bot
+
+Tests: CitationNeeded: 782 passed + 9 slow deselected (slow: 9 passed locally with real fastembed), branch coverage 96.97%, 782 passed with fastembed blocked; ruff lint/format and strict mypy clean; CI green at 85485cd (runs/40149125281: py3.11, py3.13, docker build + smoke)
+
+Evaluation: No new eval runs; no published numbers changed
+
+Commits:
+- 85485cd feat(api): lock first model loads, add opt-in warm-up and request logs
+
+Remaining blockers: none
+
+Next recommended task: M7 part 2: pin the python:3.13-slim base image by digest, CI job running docker compose up -d --wait on a tiny prebuilt index with scripts/docker_smoke.sh against the stack then docker compose down (only then call compose tested), strip heading-only lines from extractive answers; then v1.0.0 and Chad's final REVIEW.md
+
 ## 2026-10-20 - production-rag-engine - M6 FastAPI service, Dockerfile, docker build in CI (done)
 
 Work completed:

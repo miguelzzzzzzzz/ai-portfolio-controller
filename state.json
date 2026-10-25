@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-20T01:19:22+00:00",
+  "updated_at": "2026-10-25T01:05:21+00:00",
   "active_project": "production-rag-engine",
   "projects": {
     "production-rag-engine": {
@@ -49,7 +49,7 @@
         {
           "id": "M7",
           "title": "Hardening, documentation, v1.0.0 release",
-          "status": "planned",
+          "status": "in_progress",
           "completed": null
         }
       ],
@@ -163,9 +163,9 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/39352567974",
-        "sha": "9c76f7e",
-        "recorded_at": "2026-10-20T01:19:22+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/40149125281",
+        "sha": "85485cd",
+        "recorded_at": "2026-10-25T01:05:21+00:00"
       },
       "blockers": [],
       "releases": [
@@ -177,7 +177,7 @@
           "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/releases/tag/v0.1.0"
         }
       ],
-      "next_recommended_task": "Chad reviews M6 (b3160e0..9c76f7e); then M7 hardening (startup warm-up, request logging, extractive heading strip), v1.0.0 release and Chad's final REVIEW.md"
+      "next_recommended_task": "M7 part 2: pin the python:3.13-slim base image by digest, CI job running docker compose up -d --wait on a tiny prebuilt index with scripts/docker_smoke.sh against the stack then docker compose down (only then call compose tested), strip heading-only lines from extractive answers; then v1.0.0 and Chad's final REVIEW.md"
     }
   },
   "daily_log": [
@@ -463,7 +463,26 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "Chad reviews M6 (b3160e0..9c76f7e); then M7 hardening (startup warm-up, request logging, extractive heading strip), v1.0.0 and Chad's final REVIEW.md"
+    },
+    {
+      "date": "2026-10-25",
+      "project": "production-rag-engine",
+      "milestone": "M7 hardening part 1: locked model loads, opt-in warm-up, request logging, localhost compose (M7 in progress)",
+      "work_completed": [
+        "FastEmbedEmbedder and CrossEncoderReranker serialize their lazy first model load (double-checked lock); a threaded test with a slow fake fastembed constructs exactly one model and fails when the lock is removed",
+        "Opt-in RAG_WARMUP=off|embedder|all: RagService.warm_up embeds one probe query (and scores one reranker pair) in the app lifespan before the first request; failures are logged and the model loads on first use",
+        "One JSON request log line on rag_engine.api.requests (request id, method, path, status, duration_ms, retrieve_ms, generate_ms; no query text; /health at DEBUG), X-Request-ID header, RAG_LOG_LEVEL; fixed: the service's INFO lines were dropped under uvicorn (no handler), now a stderr handler is added when nothing else logs",
+        "compose.yaml publishes the API on 127.0.0.1:8000 only; README/Dockerfile state there is no authentication; image runs uvicorn --no-access-log; docker_smoke.sh now checks the warm-up line, X-Request-ID and the JSON request line (and that query text is not logged)",
+        "Box has no Docker daemon access this run; the new smoke-test checks were dry-run against a local uvicorn with the same flags and then passed in CI. No Cline calls; code written and self-reviewed by Grok Bot"
+      ],
+      "tests": "CitationNeeded: 782 passed + 9 slow deselected (slow: 9 passed locally with real fastembed), branch coverage 96.97%, 782 passed with fastembed blocked; ruff lint/format and strict mypy clean; CI green at 85485cd (runs/40149125281: py3.11, py3.13, docker build + smoke)",
+      "evaluation": "No new eval runs; no published numbers changed",
+      "commits": [
+        "85485cd feat(api): lock first model loads, add opt-in warm-up and request logs"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "M7 part 2: pin the python:3.13-slim base image by digest, CI job running docker compose up -d --wait on a tiny prebuilt index with scripts/docker_smoke.sh against the stack then docker compose down (only then call compose tested), strip heading-only lines from extractive answers; then v1.0.0 and Chad's final REVIEW.md"
     }
   ],
-  "next_recommended_task": "Chad reviews M6 (b3160e0..9c76f7e); then M7 hardening (startup warm-up, request logging, extractive heading strip), v1.0.0 release and Chad's final REVIEW.md"
+  "next_recommended_task": "M7 part 2: pin the python:3.13-slim base image by digest, CI job running docker compose up -d --wait on a tiny prebuilt index with scripts/docker_smoke.sh against the stack then docker compose down (only then call compose tested), strip heading-only lines from extractive answers; then v1.0.0 and Chad's final REVIEW.md"
 }
