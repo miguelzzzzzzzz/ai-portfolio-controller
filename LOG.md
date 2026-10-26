@@ -2,6 +2,26 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-10-26 - production-rag-engine - M7 hardening part 2: compose smoke test in CI (M7 in progress)
+
+Work completed:
+- scripts/compose_smoke.sh, run in the CI docker job on the image it just built: docker compose run --rm index builds a hashing-embedder index of evals/structured/docs first (no model downloads; /health and the HEALTHCHECK are 503 until an index is served), then docker compose up -d --wait api must turn healthy
+- The compose test also checks the 127.0.0.1:8000 binding (compose port), the read-only root filesystem and the read-only /data/index mount (docker inspect), and ends with docker compose down -v with no containers left; verified in the CI log of runs/40251943970
+- HTTP checks (health, search per mode, extractive answer, 422/400, X-Request-ID, JSON request log without query text) moved into scripts/smoke_lib.sh and shared by docker_smoke.sh and compose_smoke.sh; the shared checks were dry-run against a local uvicorn first; shellcheck clean; compose.yaml takes the image from RAG_IMAGE (default citation-needed:local)
+- README now says compose is tested in CI (hashing index only; the fastembed default of the index service is not exercised in CI). Box still has no Docker daemon access; added a user-local docker compose v2.29.7 plugin for config checks only. No Cline calls; code written and self-reviewed by Grok Bot
+
+Tests: CitationNeeded: 782 passed + 9 slow deselected, branch coverage 96.97%, 782 passed with fastembed blocked; ruff lint/format and strict mypy clean; CI green at 17c3561 (runs/40251943970: py3.11, py3.13, docker build + docker run smoke + compose smoke) and bbbaaa8 (runs/40252065878)
+
+Evaluation: No new eval runs; no published numbers changed
+
+Commits:
+- 17c3561 ci(docker): smoke-test compose.yaml with a prebuilt index and up --wait
+- bbbaaa8 docs(docker): describe the compose smoke test in CI and tick it off
+
+Remaining blockers: none
+
+Next recommended task: M7 part 2 (rest): pin the python:3.13-slim base image by digest; strip Markdown heading lines from extractive answer sentences; then v1.0.0 release notes and Chad's final REVIEW.md
+
 ## 2026-10-25 - production-rag-engine - M7 hardening part 1: locked model loads, opt-in warm-up, request logging, localhost compose (M7 in progress)
 
 Work completed:
