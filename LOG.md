@@ -2,6 +2,28 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-10-27 - production-rag-engine - M7 hardening part 3: extractive heading fix and base image digest pin (M7 code items done; in progress pending release notes and final review)
+
+Work completed:
+- Extractive answers no longer quote Markdown heading lines: for markdown/html chunks (HTML headings are normalized to ATX), ATX heading lines found by the loader's fence-aware scanner are sentence boundaries and dropped; reproduced first with a hashing index of evals/structured/docs (the answer started '# Comparison Sorting Algorithms ## Quicksort ...'), now 'Quicksort partitions around a pivot and recurses on both sides.'
+- Sentence spans are computed directly (no str.find re-search); plain-text, PDF and format-less chunks unchanged; documented limitation: a chunk that starts inside a fenced code block can misread # lines; 7 new tests (exact offsets, HTML, heading-only chunk abstains, heading as boundary, fenced # comments kept, text format kept, repeated sentences)
+- scripts/smoke_lib.sh fails if an /answer answer or quote contains a heading line (runs in both the docker run and compose smoke tests); dry-run against a local uvicorn first
+- Dockerfile: both stages build FROM a PYTHON_IMAGE arg pinned to the python:3.13-slim multi-arch index digest sha256:d3449c04... (resolved 2026-10-27 via docker buildx imagetools inspect); the CI build log shows the pinned digest being pulled; README/CHANGELOG/TODO updated
+- Controller: removed the uv.lock committed by mistake in 74234b2 and ignored it (CI uses pip). No Cline calls; code written and self-reviewed by Grok Bot
+
+Tests: CitationNeeded: 789 passed + 9 slow deselected, branch coverage 96.99%, 789 passed with fastembed blocked; ruff lint/format and strict mypy clean; CI green at ae654b0 (runs/40430680328) and 900575f (runs/40430863608): py3.11, py3.13, docker build + docker run smoke + compose smoke; controller CI green at 0edf72c (runs/40431042361)
+
+Evaluation: No new eval runs; no published numbers changed (the extractive generator is not in any committed report)
+
+Commits:
+- ae654b0 fix(answering): keep Markdown heading lines out of extractive quotes
+- 900575f build(docker): pin the python:3.13-slim base image by digest
+- 0edf72c chore: remove uv.lock committed by mistake in 74234b2 (controller)
+
+Remaining blockers: none
+
+Next recommended task: M7 code items are done: Chad's final review of CitationNeeded at 900575f (REVIEW.md), then v1.0.0 release notes and the v1.0.0 tag after the review passes
+
 ## 2026-10-26 - production-rag-engine - M7 hardening part 2: compose smoke test in CI (M7 in progress)
 
 Work completed:
