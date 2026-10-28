@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-27T01:11:42+00:00",
+  "updated_at": "2026-10-28T01:09:00+00:00",
   "active_project": "production-rag-engine",
   "projects": {
     "production-rag-engine": {
@@ -163,9 +163,9 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/40430863608",
-        "sha": "900575f",
-        "recorded_at": "2026-10-27T01:11:42+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/40613127011",
+        "sha": "977f091",
+        "recorded_at": "2026-10-28T01:09:00+00:00"
       },
       "blockers": [],
       "releases": [
@@ -177,7 +177,7 @@
           "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/releases/tag/v0.1.0"
         }
       ],
-      "next_recommended_task": "M7 part 2 (rest): pin the python:3.13-slim base image by digest; strip Markdown heading lines from extractive answer sentences; then v1.0.0 release notes and Chad's final REVIEW.md"
+      "next_recommended_task": "Chad re-checks the final-review fixes at 977f091 and signs off in REVIEW.md; then finalize CHANGELOG as [1.0.0], bump the README status, tag v1.0.0 and release; then RabbitHole starts local-first"
     }
   },
   "daily_log": [
@@ -522,6 +522,28 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "M7 code items are done: Chad's final review of CitationNeeded at 900575f (REVIEW.md), then v1.0.0 release notes and the v1.0.0 tag after the review passes"
+    },
+    {
+      "date": "2026-10-28",
+      "project": "production-rag-engine",
+      "milestone": "M7 release prep: Chad's final review at 900575f resolved (1 MAJOR, 2 MINOR); v1.0.0 notes drafted, not tagged (M7 in progress pending Chad's re-check)",
+      "work_completed": [
+        "scripts/eval_table.py --report <file>: one report's nDCG@10, MRR@10, Recall/Hit@{1,5,10} per mode, p50/p95 retrieval latency per mode (n/a when missing) and the report's hardware record verbatim; 8 tests incl. a run on the committed report",
+        "README (MAJOR 1): SciFact quality table gains @1/@5 columns (both fastembed reports hold identical metrics); new per-mode latency table from scifact_test_fastembed_20261012T013527Z.json (99f28f6): p95 dense 40.1 ms, lexical 7.7 ms, hybrid 61.4 ms, hybrid+rerank 1751.6 ms; hardware as recorded (platform Linux-6.12.94+-x86_64-with-glibc2.41, processor empty, python 3.13.5, cpu_count 8; no CPU model, not a CI runner); 'per-stage latency' -> 'latency per mode'",
+        "PROJECT_SPEC 8 p95 < 100 ms target (no rerank): met on the recorded machine (hybrid p95 61.4 ms); wording changed from 'on a CI-class CPU' to the machine the report records, since CI runs no models. Spec 7 (MINOR) now describes the code-graded M5 answer run as run and what one latency timing covers (end to end per mode; no per-stage or index build timings)",
+        "README Known limitations (MINOR): heading stripping in extractive answers scans each chunk alone, so a chunk starting inside a fenced code block drops # comment lines and can quote a real heading after the closing fence (verified on the box); also one eval dataset, 30-claim answer eval, exact linear dense search, unauthenticated read-only service",
+        "REVIEW.md: new section for Chad's final review at 900575f with resolutions and commit links; CHANGELOG: v1.0.0 release notes drafted under Unreleased, not tagged. No Cline or other model calls; code written and self-reviewed by Grok Bot"
+      ],
+      "tests": "CitationNeeded: 797 passed + 9 slow deselected, branch coverage 96.99%, 797 passed with fastembed blocked; ruff lint/format and strict mypy clean; CI green at ff1619c (runs/40612949541) and 977f091 (runs/40613127011: py3.11, py3.13, docker build + docker run smoke + compose smoke)",
+      "evaluation": "No new eval runs; README latency and @1/@5 numbers are rendered from the committed 2026-10-12 fastembed report by scripts/eval_table.py --report",
+      "commits": [
+        "aa1427b feat(eval): render @1/@5 metrics, per-mode latency and hardware for one report",
+        "ff1619c docs: add per-mode latency, @1/@5 metrics and known limitations",
+        "9b57c04 docs(review): record Chad's final review at 900575f and its resolutions",
+        "977f091 docs(changelog): draft v1.0.0 release notes (not tagged)"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "Chad re-checks the fixes at 977f091 (latency table vs eval_table.py --report output, spec 8 rewording, known limitations, CHANGELOG draft) and signs off in REVIEW.md; then finalize CHANGELOG as [1.0.0], bump the README status, tag v1.0.0 and release; then RabbitHole starts local-first"
     }
   ],
   "next_recommended_task": "M7 part 2 (rest): pin the python:3.13-slim base image by digest; strip Markdown heading lines from extractive answer sentences; then v1.0.0 release notes and Chad's final REVIEW.md"
