@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-28T01:09:00+00:00",
-  "active_project": "production-rag-engine",
+  "updated_at": "2026-10-29T01:01:56+00:00",
+  "active_project": null,
   "projects": {
     "production-rag-engine": {
-      "status": "in_progress",
+      "status": "complete",
       "title": "Citation Needed",
       "repo": "https://github.com/miguelzzzzzzzz/CitationNeeded",
       "started": "2026-10-09",
-      "completed": null,
+      "completed": "2026-10-29",
       "milestones": [
         {
           "id": "M1",
@@ -49,14 +49,14 @@
         {
           "id": "M7",
           "title": "Hardening, documentation, v1.0.0 release",
-          "status": "in_progress",
-          "completed": null
+          "status": "done",
+          "completed": "2026-10-29"
         }
       ],
       "review": {
-        "last_run": "2026-10-09",
-        "passed": false,
-        "reviewer": "Chad (interface review at 84bce05, re-checked and passed at cdd892e; final review gate still pending after M7); M4 review at 96b3c33 (1 MAJOR, 4 MINOR) resolved in 9f236ba/e718f74/34dd3e5",
+        "last_run": "2026-10-28",
+        "passed": true,
+        "reviewer": "Chad (interface review at 84bce05, re-checked and passed at cdd892e); M4 review at 96b3c33 (1 MAJOR, 4 MINOR) resolved in 9f236ba/e718f74/34dd3e5; final review at 900575f (0 CRITICAL, 1 MAJOR, 2 MINOR) resolved in aa1427b/ff1619c, re-checked and passed at 977f091 on 2026-10-28 with no CRITICAL or MAJOR findings",
         "findings": [
           {
             "severity": "MAJOR",
@@ -148,6 +148,27 @@
             "message": "structured set (3 docs/8 queries) not labeled smoke-only [Chad, M4 review at 96b3c33]",
             "resolved": true,
             "resolved_in": "9f236ba"
+          },
+          {
+            "severity": "MAJOR",
+            "check": "docs",
+            "message": "README had no latency numbers and the spec 8 p95 < 100 ms target was unchecked; README showed only @10 metrics",
+            "resolved": true,
+            "resolved_in": "ff1619c"
+          },
+          {
+            "severity": "MINOR",
+            "check": "docs",
+            "message": "PROJECT_SPEC 7 still said answer quality would be 'not run'",
+            "resolved": true,
+            "resolved_in": "ff1619c"
+          },
+          {
+            "severity": "MINOR",
+            "check": "docs",
+            "message": "README did not list the fenced-code limitation of extractive heading stripping",
+            "resolved": true,
+            "resolved_in": "ff1619c"
           }
         ],
         "interface_review": {
@@ -163,9 +184,9 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/40613127011",
-        "sha": "977f091",
-        "recorded_at": "2026-10-28T01:09:00+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/actions/runs/40797474922",
+        "sha": "b8015f3",
+        "recorded_at": "2026-10-29T01:01:36+00:00"
       },
       "blockers": [],
       "releases": [
@@ -175,9 +196,16 @@
           "commit": "bf0c83b",
           "kind": "pre-1.0 interface release (M1-M3, no eval numbers)",
           "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/releases/tag/v0.1.0"
+        },
+        {
+          "tag": "v1.0.0",
+          "date": "2026-10-29",
+          "commit": "b8015f3",
+          "kind": "full release (M1-M7, passed final review)",
+          "url": "https://github.com/miguelzzzzzzzz/CitationNeeded/tree/v1.0.0"
         }
       ],
-      "next_recommended_task": "Chad re-checks the final-review fixes at 977f091 and signs off in REVIEW.md; then finalize CHANGELOG as [1.0.0], bump the README status, tag v1.0.0 and release; then RabbitHole starts local-first"
+      "next_recommended_task": "Done (v1.0.0). Bogart moves RabbitHole's CitationNeeded pin to @v1.0.0; then start RabbitHole (agentic-research-platform) local-first"
     }
   },
   "daily_log": [
@@ -544,7 +572,27 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "Chad re-checks the fixes at 977f091 (latency table vs eval_table.py --report output, spec 8 rewording, known limitations, CHANGELOG draft) and signs off in REVIEW.md; then finalize CHANGELOG as [1.0.0], bump the README status, tag v1.0.0 and release; then RabbitHole starts local-first"
+    },
+    {
+      "date": "2026-10-29",
+      "project": "production-rag-engine",
+      "milestone": "M7 done: v1.0.0 released (project complete)",
+      "work_completed": [
+        "Chad's re-check of the final-review fixes at 977f091 (2026-10-28) passed with no CRITICAL or MAJOR findings; recorded in REVIEW.md and in state review (final review 1 MAJOR + 2 MINOR added as resolved, review passed)",
+        "Release commit b8015f3: version 1.0.0 in pyproject.toml and rag_engine.__version__ plus tests/test_version.py (matches pyproject); CHANGELOG [Unreleased] -> [1.0.0] - 2026-10-29 with an empty [Unreleased] and compare links; README status v1.0.0 and a note that latency was measured on a VM shared with other bots and can vary with load; PLAN/TODO mark M7 done",
+        "uv.lock is gitignored and untracked in CitationNeeded, so uv lock (no upgrade) changed only the local file and nothing was committed for it",
+        "Annotated tag v1.0.0 on b8015f3 pushed after CI was green; CI triggers only on main pushes and PRs, so the tag ran no workflow. No GitHub release object created",
+        "git diff 977f091 v1.0.0 --stat: 8 files changed, 45 insertions(+), 20 deletions(-) (CHANGELOG.md, PLAN.md, README.md, REVIEW.md, TODO.md, pyproject.toml, src/rag_engine/__init__.py, tests/test_version.py)",
+        "Controller: M7 done, project finalized (status complete, completed 2026-10-29, active_project cleared); run_daily_cycle.py now decides start_next_project agentic-research-platform (RabbitHole), not applied today. No Cline or other model calls"
+      ],
+      "tests": "CitationNeeded: 798 passed + 9 slow deselected, branch coverage 96.99%, 798 passed with fastembed blocked; ruff lint/format and strict mypy clean; CI green at b8015f3 (runs/40797474922: py3.11, py3.13, docker build + docker run smoke + compose smoke)",
+      "evaluation": "No new eval runs; no published numbers changed",
+      "commits": [
+        "b8015f3 chore(release): v1.0.0"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "Bogart moves RabbitHole's CitationNeeded pin to @v1.0.0; then start RabbitHole (agentic-research-platform) local-first via run_daily_cycle.py --apply"
     }
   ],
-  "next_recommended_task": "M7 part 2 (rest): pin the python:3.13-slim base image by digest; strip Markdown heading lines from extractive answer sentences; then v1.0.0 release notes and Chad's final REVIEW.md"
+  "next_recommended_task": "Start RabbitHole (agentic-research-platform, 02): run_daily_cycle.py --apply registers it; first Bogart moves the staged docs' CitationNeeded pin to @v1.0.0"
 }

@@ -8,7 +8,7 @@ witty display names. The catalog id stays the stable key used by the scripts
 
 | # | Title | Repo | Catalog id | Status | Demonstrates |
 | --- | --- | --- | --- | --- | --- |
-| 01 | Citation Needed | [CitationNeeded](https://github.com/miguelzzzzzzzz/CitationNeeded) | `production-rag-engine` | in progress | RAG, chunking, embeddings, hybrid BM25 + vector search, reranking, retrieval evals, FastAPI, Docker |
+| 01 | Citation Needed | [CitationNeeded](https://github.com/miguelzzzzzzzz/CitationNeeded) | `production-rag-engine` | complete (v1.0.0, 2026-10-29) | RAG, chunking, embeddings, hybrid BM25 + vector search, reranking, retrieval evals, FastAPI, Docker |
 | 02 | Rabbit Hole | `RabbitHole` (not created) | `agentic-research-platform` | queued (docs staged) | agents, planning, typed tool registry and routing, multi-step tool use, budgets/retries/timeouts, guardrails, cited answers, tracing, trajectory evals with fault injection |
 | 03 | Trust Issues | `TrustIssues` (not created) | `llm-evaluation-lab` | queued (docs staged) | reusable LLM eval framework: JSONL datasets, multiple models/prompts, deterministic and model-based evaluators, structured-output validation, hallucination checks, latency/token/cost measurement, experiment comparison, regression detection, HTML/Markdown reports |
 | 04 | Paper Trail | `PaperTrail` (not created) | `multimodal-document-intelligence` | queued | structured extraction from invoices, receipts, contracts, forms, and financial statements: classification, OCR/vision, validation, confidence scoring, JSON output, pydantic schemas, malformed-document handling, extraction-accuracy evals, API |

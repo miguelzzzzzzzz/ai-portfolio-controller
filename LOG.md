@@ -2,6 +2,27 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-10-29 - production-rag-engine - M7 done: v1.0.0 released (project complete)
+
+Work completed:
+- Chad's re-check of the final-review fixes at 977f091 (2026-10-28) passed with no CRITICAL or MAJOR findings; recorded in REVIEW.md and in state review (final review 1 MAJOR + 2 MINOR added as resolved, review passed)
+- Release commit b8015f3: version 1.0.0 in pyproject.toml and rag_engine.__version__ plus tests/test_version.py (matches pyproject); CHANGELOG [Unreleased] -> [1.0.0] - 2026-10-29 with an empty [Unreleased] and compare links; README status v1.0.0 and a note that latency was measured on a VM shared with other bots and can vary with load; PLAN/TODO mark M7 done
+- uv.lock is gitignored and untracked in CitationNeeded, so uv lock (no upgrade) changed only the local file and nothing was committed for it
+- Annotated tag v1.0.0 on b8015f3 pushed after CI was green; CI triggers only on main pushes and PRs, so the tag ran no workflow. No GitHub release object created
+- git diff 977f091 v1.0.0 --stat: 8 files changed, 45 insertions(+), 20 deletions(-) (CHANGELOG.md, PLAN.md, README.md, REVIEW.md, TODO.md, pyproject.toml, src/rag_engine/__init__.py, tests/test_version.py)
+- Controller: M7 done, project finalized (status complete, completed 2026-10-29, active_project cleared); run_daily_cycle.py now decides start_next_project agentic-research-platform (RabbitHole), not applied today. No Cline or other model calls
+
+Tests: CitationNeeded: 798 passed + 9 slow deselected, branch coverage 96.99%, 798 passed with fastembed blocked; ruff lint/format and strict mypy clean; CI green at b8015f3 (runs/40797474922: py3.11, py3.13, docker build + docker run smoke + compose smoke)
+
+Evaluation: No new eval runs; no published numbers changed
+
+Commits:
+- b8015f3 chore(release): v1.0.0
+
+Remaining blockers: none
+
+Next recommended task: Bogart moves RabbitHole's CitationNeeded pin to @v1.0.0; then start RabbitHole (agentic-research-platform) local-first via run_daily_cycle.py --apply
+
 ## 2026-10-28 - production-rag-engine - M7 release prep: Chad's final review at 900575f resolved (1 MAJOR, 2 MINOR); v1.0.0 notes drafted, not tagged (M7 in progress pending Chad's re-check)
 
 Work completed:
