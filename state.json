@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-29T01:01:56+00:00",
-  "active_project": null,
+  "updated_at": "2026-10-30T01:14:24+00:00",
+  "active_project": "agentic-research-platform",
   "projects": {
     "production-rag-engine": {
       "status": "complete",
@@ -206,6 +206,70 @@
         }
       ],
       "next_recommended_task": "Done (v1.0.0). Bogart moves RabbitHole's CitationNeeded pin to @v1.0.0; then start RabbitHole (agentic-research-platform) local-first"
+    },
+    "agentic-research-platform": {
+      "status": "in_progress",
+      "title": "Rabbit Hole",
+      "repo": "https://github.com/miguelzzzzzzzz/RabbitHole",
+      "started": "2026-10-30",
+      "completed": null,
+      "milestones": [
+        {
+          "id": "M1",
+          "title": "Scaffold, tool contracts, registry, calculator, trace schema, local runtime and tool-calling probe",
+          "status": "in_progress",
+          "completed": null
+        },
+        {
+          "id": "M2",
+          "title": "Agent loop, run state, budgets, timeouts/retries, scripted provider",
+          "status": "planned",
+          "completed": null
+        },
+        {
+          "id": "M3",
+          "title": "Research tools on the project-01 retriever, citations, guardrails",
+          "status": "planned",
+          "completed": null
+        },
+        {
+          "id": "M4",
+          "title": "Task suites, graders, eval runner, oracle and heuristic baselines",
+          "status": "planned",
+          "completed": null
+        },
+        {
+          "id": "M5",
+          "title": "Local LLM policy (Qwen3-1.7B, default), call parsing/repair, optional hosted backend, record/replay, baseline run",
+          "status": "planned",
+          "completed": null
+        },
+        {
+          "id": "M6",
+          "title": "Fault injection, failure taxonomy, baselines and ablations",
+          "status": "planned",
+          "completed": null
+        },
+        {
+          "id": "M7",
+          "title": "Container, CI image smoke eval, docs, v0.1.0 release",
+          "status": "planned",
+          "completed": null
+        }
+      ],
+      "review": {
+        "last_run": null,
+        "passed": false,
+        "findings": []
+      },
+      "last_ci": {
+        "conclusion": "success",
+        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/40984350448",
+        "sha": "1d77568",
+        "recorded_at": "2026-10-30T01:12:57+00:00"
+      },
+      "blockers": [],
+      "next_recommended_task": "RabbitHole M1: calculator tool (AST whitelist, table-driven rejections, hypothesis agreement tests), trace schema v1 + JSONL round-trip, arp tools schema; then local runtime install, arp doctor, and the frozen tool-calling probe"
     }
   },
   "daily_log": [
@@ -592,7 +656,30 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "Bogart moves RabbitHole's CitationNeeded pin to @v1.0.0; then start RabbitHole (agentic-research-platform) local-first via run_daily_cycle.py --apply"
+    },
+    {
+      "date": "2026-10-30",
+      "project": "agentic-research-platform",
+      "milestone": "M1 in progress: repo created, planning docs, scaffold + CI, tool contracts and registry",
+      "work_completed": [
+        "run_daily_cycle.py --apply: started agentic-research-platform (RabbitHole) as the active project (started 2026-10-30)",
+        "Created public repo miguelzzzzzzzz/RabbitHole via the GitHub API",
+        "e3c128d: Bogart's staged docs as the first commit; ADRS.md split into docs/adr/0001-0009 + index (status Accepted 2026-10-30), staged planning-history changelog moved verbatim to docs/planning-history.md, spec status updated, minimal README, LICENSE",
+        "e06c17c: package scaffold (agentic_research, arp --version), ruff (Markdown excluded from format), strict mypy, pytest with 96% branch-coverage floor, autouse network guard, CI on py3.11 + py3.13",
+        "1d77568: Tool protocol, ToolArgs/ToolOutput, ToolContext, ToolResult, ToolError with the 5 ADR-0006 error classes, RetryPolicy (transient/timeout only, capped backoff, seeded jitter); ToolRegistry with validated registration, OpenAI tools-schema export checked against the JSON Schema meta-schema, and invalid_args/bad_output errors instead of exceptions; mypy now checks tests",
+        "Controller: ADR-016 note (local-first exception while Cline is off), portfolio.yaml comment + RabbitHole milestone titles synced to its PLAN, PROJECT_QUEUE row, M1 in_progress. No Cline or other model calls"
+      ],
+      "tests": "RabbitHole: 109 passed, branch coverage 100% (floor 96%), ruff lint/format and strict mypy (src + tests) clean, locally on py3.11 and py3.13; CI green at e06c17c (runs/40983948869) and 1d77568 (runs/40984350448); ai-portfolio-controller: 37 passed, CI green at 4a327f5 (runs/40984536939); e3c128d is docs-only and predates the workflow (no CI run). fastembed-blocked run not applicable (no fastembed dependency yet)",
+      "evaluation": "Not run. No model, probe, or eval runs; no numbers published",
+      "commits": [
+        "RabbitHole e3c128d docs: add project spec, milestone plan, and architecture decision records",
+        "RabbitHole e06c17c chore: scaffold package, quality gates, and CI pipeline",
+        "RabbitHole 1d77568 feat(tools): add typed tool contracts and a validating tool registry",
+        "ai-portfolio-controller 4a327f5 docs(adr): note the local-first exception to ADR-016 while Cline is off"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "M1: calculator tool (AST whitelist, table-driven rejections, hypothesis agreement tests), trace schema v1 + JSONL round-trip, arp tools schema command; then the local runtime install, arp doctor, and the frozen tool-calling probe"
     }
   ],
-  "next_recommended_task": "Start RabbitHole (agentic-research-platform, 02): run_daily_cycle.py --apply registers it; first Bogart moves the staged docs' CitationNeeded pin to @v1.0.0"
+  "next_recommended_task": "RabbitHole M1: calculator tool (AST whitelist, table-driven rejections, hypothesis agreement tests), trace schema v1 + JSONL round-trip, arp tools schema; then local runtime install, arp doctor, and the frozen tool-calling probe"
 }

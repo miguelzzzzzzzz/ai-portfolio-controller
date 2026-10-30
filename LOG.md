@@ -2,6 +2,30 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-10-30 - agentic-research-platform - M1 in progress: repo created, planning docs, scaffold + CI, tool contracts and registry
+
+Work completed:
+- run_daily_cycle.py --apply: started agentic-research-platform (RabbitHole) as the active project (started 2026-10-30)
+- Created public repo miguelzzzzzzzz/RabbitHole via the GitHub API
+- e3c128d: Bogart's staged docs as the first commit; ADRS.md split into docs/adr/0001-0009 + index (status Accepted 2026-10-30), staged planning-history changelog moved verbatim to docs/planning-history.md, spec status updated, minimal README, LICENSE
+- e06c17c: package scaffold (agentic_research, arp --version), ruff (Markdown excluded from format), strict mypy, pytest with 96% branch-coverage floor, autouse network guard, CI on py3.11 + py3.13
+- 1d77568: Tool protocol, ToolArgs/ToolOutput, ToolContext, ToolResult, ToolError with the 5 ADR-0006 error classes, RetryPolicy (transient/timeout only, capped backoff, seeded jitter); ToolRegistry with validated registration, OpenAI tools-schema export checked against the JSON Schema meta-schema, and invalid_args/bad_output errors instead of exceptions; mypy now checks tests
+- Controller: ADR-016 note (local-first exception while Cline is off), portfolio.yaml comment + RabbitHole milestone titles synced to its PLAN, PROJECT_QUEUE row, M1 in_progress. No Cline or other model calls
+
+Tests: RabbitHole: 109 passed, branch coverage 100% (floor 96%), ruff lint/format and strict mypy (src + tests) clean, locally on py3.11 and py3.13; CI green at e06c17c (runs/40983948869) and 1d77568 (runs/40984350448); ai-portfolio-controller: 37 passed, CI green at 4a327f5 (runs/40984536939); e3c128d is docs-only and predates the workflow (no CI run). fastembed-blocked run not applicable (no fastembed dependency yet)
+
+Evaluation: Not run. No model, probe, or eval runs; no numbers published
+
+Commits:
+- RabbitHole e3c128d docs: add project spec, milestone plan, and architecture decision records
+- RabbitHole e06c17c chore: scaffold package, quality gates, and CI pipeline
+- RabbitHole 1d77568 feat(tools): add typed tool contracts and a validating tool registry
+- ai-portfolio-controller 4a327f5 docs(adr): note the local-first exception to ADR-016 while Cline is off
+
+Remaining blockers: none
+
+Next recommended task: M1: calculator tool (AST whitelist, table-driven rejections, hypothesis agreement tests), trace schema v1 + JSONL round-trip, arp tools schema command; then the local runtime install, arp doctor, and the frozen tool-calling probe
+
 ## 2026-10-29 - production-rag-engine - M7 done: v1.0.0 released (project complete)
 
 Work completed:
