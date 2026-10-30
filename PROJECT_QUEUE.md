@@ -9,7 +9,7 @@ witty display names. The catalog id stays the stable key used by the scripts
 | # | Title | Repo | Catalog id | Status | Demonstrates |
 | --- | --- | --- | --- | --- | --- |
 | 01 | Citation Needed | [CitationNeeded](https://github.com/miguelzzzzzzzz/CitationNeeded) | `production-rag-engine` | complete (v1.0.0, 2026-10-29) | RAG, chunking, embeddings, hybrid BM25 + vector search, reranking, retrieval evals, FastAPI, Docker |
-| 02 | Rabbit Hole | `RabbitHole` (not created) | `agentic-research-platform` | queued (docs staged) | agents, planning, typed tool registry and routing, multi-step tool use, budgets/retries/timeouts, guardrails, cited answers, tracing, trajectory evals with fault injection |
+| 02 | Rabbit Hole | [RabbitHole](https://github.com/miguelzzzzzzzz/RabbitHole) | `agentic-research-platform` | active (started 2026-10-30, M1 in progress; local-first, ADR-016 note) | agents, planning, typed tool registry and routing, multi-step tool use, budgets/retries/timeouts, guardrails, cited answers, tracing, trajectory evals with fault injection |
 | 03 | Trust Issues | `TrustIssues` (not created) | `llm-evaluation-lab` | queued (docs staged) | reusable LLM eval framework: JSONL datasets, multiple models/prompts, deterministic and model-based evaluators, structured-output validation, hallucination checks, latency/token/cost measurement, experiment comparison, regression detection, HTML/Markdown reports |
 | 04 | Paper Trail | `PaperTrail` (not created) | `multimodal-document-intelligence` | queued | structured extraction from invoices, receipts, contracts, forms, and financial statements: classification, OCR/vision, validation, confidence scoring, JSON output, pydantic schemas, malformed-document handling, extraction-accuracy evals, API |
 | 05 | Sus Transactions | `SusTransactions` (not created) | `mlops-fraud-detection` | queued | feature engineering, baseline vs XGBoost/LightGBM, experiment tracking, model versioning, inference API, Docker, CI, monitoring and drift detection; precision/recall/F1/PR-AUC/ROC-AUC and latency |
@@ -19,10 +19,10 @@ witty display names. The catalog id stays the stable key used by the scripts
 | 09 | Interrupt Me | `InterruptMe` (not created) | `voice-ai-agent` | queued | audio to STT to agent/tool calling to TTS; streaming, interruption handling, session state, error recovery, end-to-end latency |
 | 10 | Quant Leap | `QuantLeap` (not created) | `ai-inference-benchmark` | queued | CPU llama.cpp benchmarks across quantization, batching, and concurrency on documented hardware; TTFT, tokens/sec, memory, throughput, latency; executed runs only, no GPU results |
 
-Planner docs (PROJECT_SPEC, PLAN, ADRs, TODO, CHANGELOG) are staged on the box
-for 02 in `/workspace/p02-agentic-research-platform/` and for 03 in
-`/workspace/p03-llm-evaluation-lab/`. Each repository is created only when its
-project starts.
+Planner docs (PROJECT_SPEC, PLAN, ADRs, TODO, CHANGELOG) for 03 are staged on
+the box in `/workspace/p03-llm-evaluation-lab/`. 02's docs were committed as
+RabbitHole's first commit on 2026-10-30. Each repository is created only when
+its project starts.
 
 ## Overlap check
 

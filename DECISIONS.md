@@ -442,7 +442,7 @@ and each README states its hardware limits explicitly.
 
 ## ADR-016: Cline DeepSeek v4.1 is the default LLM; local models are the free fallback
 
-Status: Accepted (2026-10-09). Amends ADR-008; supersedes the zero-spend parts of ADR-002 and ADR-011 for Cline DeepSeek only. Amended 2026-10-09 (see "Amendment: Cline Pass billing" below): the model id is `cline-pass/deepseek-v4.1-flash`.
+Status: Accepted (2026-10-09). Amends ADR-008; supersedes the zero-spend parts of ADR-002 and ADR-011 for Cline DeepSeek only. Amended 2026-10-09 (see "Amendment: Cline Pass billing" below): the model id is `cline-pass/deepseek-v4.1-flash`. Note 2026-10-30 (see "Note: local-first exception while Cline is off" below): local models are the effective default until the owner re-enables Cline.
 
 Reason: On 2026-10-09 the owner authorized Cline DeepSeek v4.1, on a free or
 paid Cline Pass, as the default LLM for every project, with unlimited usage
@@ -533,3 +533,29 @@ Decision:
   use `max_tokens` of 16,000-24,000 for code and keep prompts to one file or
   one focused task. Prompts that asked for large, many-part outputs failed
   this way and succeeded once split.
+
+### Note (2026-10-30): local-first exception while Cline is off
+
+Context: the owner turned Cline off (Pass lapsed; "forget about Cline for
+now" on 2026-10-20, confirmed as "off until the owner says otherwise" on
+2026-10-25). Daily cycles since then have made no Cline calls. This note does not
+change the decision above; it records how it applies while Cline is off.
+
+- **No Cline calls** from any agent, cycle, or CI job until the owner
+  re-enables Cline. Code is written and self-reviewed by the executor and
+  reviewed by Chad at milestones, without Cline.
+- **Local-first default:** ADR-008's local path (small models of about 1.7B
+  parameters or fewer behind an OpenAI-compatible server on the CPU-only
+  box) is the effective default for any project that needs a live model.
+  `portfolio.yaml` keeps the Cline settings under `llm.default` for when it
+  returns; until then `llm.fallback` is what projects use.
+- **RabbitHole (02)** records this as project ADR-0009: the default policy
+  model is Qwen3-1.7B (GGUF Q4_K_M) on CPU through Ollama or llama.cpp
+  `llama-server`, every headline number comes from that local model, and the
+  hosted OpenAI-compatible backend is an optional extra whose runs are
+  reported as "not run" and are never headline-eligible.
+- **Later projects** that start while Cline is off follow the same rule in
+  their own ADRs.
+- **If Cline returns:** this note is revisited. Local results already
+  published stay the headline for their projects; hosted results are added
+  as separately labelled extras unless a new ADR says otherwise.

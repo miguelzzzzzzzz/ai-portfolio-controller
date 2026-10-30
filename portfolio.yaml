@@ -19,6 +19,8 @@ policies:
 
 llm:
   # ADR-016 (amends ADR-008). The owner authorized unlimited Cline usage on 2026-10-09.
+  # Cline is off until the owner re-enables it (ADR-016 note, 2026-10-30): no Cline
+  # calls; `fallback` (local, ADR-008) is the effective default.
   default:
     provider: cline
     model: cline-pass/deepseek-v4.1-flash  # billed to the owner's Cline Pass; never the plain deepseek/ id (credits)
@@ -86,13 +88,12 @@ projects:
       retriever, budgets/timeouts/retries, guardrails, verified span citations,
       JSONL tracing, and programmatic trajectory evals with fault injection.
     skills: [agents, tool-calling, orchestration, guardrails, observability, evaluation, testing]
-    staged_docs: /workspace/p02-agentic-research-platform  # repo created only after 01 completes
     milestones:
-      - {id: M1, title: "Scaffold, tool contracts, registry, calculator, trace schema"}
+      - {id: M1, title: "Scaffold, tool contracts, registry, calculator, trace schema, local runtime and tool-calling probe"}
       - {id: M2, title: "Agent loop, run state, budgets, timeouts/retries, scripted provider"}
       - {id: M3, title: "Research tools on the project-01 retriever, citations, guardrails"}
       - {id: M4, title: "Task suites, graders, eval runner, oracle and heuristic baselines"}
-      - {id: M5, title: "OpenAI-compatible local-model provider, call parsing/repair, record/replay"}
+      - {id: M5, title: "Local LLM policy (Qwen3-1.7B, default), call parsing/repair, optional hosted backend, record/replay, baseline run"}
       - {id: M6, title: "Fault injection, failure taxonomy, baselines and ablations"}
       - {id: M7, title: "Container, CI image smoke eval, docs, v0.1.0 release"}
 

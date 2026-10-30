@@ -112,7 +112,10 @@ def test_project_02_uses_the_planners_milestones(
     )
     titles = [m["title"] for m in project["milestones"]]
     assert len(titles) == 7
-    assert titles[0] == "Scaffold, tool contracts, registry, calculator, trace schema"
+    assert titles[0] == (
+        "Scaffold, tool contracts, registry, calculator, trace schema, "
+        "local runtime and tool-calling probe"
+    )
     assert titles[-1] == "Container, CI image smoke eval, docs, v0.1.0 release"
 
 
