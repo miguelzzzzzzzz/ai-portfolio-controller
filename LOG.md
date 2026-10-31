@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-10-31 - agentic-research-platform - M1 in progress: calculator tool
+
+Work completed:
+- 8a755c1: calculator tool (agentic_research.tools.calculator): AST-whitelist evaluator (int/float literals, + - * / // % **, unary +/-, pi and e, 14 allowlisted functions, positional args only), never eval/exec; bounded instead of cancelled per ADR-0006: 500 chars, 200 AST nodes, depth 100, ints up to 1000 bits checked after every op, ** refused before computing, finite real results only
+- Rejections carry reason codes (syntax_error, disallowed_syntax, unknown_name, unknown_function, bad_function_args, exponent_too_large, result_too_large, non_finite_result, complex_result, division_by_zero, math_domain_error, too_long, too_complex) and surface as invalid_args via the new ToolFailure exception (M2 executor maps it to ToolResult.failure); no retries; parser warnings silenced so outcomes do not depend on -W flags
+- Tests: table-driven rejections (names, attributes, calls outside the allowlist, huge exponents, lambdas, comprehensions, etc.), hand-computed cases, hypothesis agreement with CPython arithmetic (400 examples in CI; 20,000-example local stress run passed), fuzzing that input never crashes, registry schema/arg/output round-trip; hypothesis added to the dev extra
+- Self-review found and fixed before push: CalculatorError subclassing ValueError was swallowed as math_domain_error; depth 32 rejected sums of 33+ terms (raised to 100); subnormal-float overflow in the property strategy; parser SyntaxWarning/DeprecationWarning leakage. No Cline or other model calls
+
+Tests: RabbitHole: 250 passed, branch coverage 100% (floor 96%), ruff lint/format and strict mypy clean, locally on py3.11 and py3.13 (also with -W error); CI green at 8a755c1 (runs/41153816466: py3.11, py3.13). fastembed-blocked run not applicable (no fastembed dependency)
+
+Evaluation: Not run. No model, probe, or eval runs; no numbers published
+
+Commits:
+- RabbitHole 8a755c1 feat(tools): add a bounded AST-whitelist calculator tool
+
+Remaining blockers: none
+
+Next recommended task: M1: trace schema v1 (RunSpan/StepSpan/ProviderCallSpan/ToolCallSpan, parse_failures, JSONL writer/reader, round-trip + schema_version mismatch tests); then arp tools schema, .env.example/README skeleton, local runtime install, arp doctor, provider, JSON-in-text parser, probe freeze + run
+
 ## 2026-10-30 - agentic-research-platform - M1 in progress: repo created, planning docs, scaffold + CI, tool contracts and registry
 
 Work completed:

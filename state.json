@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-30T01:14:24+00:00",
+  "updated_at": "2026-10-31T01:09:49+00:00",
   "active_project": "agentic-research-platform",
   "projects": {
     "production-rag-engine": {
@@ -264,12 +264,12 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/40984350448",
-        "sha": "1d77568",
-        "recorded_at": "2026-10-30T01:12:57+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/41153816466",
+        "sha": "8a755c1",
+        "recorded_at": "2026-10-31T01:09:49+00:00"
       },
       "blockers": [],
-      "next_recommended_task": "RabbitHole M1: calculator tool (AST whitelist, table-driven rejections, hypothesis agreement tests), trace schema v1 + JSONL round-trip, arp tools schema; then local runtime install, arp doctor, and the frozen tool-calling probe"
+      "next_recommended_task": "RabbitHole M1: trace schema v1 + JSONL round-trip, arp tools schema, .env.example/README skeleton; then local runtime install, arp doctor, minimal provider, JSON-in-text parser, and the frozen tool-calling probe"
     }
   },
   "daily_log": [
@@ -679,7 +679,25 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "M1: calculator tool (AST whitelist, table-driven rejections, hypothesis agreement tests), trace schema v1 + JSONL round-trip, arp tools schema command; then the local runtime install, arp doctor, and the frozen tool-calling probe"
+    },
+    {
+      "date": "2026-10-31",
+      "project": "agentic-research-platform",
+      "milestone": "M1 in progress: calculator tool",
+      "work_completed": [
+        "8a755c1: calculator tool (agentic_research.tools.calculator): AST-whitelist evaluator (int/float literals, + - * / // % **, unary +/-, pi and e, 14 allowlisted functions, positional args only), never eval/exec; bounded instead of cancelled per ADR-0006: 500 chars, 200 AST nodes, depth 100, ints up to 1000 bits checked after every op, ** refused before computing, finite real results only",
+        "Rejections carry reason codes (syntax_error, disallowed_syntax, unknown_name, unknown_function, bad_function_args, exponent_too_large, result_too_large, non_finite_result, complex_result, division_by_zero, math_domain_error, too_long, too_complex) and surface as invalid_args via the new ToolFailure exception (M2 executor maps it to ToolResult.failure); no retries; parser warnings silenced so outcomes do not depend on -W flags",
+        "Tests: table-driven rejections (names, attributes, calls outside the allowlist, huge exponents, lambdas, comprehensions, etc.), hand-computed cases, hypothesis agreement with CPython arithmetic (400 examples in CI; 20,000-example local stress run passed), fuzzing that input never crashes, registry schema/arg/output round-trip; hypothesis added to the dev extra",
+        "Self-review found and fixed before push: CalculatorError subclassing ValueError was swallowed as math_domain_error; depth 32 rejected sums of 33+ terms (raised to 100); subnormal-float overflow in the property strategy; parser SyntaxWarning/DeprecationWarning leakage. No Cline or other model calls"
+      ],
+      "tests": "RabbitHole: 250 passed, branch coverage 100% (floor 96%), ruff lint/format and strict mypy clean, locally on py3.11 and py3.13 (also with -W error); CI green at 8a755c1 (runs/41153816466: py3.11, py3.13). fastembed-blocked run not applicable (no fastembed dependency)",
+      "evaluation": "Not run. No model, probe, or eval runs; no numbers published",
+      "commits": [
+        "RabbitHole 8a755c1 feat(tools): add a bounded AST-whitelist calculator tool"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "M1: trace schema v1 (RunSpan/StepSpan/ProviderCallSpan/ToolCallSpan, parse_failures, JSONL writer/reader, round-trip + schema_version mismatch tests); then arp tools schema, .env.example/README skeleton, local runtime install, arp doctor, provider, JSON-in-text parser, probe freeze + run"
     }
   ],
-  "next_recommended_task": "RabbitHole M1: calculator tool (AST whitelist, table-driven rejections, hypothesis agreement tests), trace schema v1 + JSONL round-trip, arp tools schema; then local runtime install, arp doctor, and the frozen tool-calling probe"
+  "next_recommended_task": "RabbitHole M1: trace schema v1 + JSONL round-trip, arp tools schema, .env.example/README skeleton; then local runtime install, arp doctor, minimal provider, JSON-in-text parser, and the frozen tool-calling probe"
 }
