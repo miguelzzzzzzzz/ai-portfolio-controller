@@ -2,6 +2,28 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-01 - agentic-research-platform - M1 in progress: trace schema v1 and arp tools schema
+
+Work completed:
+- 24f6c9a: trace schema v1 (agentic_research.trace, ADR-0008): JSONL file = header line (schema_version 1, run_id, tz-aware started_at, generator) + one span per line: run (question, provider/model, tool_format, status answered/abstained/budget_exhausted/failed with answer/error rules, budget_used + budget_limits, parse_failures), step, provider_call (tokens, finish_reason, optional parse_failure reason code, error; not both), tool_call (arguments + exactly one of output/error, attempt); monotonic start_s/end_s since run start; span events (for later guardrail flags)
+- Trace invariants: exactly one root run span, unique span ids, parent kinds (step->run, provider/tool->step), contiguous step indexes, run.parse_failures equals provider calls with a parse_failure; NaN/inf in JSON payloads rejected (pydantic would write null and break the round-trip)
+- write_trace (atomic temp+rename, no temp left on failure), TraceWriter (exclusive create, one flushed line per finished span, duplicate-id guard), read_trace/loads_trace: schema_version checked first -> TraceSchemaVersionError naming found and supported versions (bool True not accepted as 1); other errors TraceError with line number; missing run span reported as incomplete; splits on \n only so U+2028/NEL inside strings are safe; CRLF files read
+- Tests: write-then-read identical object and byte-identical text (fixture includes a span from a real calculator run, a parse failure, a timeout + retry), hypothesis round-trip property, version-mismatch table, malformed-file table, invalid-tree table, span field rules
+- b39fc84: arp tools schema [--tool NAME] printing tools.builtin.default_registry() (calculator for now) in OpenAI tools format; tests validate against the JSON Schema 2020-12 meta-schema, check printed schema accepts/rejects the same args as the registry, unknown tool exits 2, and python -m entry point runs
+- Self-review fixes before push: SpanError.from_tool_error truncates messages to the 2000-char span limit (would otherwise raise on long tool messages); removed a no-op CRLF test; covered the no-trailing-newline branch. No Cline or other model calls
+
+Tests: RabbitHole: 328 passed, branch coverage 100% (floor 96%), ruff lint/format and strict mypy clean, locally on py3.11 and py3.13 (also -W error); CI green at 24f6c9a (runs/41259467988) and b39fc84 (runs/41259539370), py3.11 + py3.13. fastembed-blocked run not applicable (no fastembed dependency)
+
+Evaluation: Not run. No model, probe, or eval runs; no numbers published
+
+Commits:
+- RabbitHole 24f6c9a feat(trace): add trace schema v1 with JSONL writer, reader, and round-trip tests
+- RabbitHole b39fc84 feat(cli): add arp tools schema to print OpenAI-format tool definitions
+
+Remaining blockers: none
+
+Next recommended task: M1: .env.example + README skeleton (architecture/usage/evaluation 'not run'); then local runtime install + pin (Qwen3-1.7B Q4_K_M, watch box RAM), arp doctor memory preflight, minimal OpenAICompatibleProvider, JSON-in-text parser, probe freeze commit, probe run
+
 ## 2026-10-31 - agentic-research-platform - M1 in progress: calculator tool
 
 Work completed:
