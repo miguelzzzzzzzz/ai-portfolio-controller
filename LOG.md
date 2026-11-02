@@ -2,6 +2,26 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-02 - agentic-research-platform - M1 in progress: .env.example, README skeleton, and the pinned local runtime
+
+Work completed:
+- 4337ee6: .env.example listing every PROJECT_SPEC section 11 variable with comments and empty secrets; tests parse it strictly and check it lists exactly the ARP_* names mentioned in the spec, plan, ADRs, and README, that secrets (CLINE_API_KEY) are empty, and the spec's fixed defaults. README skeleton: status, architecture table marking what is built, usage of the current CLI, evaluation table with every run (hosted included) marked not run
+- 959a7e0: local runtime installed on the box and pinned in docs/local-models.md: llama.cpp llama-server b12032 CPU build (commit dde879bc4, asset sha256 9f10432c... = GitHub digest) serving Qwen3-1.7B Q4_K_M from unsloth/Qwen3-1.7B-GGUF @ d7f544e (GGUF sha256 b139949c... = HF LFS oid; official Qwen repo has only Q8_0, too big for the box), ctx 4096, alias Qwen3-1.7B-Q4_K_M on 127.0.0.1:8080, --jinja, -np 1, --cache-ram 0
+- scripts/local_runtime.sh install|verify|serve: sha256-verified downloads (cached files reused, corrupted ones re-fetched; fresh install into an empty dir tested), version check, pinned serve flags; shellcheck clean. Tests keep script pins, doc, and .env.example in sync and run the refusal paths offline; one slow test (passed on the box) checks the running server serves the pinned id
+- Found while installing: this llama.cpp build defaults to a RAM prompt cache of up to 8 GiB (disabled) and port 9931 (port now explicit); weights are repacked for AMX, so the server reports about 1.8 GiB (1067.9 repacked + 243.4 mapped + 448 KV + 60 compute MiB), more than GGUF + KV; recorded as input for arp doctor. Non-thinking mode via chat_template_kwargs enable_thinking=false checked with one smoke message. No tool-call prompts sent before the probe freeze. Server stopped after checks to free box RAM. No Cline or other paid model calls
+
+Tests: RabbitHole: 374 passed + 1 slow deselected (slow passed locally against the live server), branch coverage 100% (floor 96%), ruff lint/format and strict mypy clean; CI green at 4337ee6 (runs/41370744594) and 959a7e0 (runs/41371233083), py3.11 + py3.13. fastembed-blocked run not applicable (no fastembed dependency)
+
+Evaluation: Not run. No probe or eval runs; docs hold only pins and the server's reported memory buffers, no performance numbers
+
+Commits:
+- RabbitHole 4337ee6 docs: add .env.example and README skeleton with not-run evaluation table
+- RabbitHole 959a7e0 build(runtime): pin llama.cpp llama-server and Qwen3-1.7B Q4_K_M for local runs
+
+Remaining blockers: none
+
+Next recommended task: M1: arp doctor (MemAvailable vs reported model+KV+compute buffers + ARP_MIN_FREE_MB, /v1/models check, fake /proc/meminfo tests); then minimal OpenAICompatibleProvider (httpx MockTransport tests + one slow test against the real local Qwen), JSON-in-text parser, probe freeze commit, probe run; then Chad's M1 review
+
 ## 2026-11-01 - agentic-research-platform - M1 in progress: trace schema v1 and arp tools schema
 
 Work completed:

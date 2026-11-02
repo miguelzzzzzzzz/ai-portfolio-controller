@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-01T01:05:59+00:00",
+  "updated_at": "2026-11-02T01:13:44+00:00",
   "active_project": "agentic-research-platform",
   "projects": {
     "production-rag-engine": {
@@ -264,12 +264,12 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/41259539370",
-        "sha": "b39fc84",
-        "recorded_at": "2026-11-01T01:05:52+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/41371233083",
+        "sha": "959a7e0",
+        "recorded_at": "2026-11-02T01:13:44+00:00"
       },
       "blockers": [],
-      "next_recommended_task": "RabbitHole M1: .env.example + README skeleton; then local runtime install + pin (Qwen3-1.7B Q4_K_M, watch box RAM), arp doctor, minimal OpenAICompatibleProvider, JSON-in-text parser, probe freeze commit, and the tool-calling probe run"
+      "next_recommended_task": "RabbitHole M1: arp doctor (memory preflight against the server's reported model+KV+compute buffers, /v1/models check); then minimal OpenAICompatibleProvider, JSON-in-text parser, probe freeze commit, and the tool-calling probe run; then Chad's M1 review"
     }
   },
   "daily_log": [
@@ -479,7 +479,7 @@
         "README SciFact quality table from committed report scifact_test_fastembed_20261010T184148Z.json (Chad-matched aggregates); hybrid vs dense described as about the same on nDCG@10",
         "Eval runner now returns per-query scores; write_report emits sibling *.per_query.json (schema 1)",
         "rag_engine.eval.bootstrap.paired_bootstrap_ci + scripts/bootstrap_ci.py with unit tests (no network)",
-        "Did not start M6; did not re-run SciFact (committed report predates sidecar — bootstrap CI not claimed in README yet)"
+        "Did not start M6; did not re-run SciFact (committed report predates sidecar \u2014 bootstrap CI not claimed in README yet)"
       ],
       "tests": "CitationNeeded: 571 passed + 9 slow deselected, branch coverage 96%, 571 passed with fastembed blocked; CI green at 99f28f6",
       "evaluation": "README table cites existing fastembed report only. Sidecar-bearing SciFact re-run deferred; paired bootstrap CI ready for next clean eval.",
@@ -718,7 +718,26 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "M1: .env.example + README skeleton (architecture/usage/evaluation 'not run'); then local runtime install + pin (Qwen3-1.7B Q4_K_M, watch box RAM), arp doctor memory preflight, minimal OpenAICompatibleProvider, JSON-in-text parser, probe freeze commit, probe run"
+    },
+    {
+      "date": "2026-11-02",
+      "project": "agentic-research-platform",
+      "milestone": "M1 in progress: .env.example, README skeleton, and the pinned local runtime",
+      "work_completed": [
+        "4337ee6: .env.example listing every PROJECT_SPEC section 11 variable with comments and empty secrets; tests parse it strictly and check it lists exactly the ARP_* names mentioned in the spec, plan, ADRs, and README, that secrets (CLINE_API_KEY) are empty, and the spec's fixed defaults. README skeleton: status, architecture table marking what is built, usage of the current CLI, evaluation table with every run (hosted included) marked not run",
+        "959a7e0: local runtime installed on the box and pinned in docs/local-models.md: llama.cpp llama-server b12032 CPU build (commit dde879bc4, asset sha256 9f10432c... = GitHub digest) serving Qwen3-1.7B Q4_K_M from unsloth/Qwen3-1.7B-GGUF @ d7f544e (GGUF sha256 b139949c... = HF LFS oid; official Qwen repo has only Q8_0, too big for the box), ctx 4096, alias Qwen3-1.7B-Q4_K_M on 127.0.0.1:8080, --jinja, -np 1, --cache-ram 0",
+        "scripts/local_runtime.sh install|verify|serve: sha256-verified downloads (cached files reused, corrupted ones re-fetched; fresh install into an empty dir tested), version check, pinned serve flags; shellcheck clean. Tests keep script pins, doc, and .env.example in sync and run the refusal paths offline; one slow test (passed on the box) checks the running server serves the pinned id",
+        "Found while installing: this llama.cpp build defaults to a RAM prompt cache of up to 8 GiB (disabled) and port 9931 (port now explicit); weights are repacked for AMX, so the server reports about 1.8 GiB (1067.9 repacked + 243.4 mapped + 448 KV + 60 compute MiB), more than GGUF + KV; recorded as input for arp doctor. Non-thinking mode via chat_template_kwargs enable_thinking=false checked with one smoke message. No tool-call prompts sent before the probe freeze. Server stopped after checks to free box RAM. No Cline or other paid model calls"
+      ],
+      "tests": "RabbitHole: 374 passed + 1 slow deselected (slow passed locally against the live server), branch coverage 100% (floor 96%), ruff lint/format and strict mypy clean; CI green at 4337ee6 (runs/41370744594) and 959a7e0 (runs/41371233083), py3.11 + py3.13. fastembed-blocked run not applicable (no fastembed dependency)",
+      "evaluation": "Not run. No probe or eval runs; docs hold only pins and the server's reported memory buffers, no performance numbers",
+      "commits": [
+        "RabbitHole 4337ee6 docs: add .env.example and README skeleton with not-run evaluation table",
+        "RabbitHole 959a7e0 build(runtime): pin llama.cpp llama-server and Qwen3-1.7B Q4_K_M for local runs"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "M1: arp doctor (MemAvailable vs reported model+KV+compute buffers + ARP_MIN_FREE_MB, /v1/models check, fake /proc/meminfo tests); then minimal OpenAICompatibleProvider (httpx MockTransport tests + one slow test against the real local Qwen), JSON-in-text parser, probe freeze commit, probe run; then Chad's M1 review"
     }
   ],
-  "next_recommended_task": "RabbitHole M1: .env.example + README skeleton; then local runtime install + pin (Qwen3-1.7B Q4_K_M, watch box RAM), arp doctor, minimal OpenAICompatibleProvider, JSON-in-text parser, probe freeze commit, and the tool-calling probe run"
+  "next_recommended_task": "RabbitHole M1: arp doctor (memory preflight against the server's reported model+KV+compute buffers, /v1/models check); then minimal OpenAICompatibleProvider, JSON-in-text parser, probe freeze commit, and the tool-calling probe run; then Chad's M1 review"
 }
