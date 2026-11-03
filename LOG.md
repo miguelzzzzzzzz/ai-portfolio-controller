@@ -2,6 +2,24 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-03 - agentic-research-platform - M1 in progress: arp doctor
+
+Work completed:
+- a2760c8: arp doctor (agentic_research.preflight + cli): MemAvailable vs pinned reported model+KV+compute buffers (1819.36 MiB from docs/local-models.md) + ARP_MIN_FREE_MB headroom (default 1024); swap reported but never counted; refuses if intended serve flags would enable the prompt cache (--cache-ram must be 0) or set context != 4096; GET {ARP_LLM_BASE_URL}/models must list Qwen3-1.7B-Q4_K_M
+- Injected meminfo path and models fetcher for tests; fake /proc/meminfo table (pass above threshold, refuse below, boundary, swap-present warn, meminfo unreadable); mocked /v1/models (unreachable, missing id, bad shape); serve-flag mismatch table; sync tests keep buffer constants and script pins aligned with the doc
+- Live on the box: started scripts/local_runtime.sh serve briefly, arp doctor passed (flags + memory + models), server stopped afterward. No Cline or other model/API calls
+
+Tests: RabbitHole: 409 passed + 1 slow deselected, branch coverage 100% (floor 96%), ruff lint/format and strict mypy clean; CI green at a2760c8 (runs/41557919961), py3.11 + py3.13. fastembed-blocked run not applicable (no fastembed dependency)
+
+Evaluation: Not run. No probe or eval runs; arp doctor only checks memory/flags/server readiness
+
+Commits:
+- RabbitHole a2760c8 feat(cli): add arp doctor memory preflight and local server checks
+
+Remaining blockers: none
+
+Next recommended task: M1: minimal OpenAICompatibleProvider (httpx MockTransport tests + one slow test against the real local Qwen), JSON-in-text tool-call parser, probe freeze commit (probes/tool_calls.v1.yaml + config/probe.toml with probe_sha256, min_valid=18, n=20), then arp probe tool-calls; then Chad's M1 review
+
 ## 2026-11-02 - agentic-research-platform - M1 in progress: .env.example, README skeleton, and the pinned local runtime
 
 Work completed:
