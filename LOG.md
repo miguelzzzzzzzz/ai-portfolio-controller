@@ -2,6 +2,24 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-04 - agentic-research-platform - M1 in progress: OpenAICompatibleProvider
+
+Work completed:
+- 56a2bb9: minimal OpenAICompatibleProvider (agentic_research.providers): async httpx client against {ARP_LLM_BASE_URL}/chat/completions, model from ARP_LOCAL_MODEL, optional Bearer key redacted from repr/errors, temperature 0 / seed 0, chat_template_kwargs.enable_thinking=false; parses native tool_calls (JSON-string or object args; malformed keep arguments_raw + parse_error); typed LocalServerUnavailableError / ProviderHTTPError / ProviderResponseError. No HostedProvider, retries, runaway guard, or recording (M5)
+- MockTransport tests under the network guard (happy path + usage, tools/tool_calls, malformed args, empty tool_calls, content-only, connection/HTTP/malformed JSON, sentinel-key leak checks) plus one @pytest.mark.slow live non-thinking completion against the pinned local Qwen (server started and stopped in-fixture). httpx runtime dep; pytest-asyncio + uv.lock added
+- Docs: TODO ticked, CHANGELOG + README architecture/status, .env.example notes that the provider reads ARP_LLM_BASE_URL/ARP_LOCAL_MODEL. No Cline or other paid model/API calls. M1 not claimed done
+
+Tests: RabbitHole: 448 passed + 2 slow deselected (slow live Qwen provider test passed on the box), branch coverage 99.86% (floor 96%), ruff lint/format and strict mypy clean; CI green at 56a2bb9 (runs/41752356041), py3.11 + py3.13. fastembed-blocked run not applicable (no fastembed dependency)
+
+Evaluation: Not run. No probe or eval runs; only one smoke chat completion against the local server in the slow test
+
+Commits:
+- RabbitHole 56a2bb9 feat(providers): add minimal OpenAICompatibleProvider with MockTransport tests
+
+Remaining blockers: none
+
+Next recommended task: M1: JSON-in-text tool protocol (strict parser, <think> strip, reason codes, parse_failures + table-driven tests); then probe freeze commit (probes/tool_calls.v1.yaml + config/probe.toml with probe_sha256, min_valid=18, n=20); then arp probe tool-calls; then Chad's M1 review
+
 ## 2026-11-03 - agentic-research-platform - M1 in progress: arp doctor
 
 Work completed:

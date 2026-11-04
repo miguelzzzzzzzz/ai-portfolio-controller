@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-03T01:12:15+00:00",
+  "updated_at": "2026-11-04T01:13:52+00:00",
   "active_project": "agentic-research-platform",
   "projects": {
     "production-rag-engine": {
@@ -264,12 +264,12 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/41557919961",
-        "sha": "a2760c8",
-        "recorded_at": "2026-11-03T01:12:15+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/41752356041",
+        "sha": "56a2bb9",
+        "recorded_at": "2026-11-04T01:13:36+00:00"
       },
       "blockers": [],
-      "next_recommended_task": "RabbitHole M1: minimal OpenAICompatibleProvider (httpx MockTransport tests + one slow real-Qwen test), JSON-in-text parser, probe freeze commit, tool-calling probe run; then Chad's M1 review"
+      "next_recommended_task": "RabbitHole M1: JSON-in-text tool protocol (strict parser, <think> strip, reason codes, parse_failures + table-driven tests); then probe freeze commit (probes/tool_calls.v1.yaml + config/probe.toml); then arp probe tool-calls; then Chad's M1 review"
     }
   },
   "daily_log": [
@@ -479,7 +479,7 @@
         "README SciFact quality table from committed report scifact_test_fastembed_20261010T184148Z.json (Chad-matched aggregates); hybrid vs dense described as about the same on nDCG@10",
         "Eval runner now returns per-query scores; write_report emits sibling *.per_query.json (schema 1)",
         "rag_engine.eval.bootstrap.paired_bootstrap_ci + scripts/bootstrap_ci.py with unit tests (no network)",
-        "Did not start M6; did not re-run SciFact (committed report predates sidecar \u2014 bootstrap CI not claimed in README yet)"
+        "Did not start M6; did not re-run SciFact (committed report predates sidecar — bootstrap CI not claimed in README yet)"
       ],
       "tests": "CitationNeeded: 571 passed + 9 slow deselected, branch coverage 96%, 571 passed with fastembed blocked; CI green at 99f28f6",
       "evaluation": "README table cites existing fastembed report only. Sidecar-bearing SciFact re-run deferred; paired bootstrap CI ready for next clean eval.",
@@ -754,7 +754,24 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "M1: minimal OpenAICompatibleProvider (httpx MockTransport tests + one slow test against the real local Qwen), JSON-in-text tool-call parser, probe freeze commit (probes/tool_calls.v1.yaml + config/probe.toml with probe_sha256, min_valid=18, n=20), then arp probe tool-calls; then Chad's M1 review"
+    },
+    {
+      "date": "2026-11-04",
+      "project": "agentic-research-platform",
+      "milestone": "M1 in progress: OpenAICompatibleProvider",
+      "work_completed": [
+        "56a2bb9: minimal OpenAICompatibleProvider (agentic_research.providers): async httpx client against {ARP_LLM_BASE_URL}/chat/completions, model from ARP_LOCAL_MODEL, optional Bearer key redacted from repr/errors, temperature 0 / seed 0, chat_template_kwargs.enable_thinking=false; parses native tool_calls (JSON-string or object args; malformed keep arguments_raw + parse_error); typed LocalServerUnavailableError / ProviderHTTPError / ProviderResponseError. No HostedProvider, retries, runaway guard, or recording (M5)",
+        "MockTransport tests under the network guard (happy path + usage, tools/tool_calls, malformed args, empty tool_calls, content-only, connection/HTTP/malformed JSON, sentinel-key leak checks) plus one @pytest.mark.slow live non-thinking completion against the pinned local Qwen (server started and stopped in-fixture). httpx runtime dep; pytest-asyncio + uv.lock added",
+        "Docs: TODO ticked, CHANGELOG + README architecture/status, .env.example notes that the provider reads ARP_LLM_BASE_URL/ARP_LOCAL_MODEL. No Cline or other paid model/API calls. M1 not claimed done"
+      ],
+      "tests": "RabbitHole: 448 passed + 2 slow deselected (slow live Qwen provider test passed on the box), branch coverage 99.86% (floor 96%), ruff lint/format and strict mypy clean; CI green at 56a2bb9 (runs/41752356041), py3.11 + py3.13. fastembed-blocked run not applicable (no fastembed dependency)",
+      "evaluation": "Not run. No probe or eval runs; only one smoke chat completion against the local server in the slow test",
+      "commits": [
+        "RabbitHole 56a2bb9 feat(providers): add minimal OpenAICompatibleProvider with MockTransport tests"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "M1: JSON-in-text tool protocol (strict parser, <think> strip, reason codes, parse_failures + table-driven tests); then probe freeze commit (probes/tool_calls.v1.yaml + config/probe.toml with probe_sha256, min_valid=18, n=20); then arp probe tool-calls; then Chad's M1 review"
     }
   ],
-  "next_recommended_task": "RabbitHole M1: minimal OpenAICompatibleProvider (httpx MockTransport tests + one slow real-Qwen test), JSON-in-text parser, probe freeze commit, tool-calling probe run; then Chad's M1 review"
+  "next_recommended_task": "RabbitHole M1: JSON-in-text tool protocol (strict parser, <think> strip, reason codes, parse_failures + table-driven tests); then probe freeze commit (probes/tool_calls.v1.yaml + config/probe.toml); then arp probe tool-calls; then Chad's M1 review"
 }
