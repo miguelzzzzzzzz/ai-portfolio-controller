@@ -2,6 +2,23 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-05 - agentic-research-platform - M1 in progress: JSON-in-text tool protocol
+
+Work completed:
+- c51c10a: strict JSON-in-text tool protocol (agentic_research.providers.toolcall_json): parse_toolcall_json accepts exactly one JSON object (optional single json/bare fence) as tool_call or final_answer; caller-supplied tool-name → pydantic args-model allowlist; stable ParseFailure reason codes; optional ParseFailureCounter. Empty/whitespace-only leading <think> stripped as preprocessing (empty_think_stripped=True, not a failure); non-empty think body fails with think_block_present without parsing the remainder; unclosed think is think_block_unclosed. Rejects invalid JSON, multiple objects, leading/trailing prose, unsupported/unclosed fences, unknown action/keys, unknown tools, and args that fail the model — never recovers a call from prose.
+- Table-driven tests (tests/test_toolcall_json.py) cover valid tool_call/final_answer (fenced/unfenced, empty think, CRLF, unicode), and every rejection class with counter +1. Exports wired in providers/__init__.py. Docs: TODO ticked, CHANGELOG, README status/architecture (parser built; probe still not built). No Cline or other model/API calls; no live llama-server. M1 not claimed done.
+
+Tests: RabbitHole: 504 passed + 2 slow deselected, branch coverage 99.53% (floor 96%), ruff lint/format and strict mypy clean; CI green at c51c10a (runs/41946618607), py3.11 + py3.13. fastembed-blocked run not applicable (no fastembed dependency); nofastembed_pytest also green locally
+
+Evaluation: Not run. No probe or eval runs; parser unit tests only
+
+Commits:
+- RabbitHole c51c10a feat(providers): add strict JSON-in-text tool-call parser
+
+Remaining blockers: none
+
+Next recommended task: M1: freeze commit probes/tool_calls.v1.yaml + config/probe.toml (probe_sha256, min_valid=18, n=20) before any probe run; then arp probe tool-calls (native vs json); then Chad's M1 review
+
 ## 2026-11-04 - agentic-research-platform - M1 in progress: OpenAICompatibleProvider
 
 Work completed:
