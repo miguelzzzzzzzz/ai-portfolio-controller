@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-05T01:11:04+00:00",
+  "updated_at": "2026-11-06T09:14:30+08:00",
   "active_project": "agentic-research-platform",
   "projects": {
     "production-rag-engine": {
@@ -264,12 +264,12 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/41946618607",
-        "sha": "c51c10a",
-        "recorded_at": "2026-11-05T01:11:04+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/42142350551",
+        "sha": "c0a9f58",
+        "recorded_at": "2026-11-06T01:14:30+00:00"
       },
       "blockers": [],
-      "next_recommended_task": "RabbitHole M1: JSON-in-text tool protocol (strict parser, <think> strip, reason codes, parse_failures + table-driven tests); then probe freeze commit (probes/tool_calls.v1.yaml + config/probe.toml); then arp probe tool-calls; then Chad's M1 review"
+      "next_recommended_task": "Ask Chad for RabbitHole M1 review (freeze fc7512f \u2192 probe 1699f1c \u2192 results c0a9f58; native 20/20 default). Do not start M2 until Chad passes."
     }
   },
   "daily_log": [
@@ -787,7 +787,26 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "M1: freeze commit probes/tool_calls.v1.yaml + config/probe.toml (probe_sha256, min_valid=18, n=20) before any probe run; then arp probe tool-calls (native vs json); then Chad's M1 review"
+    },
+    {
+      "date": "2026-11-06",
+      "project": "agentic-research-platform",
+      "milestone": "M1 in progress: tool-calling probe freeze + live run",
+      "work_completed": [
+        "fc7512f: freeze probes/tool_calls.v1.yaml (20 tool-expecting + 5 no-tool) and config/probe.toml (probe_sha256, min_valid=18, n=20, rule_version=1, temp 0, seed 0, enable_thinking=false); CI hash/count test; PyYAML dep",
+        "1699f1c: arp probe tool-calls (agentic_research.probe): dirty-tree + sha256 refuse, native vs json scoring, Wilson 95%, pre-registered 18/20 decision rule, stub search_corpus schema, smoke-only report writer; offline unit tests with scripted provider",
+        "c0a9f58: live probe on box against pinned Qwen3-1.7B Q4_K_M (llama-server b12032): native 20/20 (Wilson \u2248 [0.84, 1.00]), json 10/20 (\u2248 [0.30, 0.70]); chosen default native; docs/providers.md + evals/results/m1-toolcall-probe-20261106T011244Z.json; ARP_TOOL_FORMAT=native; server stopped after. M1 not claimed done \u2014 Chad review next. No Cline/paid APIs."
+      ],
+      "tests": "RabbitHole: 543 passed + 3 slow deselected, branch coverage 98.23% (floor 96%), ruff lint/format and strict mypy clean; CI green at fc7512f (runs/42141152115), 1699f1c (runs/42142057453), c0a9f58 (runs/42142350551), py3.11 + py3.13. fastembed-blocked N/A",
+      "evaluation": "M1 tool-calling probe smoke-only: native 20/20, json 10/20 \u2192 default native (freeze fc7512f, report m1-toolcall-probe-20261106T011244Z.json). Not a headline number (n=20 wide Wilson). Other evals not run.",
+      "commits": [
+        "RabbitHole fc7512f chore(probe): freeze tool_calls.v1 prompts and 18/20 bar",
+        "RabbitHole 1699f1c feat(probe): add arp probe tool-calls with offline scoring tests",
+        "RabbitHole c0a9f58 docs(probe): record live M1 tool-call probe (native 20/20 default)"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "Ask Chad for RabbitHole M1 review (freeze fc7512f \u2192 probe 1699f1c \u2192 results c0a9f58; native 20/20 default). Do not start M2 until Chad passes."
     }
   ],
-  "next_recommended_task": "RabbitHole M1: freeze commit probes/tool_calls.v1.yaml + config/probe.toml (probe_sha256, min_valid=18, n=20); then arp probe tool-calls; then Chad's M1 review"
+  "next_recommended_task": "Ask Chad for RabbitHole M1 review (freeze fc7512f \u2192 probe 1699f1c \u2192 results c0a9f58; native 20/20 default). Do not start M2 until Chad passes."
 }

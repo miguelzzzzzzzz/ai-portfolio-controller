@@ -2,6 +2,26 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-06 - agentic-research-platform - M1 in progress: tool-calling probe freeze + live run
+
+Work completed:
+- fc7512f: freeze probes/tool_calls.v1.yaml (20 tool-expecting + 5 no-tool) and config/probe.toml (probe_sha256, min_valid=18, n=20, rule_version=1, temp 0, seed 0, enable_thinking=false); CI hash/count test; PyYAML dep
+- 1699f1c: arp probe tool-calls (agentic_research.probe): dirty-tree + sha256 refuse, native vs json scoring, Wilson 95%, pre-registered 18/20 decision rule, stub search_corpus schema, smoke-only report writer; offline unit tests with scripted provider
+- c0a9f58: live probe on box against pinned Qwen3-1.7B Q4_K_M (llama-server b12032): native 20/20 (Wilson ≈ [0.84, 1.00]), json 10/20 (≈ [0.30, 0.70]); chosen default native; docs/providers.md + evals/results/m1-toolcall-probe-20261106T011244Z.json; ARP_TOOL_FORMAT=native; server stopped after. M1 not claimed done — Chad review next. No Cline/paid APIs.
+
+Tests: RabbitHole: 543 passed + 3 slow deselected, branch coverage 98.23% (floor 96%), ruff lint/format and strict mypy clean; CI green at fc7512f (runs/42141152115), 1699f1c (runs/42142057453), c0a9f58 (runs/42142350551), py3.11 + py3.13. fastembed-blocked N/A
+
+Evaluation: M1 tool-calling probe smoke-only: native 20/20, json 10/20 → default native (freeze fc7512f, report m1-toolcall-probe-20261106T011244Z.json). Not a headline number (n=20 wide Wilson). Other evals not run.
+
+Commits:
+- RabbitHole fc7512f chore(probe): freeze tool_calls.v1 prompts and 18/20 bar
+- RabbitHole 1699f1c feat(probe): add arp probe tool-calls with offline scoring tests
+- RabbitHole c0a9f58 docs(probe): record live M1 tool-call probe (native 20/20 default)
+
+Remaining blockers: none
+
+Next recommended task: Ask Chad for RabbitHole M1 review (freeze fc7512f → probe 1699f1c → results c0a9f58; native 20/20 default). Do not start M2 until Chad passes.
+
 ## 2026-11-05 - agentic-research-platform - M1 in progress: JSON-in-text tool protocol
 
 Work completed:
