@@ -2,6 +2,28 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-07 - agentic-research-platform - M1
+
+Work completed:
+- Chad M1 review FAIL remediation (MAJOR-1 observe doctor cmdline/props; MAJOR-2 pin --reasoning-format none + capture/score reasoning_content; MINOR-1..8)
+- d3d74ca: fix(m1) observe doctor flags + reasoning_content + MINORs; fixtures; smoke artifact
+- b8dd596: docs(doctor) observed-flag arp doctor output
+- 60e7ad9: second live probe under unchanged v1 bar: native 20/20, json 6/20, default stays native; first report kept; providers.md both-runs + Bogart wording
+- llama-server stopped after probe; no Cline/paid APIs. M1 still in_progress; Chad re-review next
+
+Tests: RabbitHole: 572 passed + 3 slow deselected, branch coverage 96.38% (floor 96%), ruff lint/format and strict mypy clean; CI green at d3d74ca (runs/42322582583) and 60e7ad9 (runs/42322804625), py3.11 + py3.13. fastembed-blocked N/A
+
+Evaluation: M1 tool-calling probe smoke-only run 2: native 20/20, json 6/20 → default stays native (freeze fc7512f unchanged; report m1-toolcall-probe-20261107T011142Z.json). Run 1 kept (native 20/20, json 10/20). Not a headline number.
+
+Commits:
+- RabbitHole d3d74ca fix(m1): observe doctor flags and capture reasoning_content
+- RabbitHole b8dd596 docs(doctor): record observed-flag arp doctor output for M1
+- RabbitHole 60e7ad9 docs(probe): second M1 tool-call run after review fixes
+
+Remaining blockers: none
+
+Next recommended task: Ask Chad for RabbitHole M1 re-review at tip 60e7ad9 (fixes d3d74ca; doctor b8dd596; second probe 60e7ad9; native 20/20 stays default). Do not mark M1 done or start M2 until Chad passes.
+
 ## 2026-11-06 - agentic-research-platform - M1 in progress: tool-calling probe freeze + live run
 
 Work completed:

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-06T09:14:30+08:00",
+  "updated_at": "2026-11-07T01:14:03+00:00",
   "active_project": "agentic-research-platform",
   "projects": {
     "production-rag-engine": {
@@ -258,18 +258,48 @@
         }
       ],
       "review": {
-        "last_run": null,
+        "last_run": "2026-11-06",
         "passed": false,
-        "findings": []
+        "reviewer": "Chad",
+        "findings": [
+          {
+            "severity": "MAJOR",
+            "id": "MAJOR-1",
+            "message": "doctor/report used pinned constants not live observation",
+            "resolved": true,
+            "resolved_in": "d3d74ca"
+          },
+          {
+            "severity": "MAJOR",
+            "id": "MAJOR-2",
+            "message": "reasoning_content / --reasoning-format auto hid think blocks",
+            "resolved": true,
+            "resolved_in": "d3d74ca"
+          },
+          {
+            "severity": "MINOR",
+            "id": "MINOR-1..8",
+            "message": "providers note, parse_failures label, multi-call, repo-relative source, finish_reason/usage, smoke artifact, fixtures, composed run_probe",
+            "resolved": true,
+            "resolved_in": "d3d74ca"
+          },
+          {
+            "severity": "MINOR",
+            "id": "OPT-2-deferred",
+            "message": "pydantic ProbeReport schema deferred (optional; tracked in RabbitHole TODO)",
+            "resolved": false
+          }
+        ],
+        "note": "Chad FAIL at c0a9f58 (0 CRITICAL, 2 MAJOR, 8 MINOR). Fixes shipped d3d74ca..60e7ad9; ask Chad for re-review. Do not mark M1 done / start M2."
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/42142350551",
-        "sha": "c0a9f58",
-        "recorded_at": "2026-11-06T01:14:30+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/42322804625",
+        "sha": "60e7ad9",
+        "recorded_at": "2026-11-07T01:13:55+00:00"
       },
       "blockers": [],
-      "next_recommended_task": "Ask Chad for RabbitHole M1 review (freeze fc7512f \u2192 probe 1699f1c \u2192 results c0a9f58; native 20/20 default). Do not start M2 until Chad passes."
+      "next_recommended_task": "Ask Chad for RabbitHole M1 re-review at tip 60e7ad9 (fixes d3d74ca; doctor b8dd596; second probe 60e7ad9; native 20/20 stays default). Do not mark M1 done or start M2 until Chad passes."
     }
   },
   "daily_log": [
@@ -479,7 +509,7 @@
         "README SciFact quality table from committed report scifact_test_fastembed_20261010T184148Z.json (Chad-matched aggregates); hybrid vs dense described as about the same on nDCG@10",
         "Eval runner now returns per-query scores; write_report emits sibling *.per_query.json (schema 1)",
         "rag_engine.eval.bootstrap.paired_bootstrap_ci + scripts/bootstrap_ci.py with unit tests (no network)",
-        "Did not start M6; did not re-run SciFact (committed report predates sidecar \u2014 bootstrap CI not claimed in README yet)"
+        "Did not start M6; did not re-run SciFact (committed report predates sidecar — bootstrap CI not claimed in README yet)"
       ],
       "tests": "CitationNeeded: 571 passed + 9 slow deselected, branch coverage 96%, 571 passed with fastembed blocked; CI green at 99f28f6",
       "evaluation": "README table cites existing fastembed report only. Sidecar-bearing SciFact re-run deferred; paired bootstrap CI ready for next clean eval.",
@@ -777,7 +807,7 @@
       "project": "agentic-research-platform",
       "milestone": "M1 in progress: JSON-in-text tool protocol",
       "work_completed": [
-        "c51c10a: strict JSON-in-text tool protocol (agentic_research.providers.toolcall_json): parse_toolcall_json accepts exactly one JSON object (optional single json/bare fence) as tool_call or final_answer; caller-supplied tool-name \u2192 pydantic args-model allowlist; stable ParseFailure reason codes; optional ParseFailureCounter. Empty/whitespace-only leading <think> stripped as preprocessing (empty_think_stripped=True, not a failure); non-empty think body fails with think_block_present without parsing the remainder; unclosed think is think_block_unclosed. Rejects invalid JSON, multiple objects, leading/trailing prose, unsupported/unclosed fences, unknown action/keys, unknown tools, and args that fail the model \u2014 never recovers a call from prose.",
+        "c51c10a: strict JSON-in-text tool protocol (agentic_research.providers.toolcall_json): parse_toolcall_json accepts exactly one JSON object (optional single json/bare fence) as tool_call or final_answer; caller-supplied tool-name → pydantic args-model allowlist; stable ParseFailure reason codes; optional ParseFailureCounter. Empty/whitespace-only leading <think> stripped as preprocessing (empty_think_stripped=True, not a failure); non-empty think body fails with think_block_present without parsing the remainder; unclosed think is think_block_unclosed. Rejects invalid JSON, multiple objects, leading/trailing prose, unsupported/unclosed fences, unknown action/keys, unknown tools, and args that fail the model — never recovers a call from prose.",
         "Table-driven tests (tests/test_toolcall_json.py) cover valid tool_call/final_answer (fenced/unfenced, empty think, CRLF, unicode), and every rejection class with counter +1. Exports wired in providers/__init__.py. Docs: TODO ticked, CHANGELOG, README status/architecture (parser built; probe still not built). No Cline or other model/API calls; no live llama-server. M1 not claimed done."
       ],
       "tests": "RabbitHole: 504 passed + 2 slow deselected, branch coverage 99.53% (floor 96%), ruff lint/format and strict mypy clean; CI green at c51c10a (runs/41946618607), py3.11 + py3.13. fastembed-blocked run not applicable (no fastembed dependency); nofastembed_pytest also green locally",
@@ -795,18 +825,39 @@
       "work_completed": [
         "fc7512f: freeze probes/tool_calls.v1.yaml (20 tool-expecting + 5 no-tool) and config/probe.toml (probe_sha256, min_valid=18, n=20, rule_version=1, temp 0, seed 0, enable_thinking=false); CI hash/count test; PyYAML dep",
         "1699f1c: arp probe tool-calls (agentic_research.probe): dirty-tree + sha256 refuse, native vs json scoring, Wilson 95%, pre-registered 18/20 decision rule, stub search_corpus schema, smoke-only report writer; offline unit tests with scripted provider",
-        "c0a9f58: live probe on box against pinned Qwen3-1.7B Q4_K_M (llama-server b12032): native 20/20 (Wilson \u2248 [0.84, 1.00]), json 10/20 (\u2248 [0.30, 0.70]); chosen default native; docs/providers.md + evals/results/m1-toolcall-probe-20261106T011244Z.json; ARP_TOOL_FORMAT=native; server stopped after. M1 not claimed done \u2014 Chad review next. No Cline/paid APIs."
+        "c0a9f58: live probe on box against pinned Qwen3-1.7B Q4_K_M (llama-server b12032): native 20/20 (Wilson ≈ [0.84, 1.00]), json 10/20 (≈ [0.30, 0.70]); chosen default native; docs/providers.md + evals/results/m1-toolcall-probe-20261106T011244Z.json; ARP_TOOL_FORMAT=native; server stopped after. M1 not claimed done — Chad review next. No Cline/paid APIs."
       ],
       "tests": "RabbitHole: 543 passed + 3 slow deselected, branch coverage 98.23% (floor 96%), ruff lint/format and strict mypy clean; CI green at fc7512f (runs/42141152115), 1699f1c (runs/42142057453), c0a9f58 (runs/42142350551), py3.11 + py3.13. fastembed-blocked N/A",
-      "evaluation": "M1 tool-calling probe smoke-only: native 20/20, json 10/20 \u2192 default native (freeze fc7512f, report m1-toolcall-probe-20261106T011244Z.json). Not a headline number (n=20 wide Wilson). Other evals not run.",
+      "evaluation": "M1 tool-calling probe smoke-only: native 20/20, json 10/20 → default native (freeze fc7512f, report m1-toolcall-probe-20261106T011244Z.json). Not a headline number (n=20 wide Wilson). Other evals not run.",
       "commits": [
         "RabbitHole fc7512f chore(probe): freeze tool_calls.v1 prompts and 18/20 bar",
         "RabbitHole 1699f1c feat(probe): add arp probe tool-calls with offline scoring tests",
         "RabbitHole c0a9f58 docs(probe): record live M1 tool-call probe (native 20/20 default)"
       ],
       "remaining_blockers": [],
-      "next_recommended_task": "Ask Chad for RabbitHole M1 review (freeze fc7512f \u2192 probe 1699f1c \u2192 results c0a9f58; native 20/20 default). Do not start M2 until Chad passes."
+      "next_recommended_task": "Ask Chad for RabbitHole M1 review (freeze fc7512f → probe 1699f1c → results c0a9f58; native 20/20 default). Do not start M2 until Chad passes."
+    },
+    {
+      "date": "2026-11-07",
+      "project": "agentic-research-platform",
+      "milestone": "M1",
+      "work_completed": [
+        "Chad M1 review FAIL remediation (MAJOR-1 observe doctor cmdline/props; MAJOR-2 pin --reasoning-format none + capture/score reasoning_content; MINOR-1..8)",
+        "d3d74ca: fix(m1) observe doctor flags + reasoning_content + MINORs; fixtures; smoke artifact",
+        "b8dd596: docs(doctor) observed-flag arp doctor output",
+        "60e7ad9: second live probe under unchanged v1 bar: native 20/20, json 6/20, default stays native; first report kept; providers.md both-runs + Bogart wording",
+        "llama-server stopped after probe; no Cline/paid APIs. M1 still in_progress; Chad re-review next"
+      ],
+      "tests": "RabbitHole: 572 passed + 3 slow deselected, branch coverage 96.38% (floor 96%), ruff lint/format and strict mypy clean; CI green at d3d74ca (runs/42322582583) and 60e7ad9 (runs/42322804625), py3.11 + py3.13. fastembed-blocked N/A",
+      "evaluation": "M1 tool-calling probe smoke-only run 2: native 20/20, json 6/20 → default stays native (freeze fc7512f unchanged; report m1-toolcall-probe-20261107T011142Z.json). Run 1 kept (native 20/20, json 10/20). Not a headline number.",
+      "commits": [
+        "RabbitHole d3d74ca fix(m1): observe doctor flags and capture reasoning_content",
+        "RabbitHole b8dd596 docs(doctor): record observed-flag arp doctor output for M1",
+        "RabbitHole 60e7ad9 docs(probe): second M1 tool-call run after review fixes"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "Ask Chad for RabbitHole M1 re-review at tip 60e7ad9 (fixes d3d74ca; doctor b8dd596; second probe 60e7ad9; native 20/20 stays default). Do not mark M1 done or start M2 until Chad passes."
     }
   ],
-  "next_recommended_task": "Ask Chad for RabbitHole M1 review (freeze fc7512f \u2192 probe 1699f1c \u2192 results c0a9f58; native 20/20 default). Do not start M2 until Chad passes."
+  "next_recommended_task": "Ask Chad for RabbitHole M1 review (freeze fc7512f → probe 1699f1c → results c0a9f58; native 20/20 default). Do not start M2 until Chad passes."
 }
