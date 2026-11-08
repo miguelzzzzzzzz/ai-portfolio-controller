@@ -2,6 +2,26 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-08 - agentic-research-platform - M2
+
+Work completed:
+- M1 closed: Chad re-check PASS at 60e7ad9 (0 CRITICAL/MAJOR); follow-ups R-1..R-7, R-9 + OPT-1/OPT-2 tracked in RabbitHole TODO.md with owner Kim (R-8 withdrawn); PLAN/README/CHANGELOG updated (4d5ec97)
+- M2 started with R-3 (3db56cb): shared probe think check now returns think_block_unclosed, so a native reply with an unclosed <think> fails even with valid tool_calls; 16 new scorer tests (non-empty/unclosed think in content, both formats, tool and no-tool prompts; empty-think and late-think controls); previously uncovered content-think line now covered
+- Re-scored raw_content/reasoning_content of both committed M1 probe reports with the new check: 0 of 50 rows per report hit a think failure, so recorded results are unchanged and rule_version stays 1
+- No model calls, no Cline/paid APIs, no server started
+
+Tests: RabbitHole: 588 passed + 3 slow deselected, branch coverage 96.45% (floor 96%), ruff lint/format and strict mypy clean; also passes with fastembed blocked (not a dependency); CI green at 4d5ec97 (runs/42432702275) and 3db56cb (runs/42432805186), py3.11 + py3.13
+
+Evaluation: Not run (no new evals; offline re-score of committed probe reports confirmed no change)
+
+Commits:
+- RabbitHole 4d5ec97 docs(plan): close M1 and track Chad's re-check follow-ups
+- RabbitHole 3db56cb fix(probe): fail unclosed think in native replies and test content think paths
+
+Remaining blockers: none
+
+Next recommended task: M2: RunState + Action union (ToolCall | FinalAnswer | GiveUp) + Policy protocol with serialization and terminal-status tests; fold in small R-items (R-9 docs sentence, R-1) where they fit. Chad review at M2 completion.
+
 ## 2026-11-07 - agentic-research-platform - M1
 
 Work completed:

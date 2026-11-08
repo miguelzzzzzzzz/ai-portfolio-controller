@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-07T01:14:03+00:00",
+  "updated_at": "2026-11-08T01:08:10+00:00",
   "active_project": "agentic-research-platform",
   "projects": {
     "production-rag-engine": {
@@ -217,13 +217,13 @@
         {
           "id": "M1",
           "title": "Scaffold, tool contracts, registry, calculator, trace schema, local runtime and tool-calling probe",
-          "status": "in_progress",
-          "completed": null
+          "status": "done",
+          "completed": "2026-11-08"
         },
         {
           "id": "M2",
           "title": "Agent loop, run state, budgets, timeouts/retries, scripted provider",
-          "status": "planned",
+          "status": "in_progress",
           "completed": null
         },
         {
@@ -258,8 +258,8 @@
         }
       ],
       "review": {
-        "last_run": "2026-11-06",
-        "passed": false,
+        "last_run": "2026-11-07",
+        "passed": true,
         "reviewer": "Chad",
         "findings": [
           {
@@ -285,21 +285,70 @@
           },
           {
             "severity": "MINOR",
-            "id": "OPT-2-deferred",
-            "message": "pydantic ProbeReport schema deferred (optional; tracked in RabbitHole TODO)",
+            "id": "R-1",
+            "message": "/props only fills gaps; compare or reword docs; drop dead reasoning_format branch (owner: Kim; RabbitHole TODO.md)",
+            "resolved": false
+          },
+          {
+            "severity": "MINOR",
+            "id": "R-2",
+            "message": "doctor should refuse when observed GGUF sha256 / llama-server version differ from pins or hashing failed (owner: Kim; RabbitHole TODO.md)",
+            "resolved": false
+          },
+          {
+            "severity": "MINOR",
+            "id": "R-3",
+            "message": "tests for non-empty <think> in content in both scorers; return think_block_unclosed on native path (owner: Kim; RabbitHole TODO.md)",
+            "resolved": true,
+            "resolved_in": "3db56cb"
+          },
+          {
+            "severity": "MINOR",
+            "id": "R-4",
+            "message": "compose observe_runtime(fake proc) through run_doctor and runtime_metadata in one test (owner: Kim; RabbitHole TODO.md)",
+            "resolved": false
+          },
+          {
+            "severity": "MINOR",
+            "id": "R-5",
+            "message": "box-local absolute paths in run-2 report and providers.md (owner: Kim; RabbitHole TODO.md)",
+            "resolved": false
+          },
+          {
+            "severity": "MINOR",
+            "id": "R-6",
+            "message": "live smoke artifact indistinguishable from hand-written file; generate from code or relabel (owner: Kim; RabbitHole TODO.md)",
+            "resolved": false
+          },
+          {
+            "severity": "MINOR",
+            "id": "R-7",
+            "message": "document capture config/scrubbing of tool_reasoning fixture or label synthetic (owner: Kim; RabbitHole TODO.md)",
+            "resolved": false
+          },
+          {
+            "severity": "MINOR",
+            "id": "R-9",
+            "message": "providers.md sentence: JSON 10->6 across runs with different reasoning-format; no causal claim (owner: Kim; RabbitHole TODO.md)",
+            "resolved": false
+          },
+          {
+            "severity": "MINOR",
+            "id": "OPT-1/OPT-2",
+            "message": "optional: always-skipping live probe marker test; typed ProbeReport schema (deferred, accepted) (owner: Kim; RabbitHole TODO.md)",
             "resolved": false
           }
         ],
-        "note": "Chad FAIL at c0a9f58 (0 CRITICAL, 2 MAJOR, 8 MINOR). Fixes shipped d3d74ca..60e7ad9; ask Chad for re-review. Do not mark M1 done / start M2."
+        "note": "Chad FAIL at c0a9f58 (0 CRITICAL, 2 MAJOR, 8 MINOR); fixes d3d74ca..60e7ad9; Chad re-check PASS at 60e7ad9 (0 CRITICAL, 0 MAJOR, 8 MINOR R-1..R-7, R-9; R-8 withdrawn). M1 closed 2026-11-08; MINORs tracked in RabbitHole TODO.md (4d5ec97)."
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/42322804625",
-        "sha": "60e7ad9",
-        "recorded_at": "2026-11-07T01:13:55+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/42432805186",
+        "sha": "3db56cb",
+        "recorded_at": "2026-11-08T01:08:01+00:00"
       },
       "blockers": [],
-      "next_recommended_task": "Ask Chad for RabbitHole M1 re-review at tip 60e7ad9 (fixes d3d74ca; doctor b8dd596; second probe 60e7ad9; native 20/20 stays default). Do not mark M1 done or start M2 until Chad passes."
+      "next_recommended_task": "M2: RunState + Action union (ToolCall | FinalAnswer | GiveUp) + Policy protocol with serialization and terminal-status tests; fold in small R-items (R-9 docs sentence, R-1) where they fit. Chad review at M2 completion."
     }
   },
   "daily_log": [
@@ -857,6 +906,25 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "Ask Chad for RabbitHole M1 re-review at tip 60e7ad9 (fixes d3d74ca; doctor b8dd596; second probe 60e7ad9; native 20/20 stays default). Do not mark M1 done or start M2 until Chad passes."
+    },
+    {
+      "date": "2026-11-08",
+      "project": "agentic-research-platform",
+      "milestone": "M2",
+      "work_completed": [
+        "M1 closed: Chad re-check PASS at 60e7ad9 (0 CRITICAL/MAJOR); follow-ups R-1..R-7, R-9 + OPT-1/OPT-2 tracked in RabbitHole TODO.md with owner Kim (R-8 withdrawn); PLAN/README/CHANGELOG updated (4d5ec97)",
+        "M2 started with R-3 (3db56cb): shared probe think check now returns think_block_unclosed, so a native reply with an unclosed <think> fails even with valid tool_calls; 16 new scorer tests (non-empty/unclosed think in content, both formats, tool and no-tool prompts; empty-think and late-think controls); previously uncovered content-think line now covered",
+        "Re-scored raw_content/reasoning_content of both committed M1 probe reports with the new check: 0 of 50 rows per report hit a think failure, so recorded results are unchanged and rule_version stays 1",
+        "No model calls, no Cline/paid APIs, no server started"
+      ],
+      "tests": "RabbitHole: 588 passed + 3 slow deselected, branch coverage 96.45% (floor 96%), ruff lint/format and strict mypy clean; also passes with fastembed blocked (not a dependency); CI green at 4d5ec97 (runs/42432702275) and 3db56cb (runs/42432805186), py3.11 + py3.13",
+      "evaluation": "Not run (no new evals; offline re-score of committed probe reports confirmed no change)",
+      "commits": [
+        "RabbitHole 4d5ec97 docs(plan): close M1 and track Chad's re-check follow-ups",
+        "RabbitHole 3db56cb fix(probe): fail unclosed think in native replies and test content think paths"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "M2: RunState + Action union (ToolCall | FinalAnswer | GiveUp) + Policy protocol with serialization and terminal-status tests; fold in small R-items (R-9 docs sentence, R-1) where they fit. Chad review at M2 completion."
     }
   ],
   "next_recommended_task": "Ask Chad for RabbitHole M1 review (freeze fc7512f → probe 1699f1c → results c0a9f58; native 20/20 default). Do not start M2 until Chad passes."
