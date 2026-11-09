@@ -2,6 +2,23 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-09 - agentic-research-platform - M2
+
+Work completed:
+- M2 core types (2714a4b): agentic_research.agent with Action union (ToolCall|FinalAnswer|GiveUp, tagged on kind), Policy protocol, serializable RunState (task, plan, messages, evidence, step records, counters, terminal status with budget_exhausted:<kind>/failed:<reason> labels, finish-once, JSON round-trip) and Budgets.exhausted() with fixed check order; 49 new tests incl. hypothesis; R-9 docs sentence (799b83a) and TODO/CHANGELOG updated; no loop/executor yet; no model calls, no Cline/paid APIs
+
+Tests: RabbitHole: 637 passed + 3 slow deselected, branch coverage 96.71% (floor 96%), ruff lint/format and strict mypy clean, passes with fastembed blocked; CI green at 799b83a (runs/42543397304), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole 2714a4b feat(agent): add Action union, Policy protocol, RunState and Budgets
+- RabbitHole 799b83a docs(providers): note JSON 10 to 6 shift without causal claim (R-9)
+
+Remaining blockers: none
+
+Next recommended task: M2: ToolExecutor (per-call timeout, seeded backoff retries for transient/timeout only, injectable clock/sleeper), then loop with budgets/loop detection, ScriptedProvider, arp run. Open R-items: R-1, R-2, R-4..R-7, OPT-1/2. Chad review at M2 completion.
+
 ## 2026-11-08 - agentic-research-platform - M2
 
 Work completed:
