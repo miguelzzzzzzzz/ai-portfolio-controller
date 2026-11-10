@@ -2,6 +2,22 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-10 - agentic-research-platform - M2
+
+Work completed:
+- ToolExecutor (dccea77): agentic_research.tools.executor validates args once, runs each attempt under asyncio.timeout (overrunning tools cancelled, reported timeout/tool_timeout), retries only transient/timeout failures allowed by the tool's RetryPolicy with seeded-RNG jitter, injectable clock and sleeper, optional absolute deadline (timeout clamped to it, retry skipped if backoff would cross it); crashes become permanent/tool_crashed without leaking exception text; returns ToolResult plus per-attempt records. 26 new tests (real cancellation of a hanging tool, exact backoff schedules, seed reproducibility, non-retryable classes, outer cancellation propagates, deadline cases, Hypothesis attempt/sleep-count property). R-1/R-2 left open to keep the unit focused. No model calls, no Cline/paid APIs
+
+Tests: RabbitHole: 663 passed + 3 slow deselected, branch coverage 96.83% (floor 96%; executor 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked; CI green at dccea77 (runs/42732996637)
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole dccea77 feat(tools): add ToolExecutor with timeouts and seeded backoff retries
+
+Remaining blockers: none
+
+Next recommended task: M2: budgeted agent loop (steps, tool calls total/per tool, deadline, tokens, repair attempts) with loop detection and observation shaping using ToolExecutor; then ScriptedProvider/LLMPolicy/OraclePolicy and arp run. Open R-1/R-2/R-4..R-7, OPT-1/2. Chad review at M2 completion.
+
 ## 2026-11-09 - agentic-research-platform - M2
 
 Work completed:
