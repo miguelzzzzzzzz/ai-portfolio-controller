@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-11 - agentic-research-platform - M2
+
+Work completed:
+- Idempotency gate (2eeaefd, Chad M2 check 1): Tool protocol gains idempotent: bool; ToolRegistry refuses a non-bool flag and refuses timeout in retry.retry_on unless the tool is idempotent (transient retries still allowed for any tool); calculator and the probe search_corpus stub marked idempotent; ADR-0006 amended; 9 new registry tests
+- Budgeted AgentLoop (5ae57d4): agentic_research.agent.loop.AgentLoop checks budgets, asks the policy on a deep copy of the state (bounded by step_timeout_s and the run deadline), then verifies FinalAnswer via a pluggable Verifier hook (AcceptAll default; rejection recorded as a Verdict and costs one repair), abstains on GiveUp, or re-checks tool-call/per-tool/token/deadline budgets and runs ToolExecutor. max_steps required; policy error/timeout, invalid action and verifier error end as failed:<reason>; outer cancellation propagates. Decision(action, tokens) charges model usage (soft token budget). Budgets.exhausted without a tool no longer blocks a final answer on tool-call budgets
+- Chad M2 check 2 (5ae57d4): run deadline passed to ToolExecutor.execute on the shared executor clock (new ToolExecutor.clock); attempt durations and backoff sleeps charged to elapsed_s plus new tool_attempts/backoff_s counters; tests pin exact charged time, a deadline-truncated retry schedule (3 vs 4 attempts) and a run exhausted by retry time alone. 40 new loop/state tests incl. one per budget kind and a Hypothesis property (terminal, counters within limits, JSON round-trip). Loop detection, observation shaping, tracing, ScriptedProvider/policies and CLI not done yet. No model calls, no Cline/paid APIs
+
+Tests: RabbitHole: 712 passed + 3 slow deselected, branch coverage 97.05% (floor 96%; agent/* and executor 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked; CI green at 5ae57d4 (runs/42936207604), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole 2eeaefd feat(tools): gate timeout retries on an idempotent tool flag
+- RabbitHole 5ae57d4 feat(agent): add budgeted AgentLoop with verifier hook and deadline-aware retries
+
+Remaining blockers: none
+
+Next recommended task: M2: loop detection + deterministic observation shaping in AgentLoop; then ScriptedProvider, LLMPolicy skeleton, OraclePolicy, tracer on every span, arp run --provider scripted, arp trace show. Open R-1/R-2/R-4..R-7, OPT-1/2. M2 not complete; Chad review at M2 completion.
+
 ## 2026-11-10 - agentic-research-platform - M2
 
 Work completed:

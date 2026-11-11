@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-10T01:04:58+00:00",
+  "updated_at": "2026-11-11T01:05:24+00:00",
   "active_project": "agentic-research-platform",
   "projects": {
     "production-rag-engine": {
@@ -343,12 +343,12 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/42732996637",
-        "sha": "dccea77",
-        "recorded_at": "2026-11-10T01:04:57+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/42936207604",
+        "sha": "5ae57d4",
+        "recorded_at": "2026-11-11T01:05:14+00:00"
       },
       "blockers": [],
-      "next_recommended_task": "M2: RunState + Action union (ToolCall | FinalAnswer | GiveUp) + Policy protocol with serialization and terminal-status tests; fold in small R-items (R-9 docs sentence, R-1) where they fit. Chad review at M2 completion."
+      "next_recommended_task": "M2: loop detection (identical tool + normalized args beyond a threshold -> guardrail observation, then failed:loop) and deterministic observation shaping (output truncation, old observations elided to one-line summaries); then ScriptedProvider, LLMPolicy skeleton, OraclePolicy, tracer on every span, arp run --provider scripted and arp trace show. Open R-1/R-2/R-4..R-7, OPT-1/2. Chad review at M2 completion."
     }
   },
   "daily_log": [
@@ -956,7 +956,25 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "M2: budgeted agent loop (steps, tool calls total/per tool, deadline, tokens, repair attempts) with loop detection and observation shaping using ToolExecutor; then ScriptedProvider/LLMPolicy/OraclePolicy and arp run. Open R-1/R-2/R-4..R-7, OPT-1/2. Chad review at M2 completion."
+    },
+    {
+      "date": "2026-11-11",
+      "project": "agentic-research-platform",
+      "milestone": "M2",
+      "work_completed": [
+        "Idempotency gate (2eeaefd, Chad M2 check 1): Tool protocol gains idempotent: bool; ToolRegistry refuses a non-bool flag and refuses timeout in retry.retry_on unless the tool is idempotent (transient retries still allowed for any tool); calculator and the probe search_corpus stub marked idempotent; ADR-0006 amended; 9 new registry tests",
+        "Budgeted AgentLoop (5ae57d4): agentic_research.agent.loop.AgentLoop checks budgets, asks the policy on a deep copy of the state (bounded by step_timeout_s and the run deadline), then verifies FinalAnswer via a pluggable Verifier hook (AcceptAll default; rejection recorded as a Verdict and costs one repair), abstains on GiveUp, or re-checks tool-call/per-tool/token/deadline budgets and runs ToolExecutor. max_steps required; policy error/timeout, invalid action and verifier error end as failed:<reason>; outer cancellation propagates. Decision(action, tokens) charges model usage (soft token budget). Budgets.exhausted without a tool no longer blocks a final answer on tool-call budgets",
+        "Chad M2 check 2 (5ae57d4): run deadline passed to ToolExecutor.execute on the shared executor clock (new ToolExecutor.clock); attempt durations and backoff sleeps charged to elapsed_s plus new tool_attempts/backoff_s counters; tests pin exact charged time, a deadline-truncated retry schedule (3 vs 4 attempts) and a run exhausted by retry time alone. 40 new loop/state tests incl. one per budget kind and a Hypothesis property (terminal, counters within limits, JSON round-trip). Loop detection, observation shaping, tracing, ScriptedProvider/policies and CLI not done yet. No model calls, no Cline/paid APIs"
+      ],
+      "tests": "RabbitHole: 712 passed + 3 slow deselected, branch coverage 97.05% (floor 96%; agent/* and executor 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked; CI green at 5ae57d4 (runs/42936207604), py3.11 + py3.13",
+      "evaluation": "Not run (no evals; no model calls)",
+      "commits": [
+        "RabbitHole 2eeaefd feat(tools): gate timeout retries on an idempotent tool flag",
+        "RabbitHole 5ae57d4 feat(agent): add budgeted AgentLoop with verifier hook and deadline-aware retries"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "M2: loop detection + deterministic observation shaping in AgentLoop; then ScriptedProvider, LLMPolicy skeleton, OraclePolicy, tracer on every span, arp run --provider scripted, arp trace show. Open R-1/R-2/R-4..R-7, OPT-1/2. M2 not complete; Chad review at M2 completion."
     }
   ],
-  "next_recommended_task": "Ask Chad for RabbitHole M1 review (freeze fc7512f → probe 1699f1c → results c0a9f58; native 20/20 default). Do not start M2 until Chad passes."
+  "next_recommended_task": "M2: loop detection (identical tool + normalized args beyond a threshold -> guardrail observation, then failed:loop) and deterministic observation shaping (output truncation, old observations elided to one-line summaries); then ScriptedProvider, LLMPolicy skeleton, OraclePolicy, tracer on every span, arp run --provider scripted and arp trace show. Open R-1/R-2/R-4..R-7, OPT-1/2. Chad review at M2 completion."
 }
