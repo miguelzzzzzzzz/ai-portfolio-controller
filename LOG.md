@@ -2,6 +2,24 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-12 - agentic-research-platform - M2
+
+Work completed:
+- Loop detection (56574b4): agentic_research.agent.guards. canonical_args gives a comparison key (sorted keys kept exactly, non-string keys type-tagged, string values NFC-normalized and stripped, integral floats as ints, list order kept). LoopGuard(max_identical_calls=3) counts identical calls that actually ran anywhere in the run (catches A,B,A,B cycles). AgentLoop checks it after the budget re-check: past the threshold the call is not run and is recorded with a loop_detected Guardrail (no tool-call budget used); repeating it again ends the run as failed:loop; loop_guard=None disables. Default 3 is a starting value, not tuned
+- Observation shaping (56574b4): agentic_research.agent.observations.ObservationShaper builds RunState.observations, the policy-facing view: canonical JSON tool output, <class>/<reason>: <message> errors, guardrail messages and verifier rejection feedback, truncated to max_chars (default 2000) with a ...[truncated N chars] marker; only the keep_recent (default 3) newest stay full, older ones elided to one-line summaries with no tool output. Full ToolResults stay in steps. Deterministic, no LLM. Untrusted-data envelope left to M3. StepRecord gains guardrail; RunState validates observation step order
+- 65 new tests (guards, observations, loop integration, state invariants); loop Hypothesis property extended with a random guard threshold (failed:loop only after an ignored guardrail; no identical call runs past the threshold). Self-reviewed full diff before push (fixed an order-dependent key collision in NFC key normalization by keeping keys exact). Tracing, ScriptedProvider/policies and CLI not done yet. No model calls, no Cline/paid APIs
+
+Tests: RabbitHole: 777 passed + 3 slow deselected, branch coverage 97.24% (floor 96%; agent/* 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked; CI green at 56574b4 (runs/43131618731), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole 56574b4 feat(agent): add loop detection and deterministic observation shaping
+
+Remaining blockers: none
+
+Next recommended task: M2: ScriptedProvider (canned completions incl. malformed), LLMPolicy skeleton, OraclePolicy; tracer on every span; arp run --provider scripted --script FILE and arp trace show FILE with the golden two-step trace test; then request Chad's M2 review. Open R-1/R-2/R-4..R-7, OPT-1/2. M2 not complete.
+
 ## 2026-11-11 - agentic-research-platform - M2
 
 Work completed:
