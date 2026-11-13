@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-13 - agentic-research-platform - M2
+
+Work completed:
+- ScriptedProvider (d4b0eee): agentic_research.providers.scripted replays canned turns with no model. Message turns are rendered as chat-completions bodies and parsed by the real parse_chat_completion, so malformed tool-call arguments (invalid JSON, empty, non-object, missing) arrive unrepaired; raw turns pass a whole (possibly malformed) body to the parser (malformed_response / malformed_tool_calls); error turns raise LocalServerUnavailableError or ProviderHTTPError; running past the script raises script_exhausted. JSON script files (schema_version, optional question, turns) plus tests/fixtures/scripts/two_step.json
+- OraclePolicy (d4b0eee): returns trajectory[len(state.steps)] (no hidden cursor); past the end the run ends failed:trajectory_exhausted; from_json/load. PolicyFailure(reason) lets any policy end a run as failed:<reason>; other policy exceptions stay failed:policy_error
+- LLMPolicy skeleton (d4b0eee): builds messages from steps + shaped observations (native assistant tool_calls + tool messages with call_<step> ids, or JSON envelopes + Observation: user messages; guardrail and verifier feedback included, elided observations sent as summaries); one provider call per step. Native: leaked think, >1 tool call, or non-object arguments rejected; unknown tools/schema-invalid args left to the registry (structured tool error); no tool call = final answer. JSON: parse_toolcall_json with registry arg models. Rejections counted in parse_failures and end as failed:<reason>; provider errors as failed:<provider reason>. Tokens: total_tokens, else prompt+completion, else 0. Prompts untuned, never run against a model; repair/record-replay/model GiveUp are M5. Think-leak check moved from probe to toolcall_json.leaked_think_reason (probe behaviour unchanged)
+- 93 new tests (scripted provider, oracle, LLM policy end to end through AgentLoop on scripted replies incl. every rejection reason, provider errors, token budget, verifier/guardrail/elided observations in prompts; think helpers). Self-reviewed full diff before push (added a fallback to invalid_arguments for non-code parse errors, reworded docs that implied arp run exists). Tracing and CLI not done yet. No model calls, no Cline/paid APIs
+
+Tests: RabbitHole: 870 passed + 3 slow deselected, branch coverage 97.50% (floor 96%; agent/*, policies/*, providers/scripted 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked; CI green at d4b0eee (runs/43342597020), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole d4b0eee feat(policies): add ScriptedProvider, OraclePolicy and LLMPolicy skeleton
+
+Remaining blockers: none
+
+Next recommended task: M2 (last unit): tracer on every span (run/step/provider_call incl. parse_failure, per-attempt tool_call spans); arp run --provider scripted --script FILE and arp trace show FILE; golden two-step trace test on tests/fixtures/scripts/two_step.json; then request Chad's M2 review. Open R-1/R-2/R-4..R-7, OPT-1/2. M2 not complete.
+
 ## 2026-11-12 - agentic-research-platform - M2
 
 Work completed:
