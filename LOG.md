@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-14 - agentic-research-platform - M2
+
+Work completed:
+- Run tracing (f36a6c4): agentic_research.agent.tracing.TraceRecorder driven by AgentLoop.run_traced, which returns the final RunState plus a validated trace v1 (run() is the same loop, trace dropped). Spans: run root (status, answer or classified SpanError, budget usage/limits, parse_failures derived from provider spans; budget_exhausted/abstained runs carry an event with the kind/reason), step-<i> per iteration that reached the policy (a failing last iteration included), step-<i>.provider-<k> per provider call the policy reports, step-<i>.tool-<attempt> per executor attempt (retries included; a call rejected before running is a zero-length attempt 1). Step events: answer_rejected, loop_detected, tool_not_retried (deadline cut a due retry). NaN/inf arguments or outputs replaced by a marker instead of failing the run. Provider-call spans cover the whole policy call (one call per step in M2); a policy that times out reports no provider span
+- Policy reporting (f36a6c4): ProviderCallInfo on Decision.calls and PolicyFailure(calls=...), so calls reach the trace when the reply fails to parse or the call fails. LLMPolicy fills tokens, finish_reason, parse_failure, or an error classified by provider_error_class (unreachable/429/5xx transient, malformed body bad_output, else permanent; trace label only, retries are M5). AttemptRecord.started_at added for attempt timing. AgentLoop run_id must now be a valid trace id
+- CLI (f36a6c4): arp run --provider scripted --script FILE (LLMPolicy over ScriptedProvider with the built-in tools; --question, --tool-format, --max-steps/--max-tool-calls/--max-tokens/--deadline-s, --seed, --run-id, --trace-out default traces/<run-id>.jsonl, refuses an existing file; exit 0 answered, 1 otherwise with trace written, 2 bad input) and arp trace show FILE [--max-chars] (span tree; trace text escaped to one line, long values shortened)
+- Tests (61 new): every span kind and failure path with exact fake-clock timings, CLI and trace-show tests, the loop Hypothesis property now also checks the trace, and the golden two-step trace test (arp run on tests/fixtures/scripts/two_step.json vs tests/fixtures/traces/two_step.golden.jsonl, timings normalized). Self-reviewed full diff before push (fixed a .gitignore rule that hid the golden fixture dir, a golden normalizer that zeroed null limits, a misnamed deadline test). M2 scope and acceptance criteria now implemented; M2 stays in_progress until Chad's M2 review. No model calls, no Cline/paid APIs
+
+Tests: RabbitHole: 931 passed + 3 slow deselected, branch coverage 97.77% (floor 96%; agent/tracing, trace/show, cli 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked; CI green at f36a6c4 (runs/43539310593), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole f36a6c4 feat(trace): trace every run span and add arp run / arp trace show
+
+Remaining blockers: none
+
+Next recommended task: Request Chad's M2 review of RabbitHole at f36a6c4 (M2 implementation complete; known limits listed in TODO.md: provider spans share the policy interval, no provider span on policy timeout, arp run exists-check then atomic replace). While waiting: Chad's open M1 MINORs R-1/R-2/R-4..R-7, OPT-1/2. M2 closes after review; then M3.
+
 ## 2026-11-13 - agentic-research-platform - M2
 
 Work completed:
