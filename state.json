@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-14T01:16:17+00:00",
+  "updated_at": "2026-11-14T01:16:34+00:00",
   "active_project": "agentic-research-platform",
   "projects": {
     "production-rag-engine": {
@@ -349,7 +349,7 @@
         "recorded_at": "2026-11-14T01:16:17+00:00"
       },
       "blockers": [],
-      "next_recommended_task": "M2 (last unit): tracer on every span (run/step/provider_call incl. parse_failure, per-attempt tool_call spans); arp run --provider scripted --script FILE and arp trace show FILE; golden two-step trace test on tests/fixtures/scripts/two_step.json; then request Chad's M2 review. Open R-1/R-2/R-4..R-7, OPT-1/2. M2 not complete."
+      "next_recommended_task": "Request Chad's M2 review of RabbitHole at f36a6c4 (M2 implementation complete; known limits listed in TODO.md: provider spans share the policy interval, no provider span on policy timeout, arp run exists-check then atomic replace). While waiting: Chad's open M1 MINORs R-1/R-2/R-4..R-7, OPT-1/2. M2 closes after review; then M3."
     }
   },
   "daily_log": [
@@ -1030,5 +1030,5 @@
       "next_recommended_task": "Request Chad's M2 review of RabbitHole at f36a6c4 (M2 implementation complete; known limits listed in TODO.md: provider spans share the policy interval, no provider span on policy timeout, arp run exists-check then atomic replace). While waiting: Chad's open M1 MINORs R-1/R-2/R-4..R-7, OPT-1/2. M2 closes after review; then M3."
     }
   ],
-  "next_recommended_task": "M2 (last unit): tracer on every span (run/step/provider_call incl. parse_failure, per-attempt tool_call spans); arp run --provider scripted --script FILE and arp trace show FILE; golden two-step trace test on tests/fixtures/scripts/two_step.json; then request Chad's M2 review. Open R-1/R-2/R-4..R-7, OPT-1/2. M2 not complete."
+  "next_recommended_task": "Request Chad's M2 review of RabbitHole at f36a6c4 (M2 implementation complete; known limits listed in TODO.md: provider spans share the policy interval, no provider span on policy timeout, arp run exists-check then atomic replace). While waiting: Chad's open M1 MINORs R-1/R-2/R-4..R-7, OPT-1/2. M2 closes after review; then M3."
 }
