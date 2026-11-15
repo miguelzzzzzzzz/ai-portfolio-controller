@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-15 - agentic-research-platform - M2 (review fixes)
+
+Work completed:
+- Chad M2 MAJOR-1 (1200762): the verifier hook now runs under asyncio.timeout of the step timeout or the time left before the run deadline, like the policy. Deadline binds -> budget_exhausted:deadline; step timeout binds -> failed:verifier_timeout (run error class timeout); a verifier raising its own TimeoutError -> failed:verifier_error. An answer accepted at or after the deadline is not honoured (budget_exhausted:deadline + answer_after_deadline step event) and an answer chosen after the deadline is not verified. Chad's probe (1.5 s verifier, 0.3 s deadline, 0.2 s step timeout) now ends failed:verifier_timeout at 0.2 s instead of succeeded at 1.5 s
+- Chad M2 MINOR-4 (1200762, same unit as MAJOR-2 per Chad): PolicyFailure.tokens (validated int >= 0); LLMPolicy charges an unparseable reply's usage; the loop adds it, so the run span's budget_used.tokens matches its provider span (Chad's bad.json probe: 120, was 0). Provider errors charge 0; a policy call cancelled by timeout still charges nothing (MINOR-2, open)
+- Chad M2 MAJOR-2 (1200762): budget property test rewritten on a virtual-time asyncio loop (tests/virtual_time.py; the loop clock jumps to the next timer, so real asyncio.timeout cancellation with no real waiting). Strategy adds slow/hanging policy calls and verifiers, an always-timing-out tool, token-using parse failures and an optional step timeout (300 examples). Asserts elapsed_s <= deadline_s + DEADLINE_TOLERANCE_S (named constant, 1e-9: float rounding only), tokens == sum of completed calls and <= max_tokens + largest single call, repairs <= max_repairs + 1, plus the earlier counter/trace checks. test_deadline_budget now shows the 3rd call cut at exactly 2.5 s (was an overshoot to 3.0). 9 new deadline/verifier tests (virtual, fake and real clock). Checked that the new tests fail on the old code
+- Docs (1200762): ADR-0006 budget-rules amendment (Bogart's /workspace/p02-agentic-research-platform/M2-budget-rule-patch.md, reconciled with the code: limit semantics, repairs allowed, soft tokens incl. parse failures, hard deadline for policy/tools/backoff/verifier, verifier_timeout vs deadline, late acceptance, DEADLINE_TOLERANCE_S); PROJECT_SPEC budgets criterion + failure taxonomy now exactly BudgetKind (steps, tool_calls, tool_calls_per_tool, deadline, tokens, repairs); PLAN M2 two new acceptance checks; CHANGELOG, README status, TODO (remaining M2 MINOR-1/2/3/5/6/7 and OPT-1..7 listed with owners). Self-reviewed the full diff; no model calls, no Cline/paid APIs
+
+Tests: RabbitHole: 956 passed + 3 slow deselected (25 new), branch coverage 97.80% (floor 96%; agent/loop, agent/policy, policies/llm 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked and on Python 3.13 locally; CI green at 1200762 (runs/43662400882), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole 1200762 fix(agent): bound the verifier by the run deadline and assert every budget invariant
+
+Remaining blockers: none
+
+Next recommended task: Ask Chad to re-check RabbitHole M2 at 1200762: MAJOR-1 (agent/loop.py _answer/_time_limit + tests test_slow_verifier_*, test_hanging_verifier_on_the_real_clock, test_answer_accepted_only_after_the_deadline_is_not_honoured), MAJOR-2 (test_property_budget_invariants_hold on tests/virtual_time.py, DEADLINE_TOLERANCE_S; ADR-0006/SPEC/PLAN), spot-check MINOR-4 (PolicyFailure.tokens). M2 closes after his re-check. Meanwhile: M2 MINOR-1 (no-clobber trace publish, before M4), then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2; then M3.
+
 ## 2026-11-14 - agentic-research-platform - M2
 
 Work completed:
