@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-16 - agentic-research-platform - M2 agent loop, budgets, timeouts/retries, scripted provider (done)
+
+Work completed:
+- Chad's M2 re-check N-1: AgentLoop checks scope.expired() after every timed policy and verifier call, so an outcome after a fired limit (returned after swallowing the cancellation, or raised something else, incl. PolicyFailure) ends the run as budget_exhausted:deadline or failed:policy_timeout/verifier_timeout (error class timeout) instead of succeeded / *_error; late_result_ignored step event; usage of a late Decision/PolicyFailure still charged and traced
+- ToolExecutor: same rule per attempt (late output, ToolFailure or crash after the timeout fired is tool_timeout or the deadline error, retried like any timeout)
+- 18 new tests (virtual-time loop tests for catch-and-continue and catch-then-raise on policy and verifier, both step-timeout and deadline bounds; executor tests on the real loop); all 18 fail on the previous code. ADR-0006 rule 'a fired time limit is final' incl. its limit (code that swallows cancellation and keeps running is not cancelled again); tracing docstring; README/CHANGELOG no longer claim arp run never overwrites a trace (MINOR-1 stays open)
+- M2 closed: Chad's re-check passed at 1200762 (0 CRITICAL/MAJOR), N-1 owned and fixed; owners recorded on the open M2 minors in TODO; PLAN status updated. Self-reviewed full diff before push. No model calls, no Cline/paid APIs
+
+Tests: RabbitHole: 974 passed + 3 slow deselected, branch coverage 97.82% (floor 96%; agent/loop.py and tools/executor.py 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked; CI green at e5abdeb (runs/43784175692), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole e5abdeb fix(agent): treat any outcome after a fired time limit as a timeout
+
+Remaining blockers: none
+
+Next recommended task: RabbitHole M3 (research tools on the CitationNeeded v1.0.0 retriever, citations, guardrails): start with RagEngineBackend on index format 2 (documents.jsonl, corpus_id, search --json hits + schema_version, citation check on normalized text + content_hash). Before M4: M2 MINOR-1 (no-clobber trace publish). Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2. Optional: ask Chad to spot-check N-1 at e5abdeb.
+
 ## 2026-11-15 - agentic-research-platform - M2 (review fixes)
 
 Work completed:

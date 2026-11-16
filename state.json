@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-15T01:20:39+00:00",
+  "updated_at": "2026-11-16T01:07:04+00:00",
   "active_project": "agentic-research-platform",
   "projects": {
     "production-rag-engine": {
@@ -223,8 +223,8 @@
         {
           "id": "M2",
           "title": "Agent loop, run state, budgets, timeouts/retries, scripted provider",
-          "status": "in_progress",
-          "completed": null
+          "status": "done",
+          "completed": "2026-11-16"
         },
         {
           "id": "M3",
@@ -258,9 +258,9 @@
         }
       ],
       "review": {
-        "last_run": "2026-11-14",
-        "passed": false,
-        "reviewer": "Chad",
+        "last_run": "2026-11-15",
+        "passed": true,
+        "reviewer": "Chad (M1 re-check passed at 60e7ad9; M2 review at f36a6c4: 0 CRITICAL, 2 MAJOR, 7 MINOR, 7 OPTIONAL; M2 re-check passed at 1200762 on 2026-11-15 with 0 CRITICAL/MAJOR and new MINOR N-1)",
         "findings": [
           {
             "severity": "MAJOR",
@@ -342,14 +342,14 @@
           {
             "severity": "MAJOR",
             "id": "M2-MAJOR-1",
-            "message": "M2: verifier hook not bounded by run deadline/step timeout (run could succeed past deadline); fixed: asyncio.timeout(min(step timeout, time left)), failed:verifier_timeout, late acceptance not honoured; pending Chad re-check",
+            "message": "M2: verifier hook not bounded by run deadline/step timeout (run could succeed past deadline); fixed: asyncio.timeout(min(step timeout, time left)), failed:verifier_timeout, late acceptance not honoured; re-checked and passed by Chad at 1200762",
             "resolved": true,
             "resolved_in": "1200762"
           },
           {
             "severity": "MAJOR",
             "id": "M2-MAJOR-2",
-            "message": "M2: budget property test did not assert deadline/tokens; fixed: virtual-time property test asserts elapsed <= deadline + DEADLINE_TOLERANCE_S, tokens == sum and <= max_tokens + largest call, repairs <= max+1; ADR-0006/SPEC/PLAN amended; pending Chad re-check",
+            "message": "M2: budget property test did not assert deadline/tokens; fixed: virtual-time property test asserts elapsed <= deadline + DEADLINE_TOLERANCE_S, tokens == sum and <= max_tokens + largest call, repairs <= max+1; ADR-0006/SPEC/PLAN amended; re-checked and passed by Chad at 1200762",
             "resolved": true,
             "resolved_in": "1200762"
           },
@@ -401,18 +401,25 @@
             "id": "M2-OPT-1..7",
             "message": "M2 optional: composed provider/LLMPolicy/loop test, transient idempotency, per-call RNG, loop-guard keys on validated args, --step-timeout-s, child-in-parent interval check, truncate length docstring",
             "resolved": false
+          },
+          {
+            "severity": "MINOR",
+            "id": "M2-N-1",
+            "message": "M2 re-check: a policy/verifier that catches the timeout's cancellation and returns (or raises something else) had its outcome counted / labelled *_error; fixed: scope.expired() checked after every timed policy, verifier and tool call, late_result_ignored step event (owner: Kim)",
+            "resolved": true,
+            "resolved_in": "e5abdeb"
           }
         ],
         "note": "Chad FAIL at c0a9f58 (0 CRITICAL, 2 MAJOR, 8 MINOR); fixes d3d74ca..60e7ad9; Chad re-check PASS at 60e7ad9 (0 CRITICAL, 0 MAJOR, 8 MINOR R-1..R-7, R-9; R-8 withdrawn). M1 closed 2026-11-08; MINORs tracked in RabbitHole TODO.md (4d5ec97). | M2 review at f36a6c4 (2026-11-14): 0 CRITICAL, 2 MAJOR, 7 MINOR, 7 OPTIONAL. MAJOR-1, MAJOR-2 and MINOR-4 fixed in 1200762 (2026-11-15), awaiting Chad's re-check; other M2 MINORs tracked in RabbitHole TODO.md."
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/43662400882",
-        "sha": "1200762",
-        "recorded_at": "2026-11-15T01:20:30+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/43784175692",
+        "sha": "e5abdeb",
+        "recorded_at": "2026-11-16T01:06:39+00:00"
       },
       "blockers": [],
-      "next_recommended_task": "Ask Chad to re-check RabbitHole M2 at 1200762: MAJOR-1 (agent/loop.py _answer/_time_limit + tests test_slow_verifier_*, test_hanging_verifier_on_the_real_clock, test_answer_accepted_only_after_the_deadline_is_not_honoured), MAJOR-2 (test_property_budget_invariants_hold on tests/virtual_time.py, DEADLINE_TOLERANCE_S; ADR-0006/SPEC/PLAN), spot-check MINOR-4 (PolicyFailure.tokens). M2 closes after his re-check. Meanwhile: M2 MINOR-1 (no-clobber trace publish, before M4), then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2; then M3."
+      "next_recommended_task": "RabbitHole M3 (research tools on the CitationNeeded v1.0.0 retriever, citations, guardrails): start with RagEngineBackend on index format 2 (documents.jsonl, corpus_id, search --json hits + schema_version, citation check on normalized text + content_hash). Before M4: M2 MINOR-1 (no-clobber trace publish). Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2. Optional: ask Chad to spot-check N-1 at e5abdeb."
     }
   },
   "daily_log": [
@@ -1109,7 +1116,25 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "Ask Chad to re-check RabbitHole M2 at 1200762: MAJOR-1 (agent/loop.py _answer/_time_limit + tests test_slow_verifier_*, test_hanging_verifier_on_the_real_clock, test_answer_accepted_only_after_the_deadline_is_not_honoured), MAJOR-2 (test_property_budget_invariants_hold on tests/virtual_time.py, DEADLINE_TOLERANCE_S; ADR-0006/SPEC/PLAN), spot-check MINOR-4 (PolicyFailure.tokens). M2 closes after his re-check. Meanwhile: M2 MINOR-1 (no-clobber trace publish, before M4), then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2; then M3."
+    },
+    {
+      "date": "2026-11-16",
+      "project": "agentic-research-platform",
+      "milestone": "M2 agent loop, budgets, timeouts/retries, scripted provider (done)",
+      "work_completed": [
+        "Chad's M2 re-check N-1: AgentLoop checks scope.expired() after every timed policy and verifier call, so an outcome after a fired limit (returned after swallowing the cancellation, or raised something else, incl. PolicyFailure) ends the run as budget_exhausted:deadline or failed:policy_timeout/verifier_timeout (error class timeout) instead of succeeded / *_error; late_result_ignored step event; usage of a late Decision/PolicyFailure still charged and traced",
+        "ToolExecutor: same rule per attempt (late output, ToolFailure or crash after the timeout fired is tool_timeout or the deadline error, retried like any timeout)",
+        "18 new tests (virtual-time loop tests for catch-and-continue and catch-then-raise on policy and verifier, both step-timeout and deadline bounds; executor tests on the real loop); all 18 fail on the previous code. ADR-0006 rule 'a fired time limit is final' incl. its limit (code that swallows cancellation and keeps running is not cancelled again); tracing docstring; README/CHANGELOG no longer claim arp run never overwrites a trace (MINOR-1 stays open)",
+        "M2 closed: Chad's re-check passed at 1200762 (0 CRITICAL/MAJOR), N-1 owned and fixed; owners recorded on the open M2 minors in TODO; PLAN status updated. Self-reviewed full diff before push. No model calls, no Cline/paid APIs"
+      ],
+      "tests": "RabbitHole: 974 passed + 3 slow deselected, branch coverage 97.82% (floor 96%; agent/loop.py and tools/executor.py 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked; CI green at e5abdeb (runs/43784175692), py3.11 + py3.13",
+      "evaluation": "Not run (no evals; no model calls)",
+      "commits": [
+        "RabbitHole e5abdeb fix(agent): treat any outcome after a fired time limit as a timeout"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "RabbitHole M3 (research tools on the CitationNeeded v1.0.0 retriever, citations, guardrails): start with RagEngineBackend on index format 2 (documents.jsonl, corpus_id, search --json hits + schema_version, citation check on normalized text + content_hash). Before M4: M2 MINOR-1 (no-clobber trace publish). Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2. Optional: ask Chad to spot-check N-1 at e5abdeb."
     }
   ],
-  "next_recommended_task": "Ask Chad to re-check RabbitHole M2 at 1200762: MAJOR-1 (agent/loop.py _answer/_time_limit + tests test_slow_verifier_*, test_hanging_verifier_on_the_real_clock, test_answer_accepted_only_after_the_deadline_is_not_honoured), MAJOR-2 (test_property_budget_invariants_hold on tests/virtual_time.py, DEADLINE_TOLERANCE_S; ADR-0006/SPEC/PLAN), spot-check MINOR-4 (PolicyFailure.tokens). M2 closes after his re-check. Meanwhile: M2 MINOR-1 (no-clobber trace publish, before M4), then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2; then M3."
+  "next_recommended_task": "RabbitHole M3 (research tools on the CitationNeeded v1.0.0 retriever, citations, guardrails): start with RagEngineBackend on index format 2 (documents.jsonl, corpus_id, search --json hits + schema_version, citation check on normalized text + content_hash). Before M4: M2 MINOR-1 (no-clobber trace publish). Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2. Optional: ask Chad to spot-check N-1 at e5abdeb."
 }
