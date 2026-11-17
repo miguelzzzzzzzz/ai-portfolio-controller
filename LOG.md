@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-17 - agentic-research-platform - M3 research tools, citations, guardrails (slice 1: search backends)
+
+Work completed:
+- Search backend contract (d6e5011): agentic_research.backends with Passage (validated: finite score, len(text) == end_char - start_char, page/page_end), StoredDocument (sha256(text) == content_hash), SearchBackend protocol (corpus_id, search(query, k, filters), document(doc_id)), make_doc_id (sha256('<corpus_id>:<source>')[:16]) and parse_search_payload (schema_version must be exactly 1, else BackendError, never an empty hit list; reads hits; requires every format-2 citation field)
+- RagEngineBackend over a CitationNeeded v1.0.0 format-2 index via the in-process API: refuses format_version != 2 before loading, tampered documents.jsonl refused through load_index, documents from any corpus but the explicit corpus_id refused, hits built through the same search --json payload; lexical (BM25) default, hybrid (RRF) option. FixtureSearchBackend (paragraph passages, distinct-term score) with the same contract. production-rag-engine @ git+...CitationNeeded@v1.0.0 runtime dependency (locked b8015f3, allow-direct-references). Fictional fixture corpus rabbithole-tasks-v1 and tests/rag_index.py (CitationNeeded ingest/chunk/save_index, hashing embedder, offline)
+- Tests (104 new): one contract suite on the fixture backend and RagEngineBackend lexical + hybrid (offsets resolve into stored text, content_hash, doc ids, ranks/scores, k, filters, bad args, unknown doc_id), pinned doc id 7610eae52aac886e for bridges/velmora-bridge.md under rabbithole-tasks-v1 (also equals rag_engine.models.make_doc_id), in-process results equal rag-engine search --json on the same index in both modes, table-driven payload/Passage/format-version/foreign-corpus/tampered-index rejections
+- Chad's M2 spot-check nit: plain pytest with no -m filter now passes without a server (test_live_server_serves_the_pinned_model skips when unreachable); the live Qwen test failed even with a server because Qwen3 emits an empty <think></think> under --reasoning-format none, now checked with the shared leaked_think_reason/strip_empty_think (verified once against the local llama-server on the box). README/CHANGELOG/TODO/PLAN updated (M3 in progress, M3 checklist in TODO). Self-reviewed full diff; no Cline/paid APIs
+
+Tests: RabbitHole: 1078 passed + 3 slow deselected (104 new), branch coverage 97.95% (floor 96%; backends/* 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked and on Python 3.13 locally; plain pytest: 1078 passed, 2 skipped; CI green at d6e5011 (runs/43992984572), py3.11 + py3.13
+
+Evaluation: Not run (no evals; one local Qwen smoke call on the box for the live test fix, no CI model calls)
+
+Commits:
+- RabbitHole d6e5011 feat(backends): add search backend contract over CitationNeeded v1.0.0
+
+Remaining blockers: none
+
+Next recommended task: RabbitHole M3 slice 2: search_corpus (replacing the probe stub schema) and read_document tools over SearchBackend, run off the event loop, plus a per-run evidence store of observed spans; then final_answer + CitationVerifier, fetch_url, guardrails, oracle integration test, Chad's M3 review. Before M4: M2 MINOR-1 (no-clobber trace publish). Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2.
+
 ## 2026-11-16 - agentic-research-platform - M2 agent loop, budgets, timeouts/retries, scripted provider (done)
 
 Work completed:
