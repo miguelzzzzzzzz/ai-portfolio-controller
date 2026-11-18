@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-18 - agentic-research-platform - M3 research tools, citations, guardrails (slice 2: search_corpus, read_document, evidence store)
+
+Work completed:
+- search_corpus (b852949, agentic_research.tools.search): top-k passages (default 5, max 50, exact-match filters on doc_id/source) from any SearchBackend with doc_id, chunk_id, source, content_hash, page/page_end, normalized offsets, text, rank, score and corpus_id; whitespace-only query is invalid_args/blank_query without a backend call; BackendError is permanent/backend_error; any other backend exception is permanent/tool_crashed. Same arguments as the M1 probe stub; the probe keeps its frozen v1 stub schema (sha256 pinned in a test) so probes/tool_calls.v1 stays reproducible
+- read_document(doc_id, start, end) (agentic_research.tools.read): slice of the normalized stored text, at most 1500 chars (below the shaper's default 2000), end clamped, doc_length reported; start past the end -> invalid_args/start_out_of_range, unknown doc id -> invalid_args/unknown_doc_id. Both tools run the backend call via asyncio.to_thread (off the event loop); a timed-out call's thread finishes in the background and its result is dropped. research_registry(backend) = calculator + both tools; default_registry unchanged
+- EvidenceStore (agentic_research.evidence): built from a run's recorded steps (from_steps), so only results the loop accepted count (timed-out, failed, budget-refused calls add nothing), keyed by (doc_id, content_hash), covers() over merged overlapping/touching spans. Known limit recorded in TODO for the verifier slice: a truncated observation still counts its full span; M2 RunState.evidence/FinalAnswer.evidence_ids placeholder to replace
+- Tests (73 new): both tools through the real registry+executor on the fixture backend and RagEngineBackend lexical+hybrid, schema/range rejections, crash classification, worker-thread execution, blocked-search timeout; evidence merging/covers edge cases, version keying, oracle run over both backends, timed-out search not evidence after its thread returns. Chad's hybrid nonsense-query note was already covered by test_query_without_a_matching_term (ticked in TODO). README/CHANGELOG/TODO updated. Abstention patch from Bogart not present on the box (not applied). Self-reviewed full diff; no Cline/paid APIs, no model calls
+
+Tests: RabbitHole: 1151 passed + 3 slow deselected (73 new), branch coverage 98.03% (floor 96%; evidence.py, tools/search.py, tools/read.py 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked and on Python 3.13 locally; plain pytest: 1152 passed, 2 skipped; CI green at b852949 (runs/44213580783), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole b852949 feat(tools): add search_corpus and read_document tools and a per-run evidence store
+
+Remaining blockers: none
+
+Next recommended task: RabbitHole M3 slice 3: final_answer(answer, claims[{text, citations}]) + CitationVerifier (validity on normalized text, stale_source on content_hash, groundedness via EvidenceStore incl. the truncated-observation decision, repair feedback) in the loop's verifier hook with table-driven rejections; apply Bogart's abstention-rule patch to ADR-0004 if it lands. Then fetch_url, guardrails, oracle integration test over RagEngineBackend, Chad's M3 review. Before M4: M2 MINOR-1 (no-clobber trace publish). Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2.
+
 ## 2026-11-17 - agentic-research-platform - M3 research tools, citations, guardrails (slice 1: search backends)
 
 Work completed:
