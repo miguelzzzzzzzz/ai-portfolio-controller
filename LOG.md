@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-19 - agentic-research-platform - M3 research tools, citations, guardrails (slice 2b: only text shown in full is evidence; ADR-0004 abstention/grounding amendment)
+
+Work completed:
+- Applied Bogart's M3-abstention-grounding-patch (d670ed4): ADR-0004 amendment (abstain only via GiveUp, never on 'no hits'; verifier rejects ungrounded answers; repairs exhausted graded as not abstaining; optional score floor per search mode, tuned on dev and frozen in evals/thresholds.v1.json before any test run, advice only; answered_when_unanswerable and abstained_when_answerable reported side by side with an abstain-everything row; a span grounds a citation only if shown in full; elision keeps evidence), mirrored in PROJECT_SPEC (groundedness, abstention) and PLAN M3 acceptance checks; ADR index marked amended
+- ObservationShaper cuts successful search_corpus observations at passage boundaries: longest passage prefix that fits max_chars (default 2000), rest dropped whole with '...[N passages omitted]', new Observation.shown_passages (kept on elision, tool observations only); envelope-too-long falls back to the char cut with shown_passages=0; other tools unchanged
+- EvidenceStore reads each step's observation: from_steps(steps, observations) (observations required) / from_state(state) / add_step(step, observation) replace add_result; only shown passages count, a truncated read_document slice counts nothing, a result without an observation counts nothing, dropped spans per step exposed as EvidenceStore.dropped. Removes the 2026-11-18 known limit (truncated observations counted their full span)
+- Tests (25 new): passage cuts (fit, mid-list, singular marker, first passage too long, envelope too long, elision, non-search tools) + hypothesis property (whole passages in order, within limit, maximal); evidence from cut searches, truncated/missing/elided/mismatched observations; k=10 search over fixture, RagEngine lexical and hybrid where nothing past the cut counts (Chad's ask); hybrid nonsense query returns 5 passages and ends abstained only via GiveUp; 1500-char prose read fits the default observation, quote-heavy one is truncated and adds nothing. README/CHANGELOG/TODO updated. Self-reviewed full diff; no Cline/paid APIs, no model calls
+
+Tests: RabbitHole: 1176 passed + 3 slow deselected (25 new), branch coverage 98.06% (floor 96%; observations.py, state.py, evidence.py 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked on Python 3.11 and 3.13 locally; plain pytest: 1177 passed, 2 skipped; CI green at d670ed4 (runs/44434774509), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole d670ed4 fix(evidence): count only spans shown in full, cut search observations at passage boundaries
+
+Remaining blockers: none
+
+Next recommended task: RabbitHole M3 slice 3: final_answer(answer, claims[{text, citations}]) + CitationVerifier (validity on normalized text, stale_source on content_hash, groundedness via EvidenceStore.from_state, repair feedback) in the loop's verifier hook with table-driven rejections, plus the ADR-0004 checks (answering the hybrid nonsense query rejected as ungrounded_citation; omitted passages of a cut search rejected; elided-but-shown span grounds); replace the M2 RunState.evidence/FinalAnswer.evidence_ids placeholder; emit evidence_dropped_truncated in the trace. Then fetch_url, guardrails, oracle integration test over RagEngineBackend, Chad's M3 review. Before M4: M2 MINOR-1 (no-clobber trace publish). Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2.
+
 ## 2026-11-18 - agentic-research-platform - M3 research tools, citations, guardrails (slice 2: search_corpus, read_document, evidence store)
 
 Work completed:
