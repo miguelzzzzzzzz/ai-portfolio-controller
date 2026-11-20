@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-19T01:11:07+00:00",
+  "updated_at": "2026-11-20T01:05:18+00:00",
   "active_project": "agentic-research-platform",
   "projects": {
     "production-rag-engine": {
@@ -414,12 +414,12 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/44434774509",
-        "sha": "d670ed4",
-        "recorded_at": "2026-11-19T01:11:07+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/44650765014",
+        "sha": "739736b",
+        "recorded_at": "2026-11-20T01:05:18+00:00"
       },
       "blockers": [],
-      "next_recommended_task": "RabbitHole M3 slice 3: final_answer(answer, claims[{text, citations}]) + CitationVerifier (validity on normalized text, stale_source on content_hash, groundedness via EvidenceStore.from_state, repair feedback) in the loop's verifier hook with table-driven rejections, plus the ADR-0004 checks (answering the hybrid nonsense query rejected as ungrounded_citation; omitted passages of a cut search rejected; elided-but-shown span grounds); replace the M2 RunState.evidence/FinalAnswer.evidence_ids placeholder; emit evidence_dropped_truncated in the trace. Then fetch_url, guardrails, oracle integration test over RagEngineBackend, Chad's M3 review. Before M4: M2 MINOR-1 (no-clobber trace publish). Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2."
+      "next_recommended_task": "RabbitHole M3 slice 3: final_answer(answer, claims[{text, citations}]) + CitationVerifier (validity on normalized text, stale_source on content_hash, groundedness via EvidenceStore.from_state, repair feedback) in the loop's verifier hook with table-driven rejections, plus the ADR-0004 checks (answering the hybrid nonsense query rejected as ungrounded_citation; omitted passages of a cut search rejected even though the marker locates them; elided-but-shown span grounds); replace the M2 RunState.evidence/FinalAnswer.evidence_ids placeholder; emit evidence_dropped_truncated in the trace. Then arp run over a corpus, fetch_url, guardrails, oracle integration test over RagEngineBackend, Chad's M3 review. Before M4: M2 MINOR-1 (no-clobber trace publish). Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2."
     }
   },
   "daily_log": [
@@ -1188,7 +1188,24 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "RabbitHole M3 slice 3: final_answer(answer, claims[{text, citations}]) + CitationVerifier (validity on normalized text, stale_source on content_hash, groundedness via EvidenceStore.from_state, repair feedback) in the loop's verifier hook with table-driven rejections, plus the ADR-0004 checks (answering the hybrid nonsense query rejected as ungrounded_citation; omitted passages of a cut search rejected; elided-but-shown span grounds); replace the M2 RunState.evidence/FinalAnswer.evidence_ids placeholder; emit evidence_dropped_truncated in the trace. Then fetch_url, guardrails, oracle integration test over RagEngineBackend, Chad's M3 review. Before M4: M2 MINOR-1 (no-clobber trace publish). Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2."
+    },
+    {
+      "date": "2026-11-20",
+      "project": "agentic-research-platform",
+      "milestone": "M3 research tools, citations, guardrails (slice 2c: Chad's spot-check of d670ed4, omitted passages located)",
+      "work_completed": [
+        "Chad's spot-check item 1 (739736b): the search_corpus omission marker now lists each omitted passage's (doc_id, start_char, end_char), best first, with no passage text (not evidence), e.g. '...[2 passages omitted; read_document(doc_id, start, end): (id, 0, 2400), (id, 2401, 2600)]', so a policy shown 0 passages can recover with read_document (passages > 1500 chars need several reads). The marker now counts against max_chars: locators that do not fit become '+M more', then the bare count, before another passage is dropped; a passage-cut observation never exceeds max_chars; char-cut fallback unchanged. passages_marker(omitted, locators=(), room=None) -> str | None. ADR-0004 note, PLAN M3 groundedness line, evidence.py docstring, CHANGELOG, TODO updated",
+        "Item 2: test builds a CitationNeeded index with its default chunking (256 whitespace tokens) over prose made from the fixture corpus (~5.6 chars/token); the best passage (242 tokens, 1336 chars) is shown in full in the default 2000-char observation (1828 chars incl. marker) and grounds. Documented limit: denser text can still overflow, then the marker locates it. Item 3: a step with a result but no observation counts nothing (test parametrized over search_corpus and read_document; dropped recorded)",
+        "Tests (10 new, 5 rewritten): exact markers, +M more, bare fallback, first passage too long (shown 0, both located, no text), defensive locators, hypothesis property (whole observation within max_chars, listed locators are the leading omitted passages, longest marker that fits, one more passage would not fit); k=10 run over fixture, RagEngine lexical and hybrid checks every omitted passage is located; recovery run (2400-char first passage, 0 shown) reads both omitted passages back from the locators and only those reads ground them. Self-reviewed full diff; no Cline/paid APIs, no model calls"
+      ],
+      "tests": "RabbitHole: 1186 passed + 3 slow deselected (10 new), branch coverage 98.08% (floor 96%; observations.py, evidence.py 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked; plain pytest: 1187 passed, 2 skipped; CI green at 739736b (runs/44650765014), py3.11 + py3.13",
+      "evaluation": "Not run (no evals; no model calls)",
+      "commits": [
+        "RabbitHole 739736b feat(observations): locate omitted search passages in the omission marker"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "RabbitHole M3 slice 3: final_answer(answer, claims[{text, citations}]) + CitationVerifier (validity on normalized text, stale_source on content_hash, groundedness via EvidenceStore.from_state, repair feedback) in the loop's verifier hook with table-driven rejections, plus the ADR-0004 checks (answering the hybrid nonsense query rejected as ungrounded_citation; omitted passages of a cut search rejected even though the marker locates them; elided-but-shown span grounds); replace the M2 RunState.evidence/FinalAnswer.evidence_ids placeholder; emit evidence_dropped_truncated in the trace. Then arp run over a corpus, fetch_url, guardrails, oracle integration test over RagEngineBackend, Chad's M3 review. Before M4: M2 MINOR-1 (no-clobber trace publish). Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2."
     }
   ],
-  "next_recommended_task": "RabbitHole M3 slice 2: search_corpus (replacing the probe stub schema) and read_document tools over SearchBackend, run off the event loop, plus a per-run evidence store of observed spans; then final_answer + CitationVerifier, fetch_url, guardrails, oracle integration test, Chad's M3 review. Before M4: M2 MINOR-1 (no-clobber trace publish). Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2."
+  "next_recommended_task": "RabbitHole M3 slice 3: final_answer(answer, claims[{text, citations}]) + CitationVerifier (validity on normalized text, stale_source on content_hash, groundedness via EvidenceStore.from_state, repair feedback) in the loop's verifier hook with table-driven rejections, plus the ADR-0004 checks (answering the hybrid nonsense query rejected as ungrounded_citation; omitted passages of a cut search rejected even though the marker locates them; elided-but-shown span grounds); replace the M2 RunState.evidence/FinalAnswer.evidence_ids placeholder; emit evidence_dropped_truncated in the trace. Then arp run over a corpus, fetch_url, guardrails, oracle integration test over RagEngineBackend, Chad's M3 review. Before M4: M2 MINOR-1 (no-clobber trace publish). Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2."
 }
