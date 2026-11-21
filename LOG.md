@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-21 - agentic-research-platform - M3 research tools, citations, guardrails (slice 3: final_answer claims + CitationVerifier; Chad's spot-check item 3 traced)
+
+Work completed:
+- final_answer claims (4444938): FinalAnswer.claims = Claim(text, citations[Citation(doc_id, start, end, quote, content_hash?)]) replaces the unused M2 RunState.evidence / Evidence / FinalAnswer.evidence_ids placeholder (payloads with evidence_ids now rejected); PLAN uses doc_id instead of source_id, matching the tools
+- CitationVerifier (agentic_research.citations) in the loop's verifier hook: at least one claim, every claim cited, every citation passes in order: known doc_id (invalid_citation), content_hash freshness (stale_source), exact normalized quote at [start, end) (invalid_citation), groundedness in EvidenceStore.from_state (ungrounded_citation); no claims/uncited claim = no_citation. Reason = first issue; feedback lists every issue by position (claims[i].citations[j]) with offsets/observed ranges only, never document text. Lookups in a worker thread (step timeout/deadline bound a slow backend); backend failure = failed:verifier_error. Answer correctness left to M4 graders
+- Chad's spot-check item 3 finished: a step with a result but no observation was already counted in EvidenceStore.dropped; the loop now emits an evidence_dropped_truncated step event (tool, shown, dropped) on every tool step that dropped spans (cut search, truncated read, no observation). Foreign tool under an evidence name -> evidence_unreadable event instead of a loop crash. Evidence store moved to agentic_research.agent.evidence (step_evidence per-step rule) to avoid an import cycle
+- Tests (42 new): table-driven verifier checks (valid, off-by-one start/end, quote mismatch, past end, unknown doc_id, stale hash, stale beats wrong quote, unobserved doc/range, straddling), no_citation, issue order/format, no text leak in feedback, tampered stored text; loop: oracle search-read-answer accepted on fixture + RagEngineBackend lexical + hybrid (PLAN M3 acceptance), unread citation rejected then repaired by reading, omitted passages of a cut k=10 search ungrounded (all 3 backends) with trace event, elided-but-shown span grounds, hybrid nonsense query answered -> no_citation then ungrounded_citation -> budget_exhausted:repairs (not abstained), truncated read / no-observation trace events, slow backend -> failed:verifier_timeout, broken -> failed:verifier_error. README/CHANGELOG/PLAN/TODO/ADR-0004 updated. Mutation check: disabling groundedness fails 13 tests, disabling the event fails 5. Self-reviewed full diff; no Cline/paid APIs, no model calls
+
+Tests: RabbitHole: 1228 passed + 3 slow deselected (42 new), branch coverage 98.14% (floor 96%; citations.py, agent/evidence.py, loop.py 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked on py3.13 and py3.11 locally; plain pytest: 1229 passed, 2 skipped; CI green at 4444938 (runs/44848318849), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole 4444938 feat(citations): add final_answer claims and a CitationVerifier in the loop's verifier hook
+
+Remaining blockers: none
+
+Next recommended task: RabbitHole M3: arp run over a corpus (--index DIR --corpus-id ID, research_registry, --verifier citations) and final_answer as a registered tool schema (tools/answer.py) so arp tools schema lists the research tools; then fetch_url (fixture map, live opt-in + allowlist, socket-blocked test), guardrails (untrusted-data envelope, injection detector, per-task tool/URL allowlists), then Chad's M3 review. Before M4: M2 MINOR-1 (no-clobber trace publish). M4 grader: budget_exhausted:repairs on unanswerable graded as not abstained. M5: claims in the LLM policy reply format. Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2.
+
 ## 2026-11-20 - agentic-research-platform - M3 research tools, citations, guardrails (slice 2c: Chad's spot-check of d670ed4, omitted passages located)
 
 Work completed:
