@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-22 - agentic-research-platform - M3 research tools, citations, guardrails (Chad's spot-check of 4444938: verifier contract, drop reasons, evidence-tool refusal)
+
+Work completed:
+- Chad's item (c) (8338a6c): AgentLoop refuses (ValueError) an executor registry whose search_corpus/read_document has another output_model, subclasses included (agent.evidence.misconfigured_evidence_tools; ToolExecutor.registry property), so a run whose evidence cannot be read can never end abstained because the policy gave up. A foreign tool registered after construction now ends the run failed:evidence_unreadable (permanent) at its first successful result, with the evidence_unreadable event, before any later GiveUp (previously the run continued and GiveUp ended it abstained). The frozen M1 probe registry (schema-only search_corpus stub) is flagged, so it can never drive the loop
+- Chad's item (b): evidence_dropped_truncated carries reason = truncated (cut search observation, truncated read slice) or no_observation (result got no observation); drop_reason, DROPPED_TRUNCATED, DROPPED_NO_OBSERVATION
+- Chad's item (a) + Bogart's wording: ADR-0004 amendment 2026-11-22 'every claim cited, every citation valid' (check order: known doc_id, content_hash freshness, exact quote, shown-in-full grounding; no claims/uncited claim = no_citation); verifier checks citation validity, freshness and shown-grounding only, no entailment check, so verified != correct; M4 failure-mode classifier labels answered_when_unanswerable and wrong_answer_valid_citations; acceptance rate is not accuracy. Earlier amendment bullets updated (reason field, evidence-tool refusal). Mirrored in PLAN M3, README status table, citations docstring
+- Tests: 4 new (loop refuses foreign read_document and widened search_corpus output; misconfigured_evidence_tools over research/default/probe registries and odd tools; late foreign tool fails the run before GiveUp, run span error permanent/evidence_unreadable) replacing the old foreign-tool test, 3 updated with reason attributes. TODO: Chad's spot-check items ticked, 'M3 review: Chad checks ADR-0004 vs code' added, Bogart's M5 frozen-probe no-leak check recorded (exact wording to confirm; not in LOG/TODO before). CHANGELOG updated. Self-reviewed full diff; no Cline/paid APIs, no model calls
+
+Tests: RabbitHole: 1231 passed + 3 slow deselected (net +3), branch coverage 98.16% (floor 96%; agent/evidence.py, loop.py, citations.py, tools/executor.py 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked on py3.13 and py3.11 locally; plain pytest: 1232 passed, 2 skipped; CI green at 8338a6c (runs/44969528153), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole 8338a6c fix(evidence): refuse misconfigured evidence tools and trace why spans were dropped
+
+Remaining blockers: none
+
+Next recommended task: RabbitHole M3: arp run over a corpus (--index DIR --corpus-id ID, research_registry, --verifier citations) and final_answer as a registered tool schema (tools/answer.py) so arp tools schema lists the research tools; then fetch_url (fixture map, live opt-in + allowlist, socket-blocked test), guardrails (untrusted-data envelope, injection detector, per-task tool/URL allowlists), then Chad's M3 review (incl. ADR-0004 vs code). Before M4: M2 MINOR-1 (no-clobber trace publish). M4 grader: budget_exhausted:repairs on unanswerable graded as not abstained. M5: claims in the LLM policy reply format + Bogart's frozen-probe no-leak check (confirm wording). Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2.
+
 ## 2026-11-21 - agentic-research-platform - M3 research tools, citations, guardrails (slice 3: final_answer claims + CitationVerifier; Chad's spot-check item 3 traced)
 
 Work completed:
