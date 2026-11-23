@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-23 - agentic-research-platform - M3 research tools, citations, guardrails (arp run over a corpus, oracle provider, research tools in arp tools schema)
+
+Work completed:
+- arp run over a corpus (df5f441): --index DIR --corpus-id ID [--retrieval lexical|hybrid] runs with research_registry over a RagEngineBackend (corpus id required, never guessed; missing/old-format/foreign-corpus index exits 2 before the run). --verifier accept-all|citations, default citations with a corpus and accept-all without (citations without a corpus exits 2). stdout prints corpus, mode and verifier; not yet in the trace (M2 MINOR-5)
+- --provider oracle --trajectory FILE --question Q runs OraclePolicy from a JSON action list (provider=none, no model), so the PLAN M3 search-read-answer trajectory runs from the CLI (tests/fixtures/trajectories/velmora_designer.json; README example executed on the box: rag-engine index with the hashing embedder, then arp run -> succeeded, verifier citations). --script/--trajectory mixing exits 2. Scripted LLM-policy answers still carry no claims, so over a corpus they are no_citation until M5 (tested and documented)
+- arp tools schema lists calculator, search_corpus, read_document (tools.builtin.catalog_registry binds the research tools to NoCorpusBackend, whose calls fail permanent/backend_error; schemas equal research_registry over any backend)
+- PLAN M5 acceptance + TODO: Bogart's exact no-gold-leak check and frozen prompt template (replacing the 'confirm wording' entry) and Chad's rule (if the probe ever runs through AgentLoop, swap its stub for the real search_corpus schema; never loosen the check). TODO: M3 oracle integration-test item ticked (done 2026-11-21, now also via CLI); new item to record corpus/mode/verifier in the trace. Tests: 28 new (tests/test_cli_corpus.py), 3 updated (tests/test_cli.py). CHANGELOG/README updated. Self-reviewed full diff; no Cline/paid APIs, no model calls
+
+Tests: RabbitHole: 1259 passed + 3 slow deselected (+28), branch coverage 98.20% (floor 96%; cli.py and tools/builtin.py 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked on py3.13 and py3.11 locally; plain pytest: 1260 passed, 2 skipped; CI green at df5f441 (runs/45092684615), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole df5f441 feat(cli): run the agent over a CitationNeeded index with the citation verifier
+
+Remaining blockers: none
+
+Next recommended task: RabbitHole M3: final_answer as a registered tool schema (tools/answer.py; claims schema for arp tools schema and the M5 LLM reply format), then fetch_url (fixture map, live opt-in + allowlist, socket-blocked test), guardrails (untrusted-data envelope, injection detector, per-task tool/URL allowlists), then Chad's M3 review (incl. ADR-0004 vs code). Before M4: M2 MINOR-1 (no-clobber trace publish); M2 MINOR-5 run_config event (now also corpus id, retrieval mode, verifier). M4 grader: budget_exhausted:repairs on unanswerable graded as not abstained. M5: claims in the LLM policy reply format + Bogart's no-gold-leak check and frozen prompt template (wording now in PLAN M5) + Chad's probe-stub rule. Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2.
+
 ## 2026-11-22 - agentic-research-platform - M3 research tools, citations, guardrails (Chad's spot-check of 4444938: verifier contract, drop reasons, evidence-tool refusal)
 
 Work completed:
