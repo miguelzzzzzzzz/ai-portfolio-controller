@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-24 - agentic-research-platform - M3 research tools, citations, guardrails (Chad's 2026-11-23 spot-check: the trace records the verifier)
+
+Work completed:
+- run_config event (990c8a7): every AgentLoop.run_traced run writes a run_config event at 0 s on the run span with RunConfig: verifier label, corpus (corpus_id, retrieval; null without a corpus), seed (new ToolExecutor.seed), step_timeout_s and all six Budgets limits (ConfiguredBudgets; a test keeps its fields equal to Budgets). Before, an accept-all run's trace looked identical to a citation-verified one and corpus/mode/verifier were only printed. Covers the run_config part of M2 MINOR-5 (budget_counters event and backoff_s still open)
+- Verifier label read from the verifier's class: label ClassVar (AcceptAll 'accept-all', CitationVerifier 'citations'), else custom:<qualname> (agent.verifier.verifier_label, max 200 chars); an instance attribute cannot relabel a verifier. Documented as a configuration record, not an attestation. RunConfig.citations_verified is the check for M4; PLAN M4 acceptance gains the runner verifier gate (score only citations traces; refuse or flag accept-all, custom:* and pre-run_config traces) and TODO has the M4 item
+- Trace validation: at most one run_config event on the run span and it must be a valid RunConfig (extra keys refused); traces without it still read (Trace.run_config is None), so schema_version stays 1 (older readers also accept new traces: event attributes are free-form). arp run --index passes CorpusConfig from the backend; arp trace show prints a config: line (verifier, corpus and mode, seed, step timeout, per-tool and repair limits; 'not recorded' for older traces). Golden two-step trace regenerated (only diff: the run_config event). Demo on the box: oracle Velmora run over the fixture index with --retrieval hybrid shows 'config: verifier=citations corpus=rabbithole-tasks-v1 (hybrid)'
+- Tests: 15 new, 8 updated (loop records every setting and round-trips; default accept-all; labels incl. unlabelled/non-string/empty/instance-relabel/long names; custom verifier never citations; 6 invalid run_config cases + duplicate; bad run_config in a file reported; old traces give None; CLI over the index records citations + corpus + mode for default/lexical/hybrid, accept-all with and without a corpus; CLI budgets and --seed reach run_config; trace show config lines with an escaped corpus id). README/CHANGELOG/TODO/PLAN updated. Self-reviewed full diff; no Cline/paid APIs, no model calls
+
+Tests: RabbitHole: 1274 passed + 3 slow deselected (+15), branch coverage 98.23% (floor 96%; trace/schema.py, trace/show.py, agent/tracing.py, agent/verifier.py, loop.py, cli.py 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked on py3.11 and py3.13 locally; plain pytest: 1275 passed, 2 skipped; CI green at 990c8a7 (runs/45302271465), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole 990c8a7 feat(trace): record the verifier, corpus and run limits in a run_config event
+
+Remaining blockers: none
+
+Next recommended task: RabbitHole M3: final_answer as a registered tool schema (tools/answer.py; claims schema for arp tools schema and the M5 LLM reply format), then fetch_url (fixture map, live opt-in + allowlist, socket-blocked test), guardrails (untrusted-data envelope, injection detector, per-task tool/URL allowlists), then Chad's M3 review (incl. ADR-0004 vs code). Before M4: M2 MINOR-1 (no-clobber trace publish); rest of M2 MINOR-5 (budget_counters event, backoff_s on failed attempts). M4: runner verifier gate (score only run_config.verifier == citations; refuse/flag accept-all, custom:* and traces without run_config; in PLAN M4 acceptance); grader: budget_exhausted:repairs on unanswerable graded as not abstained. M5: claims in the LLM policy reply format + Bogart's no-gold-leak check and frozen prompt template + Chad's probe-stub rule. Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2.
+
 ## 2026-11-23 - agentic-research-platform - M3 research tools, citations, guardrails (arp run over a corpus, oracle provider, research tools in arp tools schema)
 
 Work completed:
