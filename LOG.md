@@ -2,6 +2,25 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-25 - agentic-research-platform - M3 research tools, citations, guardrails (Chad's 2026-11-24 spot-check: answer_accepted event and the M4 verifier gate)
+
+Work completed:
+- answer_accepted step event (d8ef865): when the verifier accepts a final answer the loop records it on that step with claims and citations counts; before, only answer_rejected was recorded. An answer accepted at or after the deadline gets answer_accepted then answer_after_deadline and still ends budget_exhausted:deadline. Event names live in trace.schema (ANSWER_ACCEPTED_EVENT, ANSWER_AFTER_DEADLINE_EVENT)
+- M4 verifier gate as a library check: trace.gate.require_citations_verified(trace) -> RunConfig raises TraceGateError with a GateRefusal code unless the run span has exactly one run_config and it is first (no_run_config, duplicate_run_config, run_config_not_first), it is a valid RunConfig (invalid_run_config) with verifier citations (not_citations_verified), and step events agree with the status: an answered run has exactly one answer_accepted on its last step (answer_not_accepted; answered traces before 2026-11-25 are refused), other runs have none except a budget_exhausted run accepted too late (acceptance_mismatch). The gate re-checks shapes Trace validation refuses, so it holds for model_construct traces. Records configuration, not correctness (a custom class can still declare label 'citations')
+- Trace validation: run_config must be the run span's first event at 0 s (schema_version stays 1; traces without it still read). Golden two-step trace regenerated (only diff: answer_accepted on step 1). README/CHANGELOG/PLAN M4 acceptance (runner calls the gate, reports refusals by code)/TODO updated
+- Tests: 13 new (11 in tests/test_trace_gate.py from real AgentLoop runs plus edited traces, 2 trace-validation cases), 7 updated (real CitationVerifier oracle and repair runs and arp run --index traces pass the gate; CLI accept-all trace refused). Self-reviewed full diff; no Cline/paid APIs, no model calls
+
+Tests: RabbitHole: 1287 passed + 3 slow deselected (+13), branch coverage 98.26% (floor 96%; trace/gate.py, trace/schema.py, loop.py 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked on py3.11 and py3.13 locally; plain pytest: 1288 passed, 2 skipped; CI green at d8ef865 (runs/45523310282), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole d8ef865 feat(trace): record accepted answers and gate scoring on a citations-verified trace
+
+Remaining blockers: none
+
+Next recommended task: RabbitHole M3: final_answer as a registered tool schema (tools/answer.py; claims schema for arp tools schema and the M5 LLM reply format), then fetch_url (fixture map, live opt-in + allowlist, socket-blocked test), guardrails (untrusted-data envelope, injection detector, per-task tool/URL allowlists), then Chad's M3 review (incl. ADR-0004 vs code). Before M4: M2 MINOR-1 (no-clobber trace publish); rest of M2 MINOR-5 (budget_counters event, backoff_s on failed attempts). M4: runner calls trace.gate.require_citations_verified on every trace and reports refusals by GateRefusal code in flagged rows; grader: budget_exhausted:repairs on unanswerable graded as not abstained. M5: claims in the LLM policy reply format + Bogart's no-gold-leak check and frozen prompt template + Chad's probe-stub rule. Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2.
+
 ## 2026-11-24 - agentic-research-platform - M3 research tools, citations, guardrails (Chad's 2026-11-23 spot-check: the trace records the verifier)
 
 Work completed:
