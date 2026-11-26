@@ -2,6 +2,24 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-26 - agentic-research-platform - M3 research tools, citations, guardrails (Chad's 2026-11-25 spot-check: reserved verifier labels)
+
+Work completed:
+- Reserved verifier labels (e4c7be2): agent.verifier.verifier_label hands out 'citations' and 'accept-all' only when type(verifier) is CitationVerifier or AcceptAll (identity check, like the evidence tools' output-model check). Every other class, including a subclass of either (it can override verify) and an unrelated class declaring label 'citations'/'accept-all', records custom:<module>.<qualname> regardless of its label (max 200 chars); an object spoofing __class__ fools isinstance but not the label. Before, any class could declare label 'citations' and its traces passed the M4 gate
+- M4 gate consistency: tests/test_trace_gate.py no longer accepts traces from a stand-in declaring label 'citations'; every trace the gate accepts now comes from the real CitationVerifier over a one-document fixture corpus (search, then a cited answer; uncited answer rejected no_citation; late acceptance via a backend whose document lookups move the clock), and the same run with a CitationVerifier subclass or a label-declaring class is refused not_citations_verified. gate.require_citations_verified itself unchanged
+- Docs: verifier/RunConfig/gate docstrings, README run_config paragraph, CHANGELOG (supersedes the 'a custom class can still declare citations' note), TODO. Tests: 12 new (6 reserved-label cases, __class__ spoof, 3 custom verifiers refused by the gate, CitationVerifier subclass accepting an uncited answer refused, 2 more gate refusals), test_verifier_labels/test_run_config_records_the_loop_setup and the gate test helpers updated. Self-reviewed full diff; no Cline/paid APIs, no model calls
+
+Tests: RabbitHole: 1299 passed + 3 slow deselected (+12), branch coverage 98.26% (floor 96%; agent/verifier.py, trace/gate.py 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked on py3.11 and py3.13 locally; plain pytest: 1300 passed, 2 skipped; CI green at e4c7be2 (runs/45733165362), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole e4c7be2 fix(verifier): reserve the citations and accept-all labels for the built-in verifiers
+
+Remaining blockers: none
+
+Next recommended task: RabbitHole M3: final_answer as a registered tool schema (tools/answer.py; claims schema for arp tools schema and the M5 LLM reply format), then fetch_url (fixture map, live opt-in + allowlist, socket-blocked test), guardrails (untrusted-data envelope, injection detector, per-task tool/URL allowlists), then Chad's M3 review (incl. ADR-0004 vs code). Before M4: M2 MINOR-1 (no-clobber trace publish); rest of M2 MINOR-5 (budget_counters event, backoff_s on failed attempts). M4: runner calls trace.gate.require_citations_verified on every trace and reports refusals by GateRefusal code in flagged rows; grader: budget_exhausted:repairs on unanswerable graded as not abstained. M5: claims in the LLM policy reply format + Bogart's no-gold-leak check and frozen prompt template + Chad's probe-stub rule. Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2.
+
 ## 2026-11-25 - agentic-research-platform - M3 research tools, citations, guardrails (Chad's 2026-11-24 spot-check: answer_accepted event and the M4 verifier gate)
 
 Work completed:
