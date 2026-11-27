@@ -2,6 +2,24 @@
 
 Generated from `state.json` by `scripts/update_state.py render-log`. Do not edit by hand.
 
+## 2026-11-27 - agentic-research-platform - M3 research tools, citations, guardrails (final_answer as a tool schema)
+
+Work completed:
+- final_answer tool schema (c51a27d): new tools/answer.py. final_answer_schema() gives final_answer(answer, claims[{text, citations[{doc_id, start, end, quote, content_hash?}]}]) in the OpenAI tools format (FinalAnswerArgs: answer needs a non-space char; claims required but may be empty so a claim-less answer still reaches the verifier and gets no_citation repair feedback). parse_final_answer(arguments) turns a model's call (JSON string or mapping) into a FinalAnswer or an invalid_args ToolError with the registry's reason codes; argument parsing moved out of ToolRegistry.validate_args into a shared tools.registry.parse_arguments (behaviour unchanged). Citation/Claim fields gained model-facing descriptions (shape unchanged)
+- Reserved name: tools.registry.RESERVED_TOOL_NAMES = {final_answer}. ToolRegistry refuses to register it; validate_args (so ToolExecutor.execute) returns invalid_args/reserved_tool_name before any attempt, so an answer can only end a run as a FinalAnswer through the verifier. arp tools schema lists final_answer after the registered tools (tools.builtin.catalog_schemas; --tool final_answer works). LLMPolicy does not offer or parse it yet (M5). Documented differences: JSON Schema cannot express end > start (parser checks it); lax pydantic mode reads integer strings like '0' as 0 (as for every tool)
+- Docs: README (also fixed stale 'arp run over a corpus not built'), CHANGELOG, PLAN M3 note, TODO. Tests: 46 new in tests/test_answer_tool.py (schema shape/meta-schema/descriptions; jsonschema and parser agree on 6 valid and 17 invalid calls plus the 2 documented differences; JSON-string parsing, verbatim answer, round trip, 8 malformed-argument codes; registry refusal and reserved_tool_name from empty/default registry and executor; a parsed call citing the designer sentence after a search is accepted by CitationVerifier over the fixture corpus and passes the M4 gate; a ToolCall to final_answer in a run is an observation and the next uncited answer is still no_citation); 3 CLI tests updated. Self-reviewed full diff; no Cline/paid APIs, no model calls
+
+Tests: RabbitHole: 1345 passed + 3 slow deselected (+46), branch coverage 98.27% (floor 96%; tools/answer.py, tools/registry.py, tools/builtin.py, cli.py 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked on py3.11 and py3.13 locally; plain pytest: 1346 passed, 2 skipped; CI green at c51a27d (runs/45920249706), py3.11 + py3.13
+
+Evaluation: Not run (no evals; no model calls)
+
+Commits:
+- RabbitHole c51a27d feat(tools): add the final_answer tool schema and reserve its name in the registry
+
+Remaining blockers: none
+
+Next recommended task: RabbitHole M3: fetch_url (fixture map, live opt-in + allowlist, socket-blocked test, HTML-to-text with offsets), then guardrails (untrusted-data envelope, injection detector, per-task tool/URL allowlists), then Chad's M3 review (incl. ADR-0004 vs code and the final_answer reserved-name design). Before M4: M2 MINOR-1 (no-clobber trace publish); rest of M2 MINOR-5 (budget_counters event, backoff_s on failed attempts). M4: runner calls trace.gate.require_citations_verified on every trace and reports refusals by GateRefusal code in flagged rows; grader: budget_exhausted:repairs on unanswerable graded as not abstained. M5: LLMPolicy offers final_answer_schema() natively and parses calls with parse_final_answer (claims also in the JSON-in-text format and the rendered history) + Bogart's no-gold-leak check and frozen prompt template + Chad's probe-stub rule. Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2.
+
 ## 2026-11-26 - agentic-research-platform - M3 research tools, citations, guardrails (Chad's 2026-11-25 spot-check: reserved verifier labels)
 
 Work completed:
