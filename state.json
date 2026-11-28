@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-27T01:04:00+00:00",
+  "updated_at": "2026-11-28T01:12:37+00:00",
   "active_project": "agentic-research-platform",
   "projects": {
     "production-rag-engine": {
@@ -414,9 +414,9 @@
       },
       "last_ci": {
         "conclusion": "success",
-        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/45920249706",
-        "sha": "c51a27d",
-        "recorded_at": "2026-11-27T01:03:53+00:00"
+        "url": "https://github.com/miguelzzzzzzzz/RabbitHole/actions/runs/46091808846",
+        "sha": "04fb0c8",
+        "recorded_at": "2026-11-28T01:12:37+00:00"
       },
       "blockers": [],
       "next_recommended_task": "RabbitHole M3: fetch_url (fixture map, live opt-in + allowlist, socket-blocked test, HTML-to-text with offsets), then guardrails (untrusted-data envelope, injection detector, per-task tool/URL allowlists), then Chad's M3 review (incl. ADR-0004 vs code and the final_answer reserved-name design). Before M4: M2 MINOR-1 (no-clobber trace publish); rest of M2 MINOR-5 (budget_counters event, backoff_s on failed attempts). M4: runner calls trace.gate.require_citations_verified on every trace and reports refusals by GateRefusal code in flagged rows; grader: budget_exhausted:repairs on unanswerable graded as not abstained. M5: LLMPolicy offers final_answer_schema() natively and parses calls with parse_final_answer (claims also in the JSON-in-text format and the rendered history) + Bogart's no-gold-leak check and frozen prompt template + Chad's probe-stub rule. Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2."
@@ -1329,6 +1329,24 @@
       ],
       "remaining_blockers": [],
       "next_recommended_task": "RabbitHole M3: fetch_url (fixture map, live opt-in + allowlist, socket-blocked test, HTML-to-text with offsets), then guardrails (untrusted-data envelope, injection detector, per-task tool/URL allowlists), then Chad's M3 review (incl. ADR-0004 vs code and the final_answer reserved-name design). Before M4: M2 MINOR-1 (no-clobber trace publish); rest of M2 MINOR-5 (budget_counters event, backoff_s on failed attempts). M4: runner calls trace.gate.require_citations_verified on every trace and reports refusals by GateRefusal code in flagged rows; grader: budget_exhausted:repairs on unanswerable graded as not abstained. M5: LLMPolicy offers final_answer_schema() natively and parses calls with parse_final_answer (claims also in the JSON-in-text format and the rendered history) + Bogart's no-gold-leak check and frozen prompt template + Chad's probe-stub rule. Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2."
+    },
+    {
+      "date": "2026-11-28",
+      "project": "agentic-research-platform",
+      "milestone": "M3 research tools, citations, guardrails (Chad's 2026-11-27 spot-check: strict offsets; fetch_url fixture-first)",
+      "work_completed": [
+        "Strict offsets (ef92002, Chad's MINOR on c51a27d): new tools.base.Offset type on Citation.start/end and read_document start/end refuses booleans (true would read as 1), floats (0.0, 5.0) and strings that are not plain digits ('0.0', '1_0', ' 0', '+0') as invalid_args/schema_violation; a digit string like '0' is still read as an integer like every tool argument. Exported JSON schema unchanged (integer); JSON Schema's integer accepts 0.0, now a documented and tested schema/parser difference. 20 new tests (6 more agreeing invalid final_answer calls, integral floats refused by the parser only, 0.0/true in a native JSON-string call, Citation directly, read_document refusals before the backend is touched and '17'/'60' accepted). CI green (runs/46091245638)",
+        "fetch_url fixture-first (04fb0c8): new tools/fetch.py. fetch_url(url, start=0) returns at most 1500 chars of the page's extracted text with url (normalized: http/https only, ASCII host, no user info, fragment/default port dropped), origin fixture|live, title, content_hash (sha256 of the extracted text), start_char/end_char, text_length, so pages are paged like read_document. Fixture map by URL first (load_fixture_pages reads pages.json; files must lie under the dir; duplicates after normalization refused; fixture wins over live). Live HTTP only with LiveFetchPolicy.enabled (ARP_ALLOW_LIVE_FETCH=true; unclear values refused) and an exact-host allowlist (ARP_FETCH_ALLOWLIST); otherwise invalid_args/unknown_url or host_not_allowed before any network call. Live: httpx GET, redirects not followed, 429/5xx transient (one retry), other non-200 permanent, HTML/XHTML/plain only, 2 MB cap, timeouts not retried, page cached per tool instance. Stdlib html.parser HTML-to-text (drops script/style/noscript/template/svg, decodes entities, block elements end lines, whitespace collapsed); offsets index that text",
+        "fetch_url wiring and limits: research_registry(backend, fetch=FetchUrlTool(...)); arp tools schema lists fetch_url (no pages, live off) before final_answer; not yet wired into arp run. Fetched pages are observations, not citation evidence (EvidenceStore ignores them; the verifier knows corpus documents only, so citing a page is invalid_citation); allowlist is by host name only (no IP pinning). Fictional fixture pages in tests/fixtures/pages (reserved example.* hosts). Docs: README, CHANGELOG, PLAN M3 note, TODO. Tests: 96 new in tests/test_fetch_tool.py (URL normalization/refusals, env policy, extraction incl. broken nesting, fixture-index refusals, paging a long page end to end, schema violations; a socket recorder shows no DNS lookup or connect for fixture, live-off, off-but-listed, not-listed, empty-allowlist and bad-scheme calls with the real default transport, plus a control where an opted-in allowlisted host is attempted; live paths over httpx.MockTransport; an AgentLoop run where the fetched page is observed, adds no evidence and citing it is invalid_citation); 3 catalog tests updated. Self-reviewed full diff; no Cline/paid APIs, no model calls"
+      ],
+      "tests": "RabbitHole: 1461 passed + 3 slow deselected (+116), branch coverage 98.39% (floor 96%; tools/fetch.py, tools/builtin.py 100%), ruff lint/format and strict mypy clean, passes with fastembed blocked on py3.11 and py3.13 locally; plain pytest: 1462 passed, 2 skipped; CI green at ef92002 (runs/46091245638) and 04fb0c8 (runs/46091808846), py3.11 + py3.13",
+      "evaluation": "Not run (no evals; no model calls; no live fetch)",
+      "commits": [
+        "RabbitHole ef92002 fix(citations): refuse boolean, float and non-digit offsets in citations and read_document",
+        "RabbitHole 04fb0c8 feat(tools): add fetch_url with fixture pages first and allowlisted live fetch only by opt-in"
+      ],
+      "remaining_blockers": [],
+      "next_recommended_task": "RabbitHole M3: guardrails (untrusted-data envelope around tool outputs in prompts, pattern-based injection detector flagging content in the trace and evidence store, per-task tool and URL allowlists; injection fixture pages for fetch_url), then fetch_url follow-ups (arp run --pages DIR + env live policy wiring; decide how fetched pages are cited before the M4 fetch category), then Chad's M3 review (incl. ADR-0004 vs code, the final_answer reserved-name design and fetch_url's live policy). Before M4: M2 MINOR-1 (no-clobber trace publish); rest of M2 MINOR-5 (budget_counters event, backoff_s on failed attempts). M4: runner calls trace.gate.require_citations_verified on every trace and reports refusals by GateRefusal code in flagged rows; grader: budget_exhausted:repairs on unanswerable graded as not abstained. M5: LLMPolicy offers final_answer_schema() natively and parses calls with parse_final_answer (claims also in the JSON-in-text format and the rendered history; confirm the llama.cpp grammar constrains nested $defs/$ref Claim/Citation, Chad's note) + Bogart's no-gold-leak check and frozen prompt template + Chad's probe-stub rule. Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2."
     }
   ],
   "next_recommended_task": "RabbitHole M3: fetch_url (fixture map, live opt-in + allowlist, socket-blocked test, HTML-to-text with offsets), then guardrails (untrusted-data envelope, injection detector, per-task tool/URL allowlists), then Chad's M3 review (incl. ADR-0004 vs code and the final_answer reserved-name design). Before M4: M2 MINOR-1 (no-clobber trace publish); rest of M2 MINOR-5 (budget_counters event, backoff_s on failed attempts). M4: runner calls trace.gate.require_citations_verified on every trace and reports refusals by GateRefusal code in flagged rows; grader: budget_exhausted:repairs on unanswerable graded as not abstained. M5: LLMPolicy offers final_answer_schema() natively and parses calls with parse_final_answer (claims also in the JSON-in-text format and the rendered history) + Bogart's no-gold-leak check and frozen prompt template + Chad's probe-stub rule. Then MINOR-7/-6/-5, M1 R-1/R-2/R-4..R-7, OPT-1/2."
